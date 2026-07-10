@@ -1,0 +1,3 @@
+[submodule "packages/CNN-Compiler"]
+	path = packages/CNN-Compiler
+	url = https://github.com/malisaber/CNN-Compiler.git
