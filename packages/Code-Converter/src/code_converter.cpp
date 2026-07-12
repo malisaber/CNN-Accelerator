@@ -182,8 +182,8 @@ int main(int argc, char** argv)
 	std::filesystem::path				Path2Outp	=	"";
 
     CLI::App app{"Assembly file to instruction memory file converter"};	
-	app.add_option	("-i,-c,--input,--code-dir",	Path2Code,	"Path to Code.txt");
-	app.add_option	("-o,--Output-dir",				Path2Outp,	"Output Directory");
+	app.add_option	("-i,--input,--code-dir",	Path2Code,	"Path to Code.txt");
+	app.add_option	("-o,--Output-dir",			Path2Outp,	"Output Directory");
 	CLI11_PARSE(app, argc, argv);
 
 	

@@ -30,7 +30,7 @@ string int2bin(unsigned int inp, unsigned int size)
 unsigned int hex2uint(string inp)
 {
     unsigned int tmp = 0;
-    for (int i = 0; i < inp.size(); i++)
+    for (unsigned int i = 0; i < inp.size(); i++)
     {
         tmp = 16 * tmp;
         switch (inp[i])
@@ -108,7 +108,7 @@ string hex_legth_fix(string inp, int size)
 string hex_2_bin(string inp)
 {
     string tmp = "";
-    for (int i = 0; i < inp.size(); i++)
+    for (unsigned int i = 0; i < inp.size(); i++)
     {
         switch (inp[i])
         {
@@ -191,8 +191,8 @@ int main(int argc, char** argv)
 	std::filesystem::path				Path2Outp	=	"";
 
     CLI::App app{"Text file to instruction memory file converter"};	
-	app.add_option	("-i,-c,--input,--Text-dir",	Path2Text,	"Path to Code.txt");
-	app.add_option	("-o,--Output-dir",				Path2Outp,	"Output Directory");
+	app.add_option	("-i,--input,--Text-dir",	Path2Text,	"Path to Text.txt");
+	app.add_option	("-o,--Output-dir",			Path2Outp,	"Output Directory");
 	CLI11_PARSE(app, argc, argv);
 
     string a_line;
