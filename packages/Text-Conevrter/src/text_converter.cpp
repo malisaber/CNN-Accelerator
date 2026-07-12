@@ -2,6 +2,7 @@
 #include <fstream>
 #include <string>
 #include <regex>
+#include "CLI11.hpp"
 
 using namespace std;
 
@@ -184,15 +185,23 @@ string little_endian_correction(string inp)
     return val;
 }
 
-int main()
+int main(int argc, char** argv)
 {
-    string a_line;
+	std::filesystem::path				Path2Text	=	"";	
+	std::filesystem::path				Path2Outp	=	"";
 
-    ifstream text_fil;  text_fil.open("E:/WSL/text.txt");
-    ofstream non_Data;  non_Data.open("E:/WSL/text/non_Data.txt");
-    ofstream smi_assm;  smi_assm.open("E:/WSL/text/semi_assembly.txt");
-    ofstream mem_Addr;  mem_Addr.open("E:/WSL/text/Main_Mem_Addr.txt");
-    ofstream mem_Data;  mem_Data.open("E:/WSL/text/Main_Mem_Data.txt");
+    CLI::App app{"Text file to instruction memory file converter"};	
+	app.add_option	("-i,-c,--input,--Text-dir",	Path2Text,	"Path to Code.txt");
+	app.add_option	("-o,--Output-dir",				Path2Outp,	"Output Directory");
+	CLI11_PARSE(app, argc, argv);
+
+    string a_line;
+	std::filesystem::create_directory(Path2Outp);
+    ifstream text_fil;  text_fil.open(Path2Text);
+    ofstream non_Data;  non_Data.open(Path2Outp / ("non_Data.txt"));
+    ofstream smi_assm;  smi_assm.open(Path2Outp / ("semi_assembly.txt"));
+    ofstream mem_Addr;  mem_Addr.open(Path2Outp / ("Main_Mem_Addr.txt"));
+    ofstream mem_Data;  mem_Data.open(Path2Outp / ("Main_Mem_Data.txt"));
 
 
     regex pattern4word("^[\t ]*([0-9a-fA-F]*)[\t ]*([0-9a-fA-F]{8})[\t ]*([0-9a-fA-F]{8})[\t ]*([0-9a-fA-F]{8})[\t ]*([0-9a-fA-F]{8})[\t ]*");

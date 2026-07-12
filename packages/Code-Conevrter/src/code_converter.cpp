@@ -2,6 +2,7 @@
 #include <fstream>
 #include <string>
 #include <regex>
+#include "CLI11.hpp"
 
 using namespace std;
 
@@ -175,28 +176,26 @@ string hex_2_bin(string inp)
 }
 
 
-int main()
+int main(int argc, char** argv)
 {
-    //cout << hex2uint("") << endl;
-    //cout << hex2uint("1") << endl;
-    //cout << hex2uint("11") << endl;
-    //cout << hex2uint("111") << endl;
-    //cout << hex2uint("1111") << endl;
-    //cout << hex2uint("11111") << endl;
-    //cout << hex2uint("111111") << endl;
-    //cout << hex2uint("1111111") << endl;
-    //cout << hex2uint("f1111111") << endl;
+	std::filesystem::path				Path2Code	=	"";	
+	std::filesystem::path				Path2Outp	=	"";
 
+    CLI::App app{"Assembly file to instruction memory file converter"};	
+	app.add_option	("-i,-c,--input,--code-dir",	Path2Code,	"Path to Code.txt");
+	app.add_option	("-o,--Output-dir",				Path2Outp,	"Output Directory");
+	CLI11_PARSE(app, argc, argv);
 
+	
     string a_line;
-
-    ifstream code_fil;  code_fil.open("E:/WSL/code.txt");
-    ofstream non_Data;  non_Data.open("E:/WSL/code/non_Data.txt");
-    ofstream assembly;  assembly.open("E:/WSL/code/assembly.txt");
-    ofstream non_assm;  non_assm.open("E:/WSL/code/non_assembly.txt");
-    ofstream smi_assm;  smi_assm.open("E:/WSL/code/semi_assembly.txt");
-    ofstream mem_Addr;  mem_Addr.open("E:/WSL/code/Main_Mem_Addr.txt");
-    ofstream mem_Data;  mem_Data.open("E:/WSL/code/Main_Mem_Data.txt");
+	std::filesystem::create_directory(Path2Outp);
+    ifstream code_fil;  code_fil.open(Path2Code);
+    ofstream non_Data;  non_Data.open(Path2Outp / ("non_Data.txt"));
+    ofstream assembly;  assembly.open(Path2Outp / ("assembly.txt"));
+    ofstream non_assm;  non_assm.open(Path2Outp / ("non_assembly.txt"));
+    ofstream smi_assm;  smi_assm.open(Path2Outp / ("semi_assembly.txt"));
+    ofstream mem_Addr;  mem_Addr.open(Path2Outp / ("Main_Mem_Addr.txt"));
+    ofstream mem_Data;  mem_Data.open(Path2Outp / ("Main_Mem_Data.txt"));
 
 
     regex pattern("^[\t ]*([0-9a-fA-F]{1,8})[:]{1}[\t ]*([0-9a-fA-F]{8})[\t ]*([a-zA-Z.][a-zA-Z0-9,<>#()_\\+ \t !@~ | \\\\  &\\^\\$ '\".\\- %=\\*\\{\\} :;?\\[\\]]*)");
