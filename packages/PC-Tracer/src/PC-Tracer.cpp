@@ -2,8 +2,11 @@
 #include <sstream>
 #include <iomanip>
 #include <fstream>
+#include <filesystem>
 #include <string>
 #include <regex>
+#include <vector>
+#include <cstdint>
 #include "CLI11.hpp"
 
 using namespace std;
@@ -11,7 +14,7 @@ using namespace std;
 
 
 
-unsigned int hex2uint(string inp)
+unsigned int hex2uint	(string inp)
 {
     unsigned int tmp = 0;
     bool ridi(false);
@@ -90,11 +93,14 @@ struct func_info
     unsigned int EOFunc;
 };
 
-bool find_func(std::vector<func_info> list, unsigned int pc, func_info &info)
+bool find_func			(const std::vector<func_info> &list, 
+						 unsigned int pc, 
+						 func_info &info)
 {
     bool found(false);
-    long long i;
-    for (i = list.size() - 1; i >= 0; i--)
+    if (list.empty())
+        return false;
+    for (long long i = static_cast<long long>(list.size()) - 1; i >= 0; i--)
     {
         if (((int)pc >= (int)list[i].SOFunc) && ((int)pc <= (int)list[i].EOFunc))
         {
@@ -104,6 +110,26 @@ bool find_func(std::vector<func_info> list, unsigned int pc, func_info &info)
         }
     }
     return found;
+}
+
+bool is_interrupt_like	(const std::string &name)
+{
+    return (name == "INT_VECTOR") ||
+           (name.rfind("EXT_INT_", 0) == 0) ||
+           (name.rfind("external_interrupt_signal_handler_", 0) == 0);
+}
+
+void emit_stack_state	(std::ostream &out,
+                    	 const std::string &pc,
+                    	 const std::string &time,
+                    	 const std::vector<func_info> &stack)
+{
+    out << "(" << pc << " @ " << std::setw(8) << time << ")" << "\t\t";
+    for (std::size_t i = 1; i < stack.size(); ++i)
+        out << "\t";
+    if (!stack.empty() && is_interrupt_like(stack.back().func_name))
+        out << "[IRQ] ";
+    out << stack.back().func_name << '\n';
 }
 
 int main(int argc, char** argv)
@@ -191,18 +217,11 @@ int main(int argc, char** argv)
     cout << "Tracing Program Counter ..." << endl;
     regex Trac_pattern("^([0-9a-fA-F]{8})@([0-9]*)");
     cntr = 0;
-    int lvl(1);
-    //int main_lvl(0);
-    //bool met_main(false);
-    //bool was_walking(false);
     int ecntr(0);
     int correct(0);
-    string old_func("INT_VECTOR");
-    string new_func("");
-    int    old_PC(0XDEADBEEF);
-    int    PC;
+    int PC(0);
     bool found(false);
-    //bool error(false);
+    std::vector<func_info> call_stack;
     while (trac_log.is_open() && !trac_log.eof())
     {
         cntr++;
@@ -214,186 +233,78 @@ int main(int argc, char** argv)
         getline(trac_log, a_line);
         if (verbose)
             cout << "line #" << cntr << ":\t" << a_line << endl;
-        if (regex_search(a_line, m, Trac_pattern))
-        {
-            PC = hex2uint(m.str(1));
-            string time = m.str(2);
-            //if (time == "125085")
-            //    cout << "here" << endl;
-            // check if it jumpt or returned
-            found = find_func(List, PC, info);
-            new_func = info.func_name;
-            //error = !found;
-            //if ((!met_main) && (new_func == "main"))
-            //{
-            //    met_main = true;
-            //    main_lvl = lvl;
-            //}
-            //if (new_func == "main")
-            //    lvl = main_lvl;
-            
-            if (found)
-            {
-                //  If new function is the same as the old function, 
-                //  Then,
-                //      Nothing happened.
-                if (new_func == old_func)
-                {
-                    old_PC = PC;
-                    correct++;
-                    continue;
-                }
-                //  If the new PC moves to another function
-                //  Then
-                //      We have a situation.
-                else
-                {
-                    // Maybe calling a function? 
-                    if (PC == (int)info.SOFunc)
-                    {
-                        // if we are walking, it's passing, not calling
-                        if (PC == old_PC + 8)
-                        {
-                            correct++;
-                            //was_walking = true;
-                            continue;
-                        }
-                        // If the change in PC is more than 8,
-                        // we can say that it might be a calling 
-                        else
-                        {
-                            lvl++;
-                            old_func = new_func;
-                            trac_vis << "(" << m.str(1) << " @ " << std::setw(8) << m.str(2) << ")" << "\t\t";
-                            for (int j = 0; j < lvl; j++)
-                                trac_vis << "\t";
-                            trac_vis << old_func << endl;
-                            if (verbose)
-                            {
-                                cout << "(" << m.str(1) << " @ " << std::setw(8) << m.str(2) << ")" << "\t\t";
-                                for (int j = 0; j < lvl; j++)
-                                    cout << "\t";
-                                cout << old_func << endl;
-                            }
-                            old_PC = PC;
-                            correct++;
-                            //was_walking = false;
-                            continue;
-                        }
-                    }
-                    // Passing By, Return, Or INTERRUPT
-                    if ((PC > (int)info.SOFunc) && (PC <= (int)info.EOFunc))
-                    {
-                        //cout << PC << endl;
-                        //cout << ((int)info.SOFunc + 8) << endl;
-                        // Passing By
-                        if (PC == ((int)info.SOFunc + 8))
-                        {
-                            if (info.func_name == "main")
-                                lvl = 3;
-                            old_func = info.func_name;
-                            trac_vis << "(" << m.str(1) << " @ " << std::setw(8) << m.str(2) << ")" << "\t\t";
-                            for (int j = 0; j < lvl; j++)
-                                trac_vis << "\t";
-                            trac_vis << old_func << endl;
-                            if (verbose)
-                            {
-                                cout << "(" << m.str(1) << " @ " << std::setw(8) << m.str(2) << ")" << "\t\t";
-                                for (int j = 0; j < lvl; j++)
-                                    cout << "\t";
-                                cout << old_func << endl;
-                            }
-                            old_PC = PC;
-                            correct++;
-                            //was_walking = false;
-                            continue;
-                        }
-                        // Return OR INTERRUPT
-                        else
-                        {
-                            // INTERRUPT
-                            if (info.func_name == "INT_VECTOR")
-                            {
 
-                                lvl = 5;
-                                old_func = info.func_name;
-                                trac_vis << endl << endl;
-                                trac_vis << "(" << m.str(1) << " @ " << std::setw(8) << m.str(2) << ")" << "\t\t";
-                                for (int j = 0; j < lvl; j++)
-                                    trac_vis << "\t";
-                                trac_vis << old_func << endl;
-                                if (verbose)
-                                {
-                                    cout << endl << endl;
-                                    cout << "(" << m.str(1) << " @ " << std::setw(8) << m.str(2) << ")" << "\t\t";
-                                    for (int j = 0; j < lvl; j++)
-                                        cout << "\t";
-                                    cout << old_func << endl;
-                                }
-                                old_PC = PC;
-                                correct++;
-                                //was_walking = false;
-                                continue;
-                            }
-                            // Return
-                            else
-                            {
-                                if (info.func_name == "main")
-                                    lvl = 4;
-                                lvl--;
-                                if (lvl <= 0)
-                                    lvl = 0;
-                                old_func = info.func_name;
-                                trac_vis << "(" << m.str(1) << " @ " << std::setw(8) << m.str(2) << ")" << "\t\t";
-                                for (int j = 0; j < lvl; j++)
-                                    trac_vis << "\t";
-                                trac_vis << old_func << endl;
-                                if (verbose)
-                                {
-                                    cout << "(" << m.str(1) << " @ " << std::setw(8) << m.str(2) << ")" << "\t\t";
-                                    for (int j = 0; j < lvl; j++)
-                                        cout << "\t";
-                                    cout << old_func << endl;
-                                }
-                                old_PC = PC;
-                                correct++;
-                                //was_walking = false;
-                                continue;
-                            }
-                        }
-                    }
-                    // If error
-                    cout << "Terminated, CAN NOT DETERMINE the type of jump!" << endl;
-                    cout << "\t" << a_line << endl;
-                    cout << "\t" << PC << ", \t" << (int)info.SOFunc << endl;
-                    ecntr ++;
-                    Erro_fil << a_line << endl;
-                    break;
-                }
-            }
-            else
-            {
-                cout << "Terminated, the functions DID NOT FOUND!" << endl; 
-                ecntr ++;
-                Erro_fil << a_line << endl;
-                break;
-            }
-        }
         if (a_line.empty())
         {
             correct++;
             continue;
         }
-        else
+
+        if (!regex_search(a_line, m, Trac_pattern))
         {
-            cout << "Terminated, NOT A LINE! (" << a_line << ")" << endl;
             ecntr++;
             Erro_fil << a_line << endl;
-            break;
+            if (verbose)
+                cout << "Skipping malformed log line: " << a_line << endl;
+            continue;
         }
+
+        PC = static_cast<int>(hex2uint(m.str(1)));
+        string time = m.str(2);
+        found = find_func(List, static_cast<unsigned int>(PC), info);
+        if (!found)
+        {
+            ecntr++;
+            Erro_fil << a_line << endl;
+            if (verbose)
+                cout << "Skipping unmapped PC: " << a_line << endl;
+            continue;
+        }
+
+        if (call_stack.empty())
+        {
+            call_stack.push_back(info);
+            emit_stack_state(trac_vis, m.str(1), time, call_stack);
+            if (verbose)
+                emit_stack_state(cout, m.str(1), time, call_stack);
+            correct++;
+            continue;
+        }
+
+        std::size_t matched = call_stack.size();
+        for (std::size_t i = call_stack.size(); i-- > 0;)
+        {
+            if ((call_stack[i].SOFunc == info.SOFunc) && (call_stack[i].EOFunc == info.EOFunc) &&
+                (call_stack[i].func_name == info.func_name))
+            {
+                matched = i;
+                break;
+            }
+        }
+
+        if (matched < call_stack.size())
+        {
+            if (matched + 1 == call_stack.size())
+            {
+                correct++;
+                continue;
+            }
+            if (matched + 1 < call_stack.size())
+                call_stack.erase(call_stack.begin() + matched + 1, call_stack.end());
+            emit_stack_state(trac_vis, m.str(1), time, call_stack);
+            if (verbose)
+                emit_stack_state(cout, m.str(1), time, call_stack);
+            correct++;
+            continue;
+        }
+
+        call_stack.push_back(info);
+        emit_stack_state(trac_vis, m.str(1), time, call_stack);
+        if (verbose)
+            emit_stack_state(cout, m.str(1), time, call_stack);
+        correct++;
     }
-    info.EOFunc = 0XFFFFFFFC;
-    List.push_back(info);
+
     cout << "\033[2K\r" << std::flush;
     cout << "line #" << cntr << endl;
     cout << "error= " << ecntr << endl;
