@@ -192,7 +192,7 @@ int main(int argc, char** argv)
 
     CLI::App app{"Text file to instruction memory file converter"};	
 	app.add_option	("-i,--input,--Text-dir",	Path2Text,	"Path to Text.txt");
-	app.add_option	("-o,--Output-dir",			Path2Outp,	"Output Directory");
+	app.add_option	("-o,--output-dir",			Path2Outp,	"Output Directory");
 	CLI11_PARSE(app, argc, argv);
 
     string a_line;

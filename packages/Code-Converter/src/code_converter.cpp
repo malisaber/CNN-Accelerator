@@ -183,7 +183,7 @@ int main(int argc, char** argv)
 
     CLI::App app{"Assembly file to instruction memory file converter"};	
 	app.add_option	("-i,--input,--code-dir",	Path2Code,	"Path to Code.txt");
-	app.add_option	("-o,--Output-dir",			Path2Outp,	"Output Directory");
+	app.add_option	("-o,--output,--out-dir",	Path2Outp,	"Output Directory");
 	CLI11_PARSE(app, argc, argv);
 
 	
