@@ -16,11 +16,17 @@ CXXFLAGS ?= -std=c++17 -O2 -Wall -Wextra -I$(INC_DIR)
 LDFLAGS ?=
 LDLIBS ?=
 
-.PHONY: all clean run cli11
+.PHONY: all clean run deps cli11 check-tools
 
-all: cli11 $(TARGET)
+all: deps $(TARGET)
 
-cli11:
+deps: check-tools cli11
+
+check-tools:
+	@command -v "$(CXX)" >/dev/null 2>&1 || { printf '%s\n' "Missing C++ compiler: $(CXX)" >&2; exit 1; }
+	@command -v curl >/dev/null 2>&1 || { printf '%s\n' "Missing dependency installer: curl" >&2; exit 1; }
+
+cli11: | $(BUILD_DIR)
 	@if [ ! -s "$(CLI11_HEADER)" ] || grep -q '^404: Not Found$$' "$(CLI11_HEADER)"; then \
 		mkdir -p $(dir $(CLI11_HEADER)); \
 		if curl -fsSL "$(CLI11_URL)" -o "$(CLI11_HEADER)"; then \

@@ -1,0 +1,211 @@
+To Do List:
+
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳┃
+┃╳╭─────┬───────────────────────────────────────────────────────────────────────────────────────────────────┬───┬───────────────────┬───────────────────╮╳┃
+┃╳│ 🔥	│	option																							│ ■	│	Priority		│	status			│╳┃
+┃╳├─────┼───────────────────────────────────────────────────────────────────────────────────────────────────┼───┼───────────────────┼───────────────────┤╳┃
+┃╳│	1	│	Overall  ->	run a simulation on system															│ ☐	│					│					│╳┃
+┃╳│	2	│	Hardware -> dc result for each components 														│ ☐	│					│					│╳┃
+┃╳│	3	│	Hardware -> ellimination of memory interface's unwanted transfer interval						│ ☐	│					│					│╳┃
+┃╳│	4	│	Hardware -> memory map correction in LMN_MEM_IF													│ ☐	│					│					│╳┃
+┃╳│	5	│	Hardware -> signed/unsigned hardware															│ ☐	│					│					│╳┃
+┃╳│	6	│	Hardware -> Half/Full		hardware															│ ☐	│					│					│╳┃
+┃╳│	7	│	Hardware -> Add memory bound check to converter													│ ☐	│					│					│╳┃
+┃╳│	8	│	Hardware -> LMN memory size check																│ ☐	│					│					│╳┃
+┃╳│	9	│	Hardware -> change memory banks so they support two Drivers 									│ ☐	│					│					│╳┃
+┃╳│	10	│	Overall  ->	Git Hub thing 																		│ ☐	│	VERY HIGH		│					│╳┃	
+┃╳│	11	│	Software -> Customized _start function of the software											│ ☐	│					│					│╳┃
+┃╳│	12	│	Compiler -> Optimize execution time by merging preipheral to Execution							│ ☐	│	VERY HIGH		│					│╳┃
+┃╳│	13	│	Compiler -> Dout Allocator fails to place blocks evenly when the last layer is MPDR				│ ☐	│	VERY HIGH		│					│╳┃
+┃╳│	14	│	Compiler -> Optimize the required data by adding the intera baseline spacing modification		│ ☐	│	VERY HIGH		│					│╳┃
+┃╳│	15	│	Hardware -> Run a mini simulation on the system													│ ☐	│	URGENT			│					│╳┃
+┃╳│	16	│	Compiler -> Compile the generated code and run a demo on the system								│ ☐	│	VERY HIGH		│					│╳┃
+┃╳│	17	│	Compiler -> Add Concatination Layer																│ ☐	│	VERY HIGH		│					│╳┃
+┃╳│	18	│	Compiler -> Add Stride, and Zero Padding to Convolutional Layer									│ ☐	│	VERY HIGH		│					│╳┃
+┃╳│	19	│	Compiler -> Add some Mapping Optimization Techniques to mapper when mapping doesnt engage all 	│ ☐	│	VERY HIGH		│					│╳┃
+┃╳│	20	│	Compiler -> Issue: The Layer Linking breaks when the MPDR layer's input window is smaller.		│ ☐	│	VERY HIGH		│					│╳┃
+┃╳│	21	│	Compiler -> Add	Size check to the constructor, sizes larger than 16 shouldn't be Allowed		│ ☐	│	VERY HIGH		│					│╳┃
+┃╳│	22	│	Compiler -> Add non stright-forward	Network Topology feature									│ ☐	│	VERY HIGH		│					│╳┃
+┃╳│	23	│	Compiler -> A single Class, the class of POWER, to Rule them All	🔥 🔥 🔥 🔥					│ ☐	│	VERY HIGH		│	DONE!			│╳┃
+┃╳│	24	│	Compiler -> optimize Data movement																│ ☐	│	VERY HIGH		│					│╳┃
+┃╳│	25	│	Compiler -> Add Bias Support to the compiler													│ ☐	│	VERY HIGH		│					│╳┃
+┃╳│	26	│	Compiler -> Fix memory Allocation When the last layer is MPDR Layer								│ ☐	│	VERY HIGH		│					│╳┃
+┃╳│	27	│	Compiler -> DATA GEN (Requires Knowing the Weight placement ordering)							│ ☐	│	VERY HIGH		│	DONE!			│╳┃
+┃╳│	28	│	Overall  ->	Write a Documentation																│ ☐	│	HIGH			│					│╳┃
+┃╳│	29	│	Hardware -> Add a register file to each PE for eliminating the inter-channel data comunication	│ ☐	│	VERY HIGH		│					│╳┃
+┃╳│	30	│	Hardware ->	Conver Scheduler_mem_core_verilog	to SRAM modules									│ ☐	│	VERY HIGH		│					│╳┃
+┃╳│	31	│	Hardware ->	Conver Simple_2P_RegFile			to SRAM modules									│ ☐	│	VERY HIGH		│					│╳┃
+┃╳│	32	│	Hardware ->	Reducing the critical path by making wait signal and its responce sequential		│ ☐	│	VERY HIGH		│					│╳┃
+┃╳│		│																									│	│					│					│╳┃
+┃╳│		│																									│	│					│					│╳┃
+┃╳│		│																									│	│					│					│╳┃
+┃╳│		│																									│	│					│					│╳┃
+┃╳╰─────┴───────────────────────────────────────────────────────────────────────────────────────────────────┴───┴───────────────────┴───────────────────╯╳┃
+┃╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳╳┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+What I have Done so far:
+
+
+
+v4_3:
+
+
+ Number	│	option																	
+────────┼───────────────────────────────────────────────────────────────────────────
+	1	│	MAX polings 																					
+	5	│	adding data reshap unit to the MAX Pooling Engine												
+		│		-	this unit should lock some memory space and write each 									
+	12	│	comment corrections																				
+	17	│	Check the consistency of data format between Input and output of PE								
+	18	│	Simplifying the UA input	addressing	 														
+	19	│	Simplifying the UA weight	addressing															
+	21	│	Unify the register information in the HDL and Software											
+	22	│	Simplifying the Data Provider																	
+	23	│	Remove "ASTAAI_Cntr" from "PEs_Control_Box" module												
+	24	│	add MPDR unit to the system																		
+	25	│	add MPDR Scheduler																				
+	26	│	add MPDR event counters																			
+	27	│	add MPDR dedicated interrupts 																	
+	28	│	add MPDR control functions to the softwre														
+	29	│	add MPDR to compiler CG																			
+	30	│	complete the compiler																			
+	31	│	Unify the comments																				
+	34	│	Correct the register addressing in the software													
+	35	│	Convert all "int" in "Accelerator.h" to "unsigned int"											
+	36	│	Remove Bank Related parts in scheduler															
+	37	│	Update Interrup handler functions in software													
+	38	│	Simplify Scheduler																				
+	39	│	Compiler -> Code Gen																			
+	40	│	Compiler -> Code Gen -> configurable functions 													
+	42	│	Hardware -> Remove row counter and cntr Counter in Address generator							
+	46	│	Hardware -> create a pakage for memory map information											
+	47	│	Hardware -> Single Event counter per PE, its event source can be selected						
+	48	│	Compiler -> Adjust the assertions to match the plannar event counter range						
+	51	│	Compiler ->	remove the event handler from the code gen											
+	52	│	Software ->	Check Interrupt managment functions 												
+	53	│	Software ->	Change mod operator to AND operator in Accelerator.h								
+	66	│	Hardware -> Print Module -> TxRx Module	-> Tx													
+	67	│	Hardware -> Print Module -> TxRx Module	-> Rx													
+	68	│	Hardware -> Print Module -> TxRx Module	-> TRx Box 												
+	68	│	Hardware -> Print Module -> TxRx Module	-> SIM													
+	68	│	Hardware -> Print Module -> TxRx Module	-> Add it to the Scheduler								
+	69	│	Hardware -> Print Module -> free-up addr for PM by Reduce The Intrupt Handler's address space 	
+	70	│	Software -> Print Module -> free-up addr for PM by Reduce The Intrupt Handler's address space 	
+	71	│	Hardware -> INTR Handler -> add TBE interrupt and RBF interrupt 								
+	72	│	Hardware -> INTR Handler -> Increasing the size of INT Add Code by 1							
+	73	│	Software -> INTR Handler -> Increasing the size of INT Add Code by 1							
+	74	│	Software -> Print Function																		
+	75	│	Hardware -> Print Module -> TxRx Module	-> Add Receive Interrupt								
+	76	│	Hardware -> Print Module -> TxRx Module	-> Add Send Interrupt									
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+v4_2:
+
+ Number	│	option																	
+────────┼───────────────────────────────────────────────────────────────────────────
+	5	│	dc result for each components 											
+	13	│	add debuging features to the system										
+	15	│	Write a compiler for it													
+	18	│	Hardware Content Switching in riscv										
+	24	│	Bug Fixing (ChatGPT Version)											
+	25	│	Add List Event to the C program											
+	26	│	Beautify The TDL file													
+	27	│	Add a call Tracer														
+	29	│	change the structure of "PE CONTROL" Module 							
+		│																			
+
+
+
+
+v4_1:
+
+ Number	│	option																	
+────────┼───────────────────────────────────────────────────────────────────────────
+	5	│	dc result for each components 											
+		│																			
+
+
+
+
+V3_3:
+
+ Number	│	option																	
+────────┼───────────────────────────────────────────────────────────────────────────
+	4	│	run a simulation on system												
+	6	│	dc result for each components 											
+	10	│	Beautifulization														
+	21	│	AFTAB dose not have the required performance here						
+		│		***	multi-cycle instruction execution								
+		│		***	frequency														
+		│		***	compiler impact 												
+		│		***	code impact														
+	23	│	seperated reset for each plane 											
+	25	│	eliminate the fucking warning on out of natural range (FFFF0XXX)		
+	27	│	remove unnecessary files												
+	28	│	check sa_start to see that if it work properly							
+	29	│	change mp from AFATAB to Birisc											
+	30	│	STA_ACK	is dependent to STA_Done when we set Atumatic bit 				
+	32	│	check MY_Adder module													
+		│																			
+
+
+
+V3_2:
+
+ Number	│	option																	
+────────┼───────────────────────────────────────────────────────────────────────────
+	4	│	run a simulation on system												
+	8	│	LMN having several dual port memories									
+	10	│	Beautifulization														
+	21	│	AFTAB dose not have the required performance here						
+		│		***	multi-cycle instruction execution								
+		│		***	frequency														
+		│		***	compiler impact 												
+		│		***	code impact														
+	23	│	seperated reset for each plane 											
+	27	│	remove unnecessary files												
+	28	│	check sa_start to see that if it work properly							
+	29	│	change mp from AFATAB to Birisc											
+	32	│	check MY_Adder module													
+		│																			
+
+
+
+
