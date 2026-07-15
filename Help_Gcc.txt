@@ -1,0 +1,154 @@
+*****************************************************************************************
+*****************************************************************************************
+*****							REMEMBER TO CONVERT TEXT							*****
+*****************************************************************************************
+*****************************************************************************************
+
+
+
+
+
+
+
+
+
+clear
+cd
+rm -r work
+mkdir work
+cd work
+cp /mnt/e/WSL/work_AFTAB/crt0.boot_M.S ~/work
+cp /mnt/e/WSL/work_AFTAB/link.common.ld ~/work
+cp /mnt/e/WSL/work_AFTAB/link.riscv.ld ~/work
+
+cp /mnt/e/WSL/software/Accelerator.cpp ~/work
+cp /mnt/e/WSL/software/Accelerator.h ~/work
+cp /mnt/e/WSL/software/common.h ~/work
+cp /mnt/e/WSL/software/Configs.h ~/work
+cp /mnt/e/WSL/software/Utilities.h ~/work
+cp /mnt/e/WSL/software/main.cpp ~/work
+
+
+riscv32-unknown-elf-gcc -mabi=ilp32 -o2 \
+	-march=rv32im -Wa,-march=rv32im \
+	-Wextra -Wall -Wno-unused-parameter \
+	-Wno-unused-variable -Wno-unused-function \
+	-fdata-sections -ffunction-sections \
+	-fdiagnostics-color=always  \ 
+	-T link.riscv.ld -nostartfiles -Wl,--gc-sections \
+	-lm main.cpp crt0.boot_M.S -o main.elf
+
+
+riscv32-unknown-elf-objdump -s -l --inlines main.elf > text.txt
+riscv32-unknown-elf-objdump -d -l --inlines main.elf > code.txt
+
+
+cp  ~/work/text.txt /mnt/e/WSL
+cp  ~/work/code.txt /mnt/e/WSL
+
+
+
+
+
+
+*****************************************************************************************
+*****************************************************************************************
+*****************************************************************************************
+*****************************************************************************************
+*****************************************************************************************
+BIRISC
+
+
+
+clear
+cd
+rm -r work
+mkdir work
+cd work
+cp /mnt/e/WSL/work_BIRISCV/crt0.boot_M.S ~/work
+cp /mnt/e/WSL/work_BIRISCV/link.common.ld ~/work
+cp /mnt/e/WSL/work_BIRISCV/link.riscv.ld ~/work
+
+
+cp /mnt/e/WSL/software/Accelerator.h ~/work
+cp /mnt/e/WSL/software/common.h ~/work
+cp /mnt/e/WSL/software/Configs.h ~/work
+cp /mnt/e/WSL/software/Utilities.h ~/work
+cp /mnt/e/WSL/software/EventCallBacker.h ~/work
+cp /mnt/e/WSL/software/main.cpp ~/work
+
+
+riscv32-unknown-elf-gcc -mabi=ilp32 -o2 \
+	-march=rv32im -Wa,-march=rv32im \
+	-Wextra -Wall -Wno-unused-parameter \
+	-Wno-unused-variable -Wno-unused-function \
+	-fdata-sections -ffunction-sections \
+	-fdiagnostics-color=always  \
+	-T link.riscv.ld -nostartfiles -Wl,--gc-sections \
+	-lm main.cpp crt0.boot_M.S -o main.elf
+
+
+riscv32-unknown-elf-objdump -s -l --inlines main.elf > text.txt
+riscv32-unknown-elf-objdump -d -l --inlines main.elf > code.txt
+
+
+cp  ~/work/text.txt /mnt/e/WSL
+cp  ~/work/code.txt /mnt/e/WSL
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*****************************************************************************************
+*****************************************************************************************
+*****************************************************************************************
+*****************************************************************************************
+*****************************************************************************************
+
+
+
+riscv32-unknown-elf-objdump -D -S -l  --disassembler-color=color --inlines main.elf > main.txt
+
+riscv32-unknown-elf-objdump -d -S -l --visualize-jumps --disassembler-color=color --inlines main.elf > main.txt
+
+
+
+
+
+
+
+CSR_Config.h
+ECNTR_Config.h
+MMAP_Config.h
+PE_Config.h
+TIMER_Config.h
+DMA_Config.h
+INTRH_Config.h
+PEC_Config.h
+SUU_Config.h
+TLB_Config.h
+common.h
+test.cpp
+
+
+
+
+
+regex pattern("^[ ]*([a-fA-F0-9]{1,8})[ ]*[:]{1}[ ]*([a-fA-F0-9]{8})[ ]*([a-zA-Z0-9,<>#()_\\+ !@~ | \\\\  &\\^\\$ '\".\\- %=\\*\\{\\} :;?\\[\\]]*)$");
+
+
+
+
+
+
+
+cp /mnt/e/proposal/iMpac/Projects/new_v1_ise/new_v3_2 ~/ACC_test -r 
