@@ -4,7 +4,7 @@ LOG_DIR := $(BUILD_DIR)/logs
 TOP ?= SIM_SYSTEM
 
 VLIB ?= vlib
-VMAP ?= vmap 
+VMAP ?= vmap
 VCOM ?= vcom
 VLOG ?= vlog
 VSIM ?= vsim
