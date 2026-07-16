@@ -157,7 +157,7 @@ DRAM_INPUTS  ?=
 DRAM_WEIGHTS ?=
 HAL_DIR      ?= materials/hal
 BOOT_DIR     ?= materials/boot
-CORE         ?= aftab
+CORE         ?= biriscv
 
 DDG_DIR       := DDG
 SOFTWARE_DIR  := software
@@ -185,6 +185,7 @@ check-run-tools:
 # (and, as a side effect, the other two tool packages too).
 run: check-run-vars check-run-tools packages
 	@mkdir -p $(DDG_DIR)/ID $(DDG_DIR)/WD $(SOFTWARE_DIR) $(BUILD_DIR) $(MEM_INIT_DIR) $(DUMP_DIR)
+
 	@echo ">>> [1/6] DRAM input/weight data generation (IDG/WDG -> $(DDG_DIR)/)"
 	$(call LOG,01-idg-wdg,\
 		i=1; for f in $(DRAM_INPUTS); do \
@@ -195,6 +196,7 @@ run: check-run-vars check-run-tools packages
 			python3 packages/CNN-DRAM-Data-Gen/WDG.py "$$f" "$(DDG_DIR)/WD/Weight_$${i}.bin" || exit 1; \
 			i=$$((i+1)); \
 		done)
+	
 	@echo ">>> [2/6] CNN-Compiler ($(NETWORK) -> $(SOFTWARE_DIR)/, dump in $(DUMP_DIR)/)"
 	$(call LOG,02-cnn-compiler,\
 		packages/CNN-Compiler/build/CNN-Compiler -v \
@@ -204,6 +206,7 @@ run: check-run-vars check-run-tools packages
 			-o "$(SOFTWARE_DIR)" \
 			-i $(DDG_DIR)/ID/*.bin \
 			-w $(DDG_DIR)/WD/*.bin)
+	
 	@echo ">>> [3/6] Cross-compiling $(SOFTWARE_DIR)/ for CORE=$(CORE) ($(CROSS)-gcc -> $(BUILD_DIR)/)"
 	$(call LOG,03-riscv-compile,\
 		$(CROSS)-gcc -mabi=ilp32 -O2 \
@@ -218,11 +221,13 @@ run: check-run-vars check-run-tools packages
 			-o $(BUILD_DIR)/main.elf && \
 		$(CROSS)-objdump -s -l --inlines $(BUILD_DIR)/main.elf > $(BUILD_DIR)/text.txt && \
 		$(CROSS)-objdump -d -l --inlines $(BUILD_DIR)/main.elf > $(BUILD_DIR)/code.txt)
+	
 	@echo ">>> [4/6] Text-Converter ($(BUILD_DIR)/text.txt -> $(MEM_INIT_DIR)/)"
 	$(call LOG,04-text-converter,\
 		packages/Text-Converter/build/Text-Converter \
 			-i $(BUILD_DIR)/text.txt \
 			-o $(MEM_INIT_DIR))
+	
 	@echo ">>> [5/6] Selecting CORE=$(CORE) in rtl/packages/MY_Pack_v2.vhd"
 	$(call LOG,05-core-select,\
 		case "$(CORE)" in \
@@ -233,8 +238,10 @@ run: check-run-vars check-run-tools packages
 			"s/(CONSTANT[[:space:]]+P_uProcessor_in_use[[:space:]]*:[[:space:]]*P_uProcessor_type[[:space:]]*:=[[:space:]]*)P_USE_[A-Z]+;/\1$${NEWVAL};/" \
 			rtl/packages/MY_Pack_v2.vhd; \
 		grep -n "P_uProcessor_in_use" rtl/packages/MY_Pack_v2.vhd)
+	
 	@echo ">>> [6/6] Building rtl/"
 	$(call LOG,06-rtl-build,$(MAKE) -C rtl all)
+	
 	@echo ">>> done: firmware in $(BUILD_DIR)/, memory-init files in $(MEM_INIT_DIR)/, logs in $(REPORT_DIR)/"
 
 # ------------------------------------------------------------------
