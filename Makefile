@@ -226,7 +226,9 @@ install-modelsim:
 		echo; \
 		echo ">>> Once it's done, add its bin/ directory to PATH, e.g.:"; \
 		echo "    export PATH=\$$PATH:$(MODELSIM_INSTALL_DIR)/20.1/modelsim_ase/bin"; \
-		echo "    then re-run: make check-tools"; \
+		echo "    or add it to the ~/.bashrc to make it permanent"; \
+		echo "    and dont forget to add a license file, e.g.:"; \
+		echo "    export LM_LICENSE_FILE=/path/to/your/license.dat"; \
 	} 2>&1 | tee "$(REPORT_DIR)/install-modelsim.log"
 
 # ------------------------------------------------------------------
