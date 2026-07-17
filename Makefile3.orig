@@ -169,15 +169,9 @@ install-tools:
 		fi; \
 		echo; \
 		echo ">>> ModelSim/Questa (vlib/vmap/vcom/vlog/vsim) is licensed EDA software"; \
-		echo "    and CANNOT be installed by this target -- it has to be downloaded"; \
-		echo "    and installed by hand:"; \
-		echo "      https://eda.sw.siemens.com/en-US/ic/modelsim/ (or your institution's mirror,"; \
-		echo "      e.g. the free ModelSim-Intel FPGA Starter Edition bundled with Quartus)."; \
-		echo "    On Linux you'll likely also need some 32-bit dependency packages, and may"; \
-		echo "    hit a broken launcher script or a freetype-related GUI crash -- see:"; \
-		echo "      https://gist.github.com/Razer6/cafc172b5cffae189b4ecda06cf6c64f"; \
-		echo "      https://gist.github.com/robodhruv/e2c0945cc78006b00d4206846bdb7657"; \
-		echo "    Once it's usable, make sure its bin/ directory is on PATH."; \
+		echo "    from Siemens EDA and cannot be installed by this target. Get it from"; \
+		echo "    https://eda.sw.siemens.com/en-US/ic/modelsim/ (or your institution's mirror)"; \
+		echo "    and make sure its bin/ directory is on PATH."; \
 	} 2>&1 | tee "$(REPORT_DIR)/install-tools.log"
 
 # ------------------------------------------------------------------
