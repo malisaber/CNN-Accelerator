@@ -168,12 +168,27 @@ install-tools:
 				echo "pip install numpy failed; install it manually (see note above)."; \
 		fi; \
 		echo; \
-		echo ">>> ModelSim/Questa (vlib/vmap/vcom/vlog/vsim) is licensed EDA software"; \
-		echo "    and may require a license."; \
+		echo ">>> ModelSim/Questa (vlib/vmap/vcom/vlog/vsim) is licensed EDA software."; \
+		echo "    'make install-modelsim' can do the dependency + download + launch"; \
+		echo "    part (see below); the installer itself still needs you to click"; \
+		echo "    through Intel's EULA."; \
 	} 2>&1 | tee "$(REPORT_DIR)/install-tools.log"
-	@$(MAKE) install-modelsim
 
-# ModelSim-Intel FPGA Starter Edition install; may require a license.
+# ------------------------------------------------------------------
+# ModelSim-Intel FPGA Starter Edition install, per:
+# https://gist.github.com/Razer6/cafc172b5cffae189b4ecda06cf6c64f
+#
+# Automates what's actually scriptable: the i386 multiarch + 32-bit
+# dependency packages, and downloading + chmod'ing the installer.
+# The installer itself is Intel's own interactive wizard (EULA
+# click-through, pick an install dir) -- that part launches for you
+# to complete by hand, it isn't silently automated here since gist
+# comments don't converge on reliable unattended install flags for it.
+#
+# Dependency package names have drifted across Ubuntu releases (e.g.
+# libncurses5 -> libncurses6 on 23.10+, per the gist's comments), so
+# each package is tried independently with a fallback rather than one
+# apt-get call that would abort entirely on the first unknown name.
 
 MODELSIM_INSTALL_URL ?= https://download.altera.com/akdlm/software/acdsinst/20.1std.1/720/ib_installers/ModelSimSetup-20.1.1.720-linux.run
 MODELSIM_INSTALL_DIR ?= $(HOME)/intelFPGA
@@ -183,7 +198,6 @@ MODELSIM_INSTALL_DIR ?= $(HOME)/intelFPGA
 install-modelsim:
 	@mkdir -p $(REPORT_DIR) $(BUILD_DIR)
 	@{ \
-		make install-tools; \
 		echo ">>> Installing 32-bit dependency packages (needs sudo)"; \
 		command -v sudo >/dev/null 2>&1 || { echo "sudo not found, run this as root instead"; exit 1; }; \
 		sudo dpkg --add-architecture i386 && sudo apt-get update; \
@@ -223,6 +237,8 @@ install-modelsim:
 		echo ">>> Once it's done, add its bin/ directory to PATH, e.g.:"; \
 		echo "    export PATH=\$$PATH:$(MODELSIM_INSTALL_DIR)/20.1/modelsim_ase/bin"; \
 		echo "    then re-run: make check-tools"; \
+		echo "    If vsim fails to launch or its GUI segfaults, see:"; \
+		echo "      https://gist.github.com/robodhruv/e2c0945cc78006b00d4206846bdb7657"; \
 	} 2>&1 | tee "$(REPORT_DIR)/install-modelsim.log"
 
 # ------------------------------------------------------------------
@@ -322,7 +338,6 @@ clean:
 	@for d in $(PACKAGE_DIRS) materials/hal rtl; do \
 		$(MAKE) -C $$d clean; \
 	done
-	rm -f $(BUILD_DIR)/$(notdir $(MODELSIM_INSTALL_URL))
 
 clean-run:
 	rm -rf $(DDG_DIR) $(SOFTWARE_DIR) $(BUILD_DIR) $(MEM_INIT_DIR) $(DUMP_DIR)
