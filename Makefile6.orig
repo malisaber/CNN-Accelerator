@@ -172,7 +172,6 @@ install-tools:
 		echo "    and may require a license."; \
 	} 2>&1 | tee "$(REPORT_DIR)/install-tools.log"
 	@$(MAKE) install-modelsim
-	@$(MAKE) check-tools
 
 # ModelSim-Intel FPGA Starter Edition install; may require a license.
 
@@ -184,10 +183,7 @@ MODELSIM_INSTALL_DIR ?= $(HOME)/intelFPGA
 install-modelsim:
 	@mkdir -p $(REPORT_DIR) $(BUILD_DIR)
 	@{ \
-		if command -v vsim >/dev/null 2>&1; then \
-			echo ">>> vsim already found at $$(command -v vsim), skipping install."; \
-			exit 0; \
-		fi; \
+		make install-tools; \
 		echo ">>> Installing 32-bit dependency packages (needs sudo)"; \
 		command -v sudo >/dev/null 2>&1 || { echo "sudo not found, run this as root instead"; exit 1; }; \
 		sudo dpkg --add-architecture i386 && sudo apt-get update; \
