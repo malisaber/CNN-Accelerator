@@ -168,78 +168,17 @@ install-tools:
 				echo "pip install numpy failed; install it manually (see note above)."; \
 		fi; \
 		echo; \
-		echo ">>> ModelSim/Questa (vlib/vmap/vcom/vlog/vsim) is licensed EDA software."; \
-		echo "    'make install-modelsim' can do the dependency + download + launch"; \
-		echo "    part (see below); the installer itself still needs you to click"; \
-		echo "    through Intel's EULA."; \
-	} 2>&1 | tee "$(REPORT_DIR)/install-tools.log"
-
-# ------------------------------------------------------------------
-# ModelSim-Intel FPGA Starter Edition install, per:
-# https://gist.github.com/Razer6/cafc172b5cffae189b4ecda06cf6c64f
-#
-# Automates what's actually scriptable: the i386 multiarch + 32-bit
-# dependency packages, and downloading + chmod'ing the installer.
-# The installer itself is Intel's own interactive wizard (EULA
-# click-through, pick an install dir) -- that part launches for you
-# to complete by hand, it isn't silently automated here since gist
-# comments don't converge on reliable unattended install flags for it.
-#
-# Dependency package names have drifted across Ubuntu releases (e.g.
-# libncurses5 -> libncurses6 on 23.10+, per the gist's comments), so
-# each package is tried independently with a fallback rather than one
-# apt-get call that would abort entirely on the first unknown name.
-
-MODELSIM_INSTALL_URL ?= https://download.altera.com/akdlm/software/acdsinst/20.1std.1/720/ib_installers/ModelSimSetup-20.1.1.720-linux.run
-MODELSIM_INSTALL_DIR ?= $(HOME)/intelFPGA
-
-.PHONY: install-modelsim
-
-install-modelsim:
-	@mkdir -p $(REPORT_DIR) $(BUILD_DIR)
-	@{ \
-		echo ">>> Installing 32-bit dependency packages (needs sudo)"; \
-		command -v sudo >/dev/null 2>&1 || { echo "sudo not found, run this as root instead"; exit 1; }; \
-		sudo dpkg --add-architecture i386 && sudo apt-get update; \
-		try_pkg() { \
-			for p in "$$@"; do \
-				if sudo apt-get install -y "$$p" 2>/dev/null; then \
-					echo "  installed $$p"; \
-					return 0; \
-				fi; \
-			done; \
-			echo "  none of [$$*] were installable on this release, skipping"; \
-		}; \
-		try_pkg libc6:i386; \
-		try_pkg libncurses5:i386 libncurses6:i386; \
-		try_pkg libstdc++6:i386; \
-		try_pkg lib32ncurses6 lib32ncurses5; \
-		try_pkg libxft2; \
-		try_pkg libxft2:i386; \
-		try_pkg libxext6; \
-		try_pkg libxext6:i386; \
-		echo; \
-		echo ">>> Downloading ModelSim installer from $(MODELSIM_INSTALL_URL)"; \
-		INSTALLER="$(BUILD_DIR)/$$(basename $(MODELSIM_INSTALL_URL))"; \
-		if ! curl -fL "$(MODELSIM_INSTALL_URL)" -o "$$INSTALLER"; then \
-			echo "Download failed. Intel's URLs are version-pinned and move over time."; \
-			echo "Find the current one yourself and re-run with:"; \
-			echo "  make install-modelsim MODELSIM_INSTALL_URL=<url>"; \
-			exit 1; \
-		fi; \
-		chmod +x "$$INSTALLER"; \
-		echo; \
-		echo ">>> Launching the installer -- this is Intel's own interactive wizard,"; \
-		echo "    you'll need to accept the EULA and pick an install directory yourself"; \
-		echo "    (default suggestion: $(MODELSIM_INSTALL_DIR))."; \
-		"$$INSTALLER"; \
-		echo; \
-		echo ">>> Once it's done, add its bin/ directory to PATH, e.g.:"; \
-		echo "    export PATH=\$$PATH:$(MODELSIM_INSTALL_DIR)/20.1/modelsim_ase/bin"; \
-		echo "    then re-run: make check-tools"; \
-		echo "    If vsim fails to launch or its GUI segfaults, see:"; \
+		echo ">>> ModelSim/Questa (vlib/vmap/vcom/vlog/vsim) is licensed EDA software"; \
+		echo "    and CANNOT be installed by this target -- it has to be downloaded"; \
+		echo "    and installed by hand:"; \
+		echo "      https://eda.sw.siemens.com/en-US/ic/modelsim/ (or your institution's mirror,"; \
+		echo "      e.g. the free ModelSim-Intel FPGA Starter Edition bundled with Quartus)."; \
+		echo "    On Linux you'll likely also need some 32-bit dependency packages, and may"; \
+		echo "    hit a broken launcher script or a freetype-related GUI crash -- see:"; \
+		echo "      https://gist.github.com/Razer6/cafc172b5cffae189b4ecda06cf6c64f"; \
 		echo "      https://gist.github.com/robodhruv/e2c0945cc78006b00d4206846bdb7657"; \
-	} 2>&1 | tee "$(REPORT_DIR)/install-modelsim.log"
+		echo "    Once it's usable, make sure its bin/ directory is on PATH."; \
+	} 2>&1 | tee "$(REPORT_DIR)/install-tools.log"
 
 # ------------------------------------------------------------------
 # run: network + DRAM data -> firmware -> memory-init files -> rtl build
