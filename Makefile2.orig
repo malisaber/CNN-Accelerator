@@ -126,47 +126,21 @@ install-tools:
 			sudo apt-get update && \
 			sudo apt-get install -y \
 				build-essential g++ gcc git curl \
-				python3 python3-pip python3-venv python3-numpy \
+				python3 python3-pip python3-venv \
 				gcc-riscv64-unknown-elf || \
 				echo "apt-get install failed or was declined; install the packages above manually."; \
+			echo ">>> NOTE: apt's RISC-V package installs the 'riscv64-unknown-elf-*' binaries."; \
+			echo "    They can still target rv32im (that's what this project's -march flags do)."; \
+			echo "    Either symlink riscv32-unknown-elf-gcc -> riscv64-unknown-elf-gcc, or pass"; \
+			echo "    CROSS=riscv64-unknown-elf to 'make run'."; \
 		else \
 			echo ">>> No apt-get on this system."; \
 			echo "    Install manually: a C/C++ toolchain (gcc/g++), git, curl, python3+pip,"; \
 			echo "    and a riscv32-unknown-elf-gcc / riscv32-unknown-elf-objdump toolchain"; \
 			echo "    (e.g. the xPack GNU RISC-V Embedded GCC distribution)."; \
 		fi; \
-		echo; \
-		if command -v riscv32-unknown-elf-gcc >/dev/null 2>&1; then \
-			echo ">>> riscv32-unknown-elf-gcc already present, nothing to symlink."; \
-		elif command -v riscv64-unknown-elf-gcc >/dev/null 2>&1; then \
-			echo ">>> Only riscv64-unknown-elf-* found (that's what apt installs; it can"; \
-			echo "    still target rv32im via -march, which is what this project uses)."; \
-			echo "    Symlinking riscv32-unknown-elf-* -> riscv64-unknown-elf-* in /usr/local/bin"; \
-			for tool in gcc g++ objdump objcopy ar as ld nm ranlib strip size gdb; do \
-				src="$$(command -v riscv64-unknown-elf-$$tool 2>/dev/null)"; \
-				if [ -n "$$src" ]; then \
-					sudo ln -sf "$$src" "/usr/local/bin/riscv32-unknown-elf-$$tool"; \
-					echo "      riscv32-unknown-elf-$$tool -> $$src"; \
-				fi; \
-			done; \
-			echo "    (If you'd rather not have these symlinks, pass CROSS=riscv64-unknown-elf"; \
-			echo "    to 'make run' instead.)"; \
-		else \
-			echo ">>> No riscv32- or riscv64-unknown-elf-gcc found; install one manually"; \
-			echo "    (e.g. the xPack GNU RISC-V Embedded GCC distribution)."; \
-		fi; \
-		echo; \
-		echo ">>> Checking numpy"; \
-		if python3 -c "import numpy" >/dev/null 2>&1; then \
-			echo "    numpy already importable."; \
-		else \
-			echo "    apt's python3-numpy wasn't enough (missing or not installed); trying pip."; \
-			echo "    This system's Python is 'externally managed' (PEP 668), so this uses"; \
-			echo "    --break-system-packages --user; if you'd rather not touch the system"; \
-			echo "    Python at all, use a venv instead: python3 -m venv .venv && .venv/bin/pip install numpy"; \
-			python3 -m pip install --user --break-system-packages numpy || \
-				echo "pip install numpy failed; install it manually (see note above)."; \
-		fi; \
+		echo ">>> Installing numpy for the current user"; \
+		python3 -m pip install --user numpy || echo "pip install numpy failed; install it manually."; \
 		echo; \
 		echo ">>> ModelSim/Questa (vlib/vmap/vcom/vlog/vsim) is licensed EDA software"; \
 		echo "    from Siemens EDA and cannot be installed by this target. Get it from"; \
