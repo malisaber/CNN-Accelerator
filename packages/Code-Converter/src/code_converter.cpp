@@ -30,7 +30,7 @@ string int2bin(unsigned int inp, unsigned int size)
 unsigned int hex2uint(string inp)
 {
     unsigned int tmp = 0;
-    for (int i = 0; i < inp.size(); i++)
+    for (unsigned int i = 0; i < inp.size(); i++)
     {
         tmp = 16 * tmp;
         switch (inp[i])
@@ -108,7 +108,7 @@ string hex_legth_fix(string inp, int size)
 string hex_2_bin(string inp)
 {
     string tmp = "";
-    for (int i = 0; i < inp.size(); i++)
+    for (unsigned int i = 0; i < inp.size(); i++)
     {
         switch (inp[i])
         {
