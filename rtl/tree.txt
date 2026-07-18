@@ -1,0 +1,222 @@
+.
+├── MODULE_ALLOCATION.md
+├── Makefile
+├── Makefile.orig
+├── SYSTEM.vhd
+├── SYSTEM_DEPENDENCY_TREE.md
+├── TDL.txt
+├── build
+│   └── logs
+├── old
+│   ├── BM_sel_gen.vhd
+│   ├── BM_selector.vhd
+│   ├── Cont_add_unit.vhd
+│   ├── Cont_add_unit_v2.vhd
+│   ├── Controller_v4.vhd
+│   ├── Data_provider.vhd
+│   ├── GBM_sel_gen.vhd
+│   ├── GBM_selector.vhd
+│   ├── Interrupt_handler_v2.vhd
+│   ├── MiniBatch_Interrupt_handler.vhd
+│   ├── PEs.vhd
+│   ├── RISC_Wrapper.vhd
+│   ├── Row_NoC.vhd
+│   ├── SEMI_Mem_IF.vhd
+│   ├── address_gen.vhd
+│   ├── address_gen_v2.vhd
+│   └── address_selector.vhd
+├── packages
+│   ├── MEM_MAPS.vhd
+│   ├── MY_Pack_v2.vhd
+│   └── Port_Adapter_Pack.vhd
+├── report
+│   ├── build-packages-Text-Converter.log
+│   └── submodules.log
+├── shared
+│   ├── CH_buffer.vhd
+│   ├── Incrementer.vhd
+│   ├── OCH_buffer.vhd
+│   ├── address_gen_reduced.vhd
+│   ├── fifo
+│   │   ├── FIFO_Controller_V2.vhd
+│   │   ├── FIFO_DataPath_V2.vhd
+│   │   ├── FIFO_RAM.vhd
+│   │   └── FIFO_v2.vhd
+│   ├── inc_dec_v2.vhd
+│   └── sram
+│       ├── Scheduler_mem_core_verilog.v
+│       ├── Scheduler_mem_core_verilog_64x.v
+│       ├── Simple_2P_RegFile.v
+│       ├── sram_1024X16_freepdk45_2rw.v
+│       ├── sram_12_16_freepdk45.v
+│       ├── sram_16X12_freepdk45_2rw.v
+│       ├── sram_16X16_freepdk45_2rw.v
+│       ├── sram_16X8_freepdk45_2rw.v
+│       ├── sram_16_1024_freepdk45.v
+│       ├── sram_16_16_freepdk45.v
+│       ├── sram_16_256_freepdk45.v
+│       ├── sram_16_4096_freepdk45.v
+│       ├── sram_256X16_freepdk45_2rw.v
+│       ├── sram_4096X16_freepdk45_2rw.v
+│       └── sram_8_16_freepdk45.v
+├── sim
+│   ├── FILE_IO_Handler.v
+│   ├── SIM_FIFO_V2.vhd
+│   ├── SIM_FILE_IO_Handler.v
+│   ├── SIM_MY_ADDER.vhd
+│   ├── SIM_SYSTEM.vhd
+│   ├── SIM_TEMP.vhd
+│   └── Semi_serializer.vhd
+├── system
+│   ├── accelerator
+│   │   ├── Accelerator.vhd
+│   │   ├── mem-hierarch
+│   │   │   ├── Connector_complete.vhd
+│   │   │   ├── Connector_double_mem_map_address.vhd
+│   │   │   ├── GMN.vhd
+│   │   │   ├── GMN_pass_DAM.vhd
+│   │   │   ├── LMN.vhd
+│   │   │   ├── LMN_Arbiter_Fixed_way_complete.vhd
+│   │   │   ├── LMN_Arbiter_Fixed_way_double_address.vhd
+│   │   │   ├── LMN_Gate.vhd
+│   │   │   ├── LMN_Master.vhd
+│   │   │   ├── LMN_Mem_IF.vhd
+│   │   │   └── LMN_memory_2_P.vhd
+│   │   ├── mpdr
+│   │   │   ├── MPDR.vhd
+│   │   │   ├── MPDR_Controller.vhd
+│   │   │   └── MPDR_Datapath.vhd
+│   │   └── pe-plane
+│   │       ├── PE_Plane.vhd
+│   │       ├── pe-sys
+│   │       │   ├── P_sys.vhd
+│   │       │   ├── data-provider
+│   │       │   │   ├── BM_selector_v2.vhd
+│   │       │   │   ├── CNT_FSM_0.vhd
+│   │       │   │   ├── CNT_FSM_1.vhd
+│   │       │   │   ├── Cont_add_unit_v3.vhd
+│   │       │   │   ├── Controller_v5.vhd
+│   │       │   │   ├── Data_provider_v2.vhd
+│   │       │   │   ├── Memory_Bank.vhd
+│   │       │   │   ├── Memory_Bank_Group.vhd
+│   │       │   │   ├── address_gen_v3.vhd
+│   │       │   │   └── incr.vhd
+│   │       │   └── pe-arraay
+│   │       │       ├── Barrel_Shifter.vhd
+│   │       │       ├── Full_Adder.vhd
+│   │       │       ├── MOA_slice.vhd
+│   │       │       ├── MOP_ACC.vhd
+│   │       │       ├── MUL_v4.vhd
+│   │       │       ├── MY_Adder.vhd
+│   │       │       ├── MultiOpAdder.vhd
+│   │       │       ├── PE_slice.vhd
+│   │       │       ├── PEs_v2.vhd
+│   │       │       ├── Reg.vhd
+│   │       │       └── dataPath_v3.vhd
+│   │       ├── sa
+│   │       │   ├── Activation.vhd
+│   │       │   ├── SA.vhd
+│   │       │   ├── SA_Add_gen.vhd
+│   │       │   ├── SA_CU.vhd
+│   │       │   └── SA_DP.vhd
+│   │       └── ua
+│   │           ├── UA.vhd
+│   │           ├── UA_controller.vhd
+│   │           └── UA_datapath.vhd
+│   └── scheduler
+│       ├── aftab
+│       │   ├── AFTAB_Wrapper.vhd
+│       │   ├── Main_Port_Tracker.v
+│       │   ├── aftab_aau.vhd
+│       │   ├── aftab_adder.vhd
+│       │   ├── aftab_adder_subtractor.vhd
+│       │   ├── aftab_barrel_shifter.vhd
+│       │   ├── aftab_booth_multiplier.vhd
+│       │   ├── aftab_comparator.vhd
+│       │   ├── aftab_controller.vhd
+│       │   ├── aftab_core.vhd
+│       │   ├── aftab_counter.vhd
+│       │   ├── aftab_csr_address_ctrl.vhd
+│       │   ├── aftab_csr_address_logic.vhd
+│       │   ├── aftab_csr_addressing_decoder.vhd
+│       │   ├── aftab_csr_counter.vhd
+│       │   ├── aftab_csr_isl.vhd
+│       │   ├── aftab_csr_registers.vhd
+│       │   ├── aftab_daru.vhd
+│       │   ├── aftab_daru_controller.vhd
+│       │   ├── aftab_daru_datapath.vhd
+│       │   ├── aftab_daru_error_detector.vhd
+│       │   ├── aftab_datapath.vhd
+│       │   ├── aftab_dawu.vhd
+│       │   ├── aftab_dawu_controller.vhd
+│       │   ├── aftab_dawu_datapath.vhd
+│       │   ├── aftab_dawu_error_detector.vhd
+│       │   ├── aftab_divider.vhd
+│       │   ├── aftab_divider_controller.vhd
+│       │   ├── aftab_divider_datapath.vhd
+│       │   ├── aftab_iccd.vhd
+│       │   ├── aftab_isagu.vhd
+│       │   ├── aftab_isseu.vhd
+│       │   ├── aftab_llu.vhd
+│       │   ├── aftab_multiplexer.vhd
+│       │   ├── aftab_one_bit_register.vhd
+│       │   ├── aftab_register.vhd
+│       │   ├── aftab_register_PC.vhd
+│       │   ├── aftab_register_bank.vhd
+│       │   ├── aftab_register_file.vhd
+│       │   ├── aftab_shift_register.vhd
+│       │   ├── aftab_su_divider.vhd
+│       │   ├── aftab_sulu.vhd
+│       │   └── aftab_tcl.vhd
+│       ├── biriscv
+│       │   ├── BIRISC_Wrapper.vhd
+│       │   ├── biriscv_PC_Tracer.v
+│       │   ├── biriscv_alu.v
+│       │   ├── biriscv_core.v
+│       │   ├── biriscv_csr.v
+│       │   ├── biriscv_csr_regfile.v
+│       │   ├── biriscv_decode.v
+│       │   ├── biriscv_decoder.v
+│       │   ├── biriscv_defs.v
+│       │   ├── biriscv_divider.v
+│       │   ├── biriscv_exec.v
+│       │   ├── biriscv_fetch.v
+│       │   ├── biriscv_frontend.v
+│       │   ├── biriscv_issue.v
+│       │   ├── biriscv_lsu.v
+│       │   ├── biriscv_mmu.v
+│       │   ├── biriscv_multiplier.v
+│       │   ├── biriscv_npc.v
+│       │   ├── biriscv_pipe_ctrl.v
+│       │   ├── biriscv_regfile.v
+│       │   ├── biriscv_xilinx_2r1w.v
+│       │   └── uPROC_Port_Tracker.v
+│       └── peripheral
+│           ├── Control_Status_Box.vhd
+│           ├── DMA_Control_Box_V2.vhd
+│           ├── Event_cntr.vhd
+│           ├── Initiator_Box.vhd
+│           ├── Interrupt_handler.vhd
+│           ├── MPDR_Control_Box.vhd
+│           ├── PEs_Control_Box.vhd
+│           ├── Plane_Event_Box.vhd
+│           ├── RX.vhd
+│           ├── RXCU.vhd
+│           ├── RXDP.vhd
+│           ├── Scheduler.vhd
+│           ├── Scheduler_Main_Memory.vhd
+│           ├── Scheduler_Main_Memory_64x.vhd
+│           ├── Scheduler_mem_core.vhd
+│           ├── Singular_Event_Box.vhd
+│           ├── TIMER.vhd
+│           ├── TRx.vhd
+│           ├── TRx_Box.vhd
+│           ├── TX.vhd
+│           ├── TXCU.vhd
+│           ├── TXDP.vhd
+│           ├── Timer_Box.vhd
+│           ├── config_holder_v2.vhd
+│           └── planar_CSR_Box.vhd
+└── tree.txt
+
+24 directories, 196 files
