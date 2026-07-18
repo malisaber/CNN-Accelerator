@@ -89,7 +89,7 @@ check-tools:
 	@{ \
 		echo "Tool check @ $$(date)"; \
 		ok=1; \
-		for t in git g++ curl python3 sed $(CROSS)-gcc $(CROSS)-objdump vlib vmap vcom vlog vsim; do \
+		for t in git g++ curl python3 sed $(CROSS)-gcc $(CROSS)-objdump vsim; do \
 			if command -v "$$t" >/dev/null 2>&1; then \
 				echo "  [OK]      $$t -> $$(command -v $$t)"; \
 			else \
