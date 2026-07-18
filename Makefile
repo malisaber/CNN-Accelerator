@@ -37,9 +37,9 @@ LOG = @mkdir -p $(REPORT_DIR); set -o pipefail; ( $(2) ) 2>&1 | tee "$(REPORT_DI
 
 # Tool packages with their own Makefile (2 native + 2 submodules)
 PACKAGE_DIRS := \
-	packages/Text-Converter \
-	packages/Code-Converter \
-	packages/PC-Tracer \
+	packages/CNN-Text-Converter \
+	packages/CNN-Code-Converter \
+	packages/CNN-PC-Tracer \
 	packages/CNN-Compiler \
 	packages/CNN-DRAM-Data-Gen
 
