@@ -56,6 +56,7 @@ $(COMPILE_DO): $(VHDL_SOURCES) $(VERILOG_SOURCES) | $(BUILD_DIR)
 	@{ \
 		echo "vlib $(WORK_DIR)"; \
 		echo "vmap work $(WORK_DIR)"; \
+		echo "vcom -2008 -work work packages/MY_Pack_v2.vhd"; \
 		for src in $(VHDL_PACKAGES) $(VHDL_SHARED) $(VHDL_SYSTEM) $(VHDL_TOP) $(VHDL_SIM); do \
 			echo "vcom -2008 -work work $$src"; \
 		done; \
