@@ -75,6 +75,7 @@ $(COMPILE_DO): $(VHDL_SOURCES) $(VERILOG_SOURCES) | $(BUILD_DIR)
 	@{ \
 		echo "vlib $(WORK_DIR)"; \
 		echo "vmap work $(WORK_DIR)"; \
+		echo "vcom -2008 -work work packages/MY_Pack_v2.vhd"; \
 		for src in $(VHDL_PACKAGES) $(VHDL_SHARED) $(VHDL_SYSTEM) $(VHDL_TOP) $(VHDL_SIM); do \
 			echo "if {[catch {vcom -2008 -work work $$src}]} { quit -code 1 }"; \
 		done; \
@@ -82,6 +83,46 @@ $(COMPILE_DO): $(VHDL_SOURCES) $(VERILOG_SOURCES) | $(BUILD_DIR)
 			echo "if {[catch {vlog -work work $$src}]} { quit -code 1 }"; \
 		done; \
 	} > "$@"
+#$(COMPILE_DO): $(VHDL_SOURCES) $(VERILOG_SOURCES) | $(BUILD_DIR)
+#	@{ \
+#		echo "vlib $(WORK_DIR)"; \
+#		echo "vmap work $(WORK_DIR)"; \
+#		echo "vcom -2008 -work work packages/MY_Pack_v2.vhd"; \
+#
+#		echo "if {[catch {vcom -2008 -work work \"; \
+#		for src in $(VHDL_PACKAGES); do \
+#			echo "$$src \"; \
+#		done; \
+#		echo "}]} { quit -code 1 }"; \
+#
+#		echo "if {[catch {vcom -2008 -work work \"; \
+#		for src in $(VHDL_SHARED); do \
+#			echo "$$src \"; \
+#		done; \
+#		echo "}]} { quit -code 1 }"; \
+#
+#		echo "if {[catch {vcom -2008 -work work \"; \
+#		for src in $(VHDL_SYSTEM); do \
+#			echo "$$src \"; \
+#		done; \
+#		echo "}]} { quit -code 1 }"; \
+#
+#		echo "if {[catch {vcom -2008 -work work \"; \
+#		for src in $(VHDL_TOP); do \
+#			echo "$$src \"; \
+#		done; \
+#		echo "}]} { quit -code 1 }"; \
+#
+#		echo "if {[catch {vcom -2008 -work work \"; \
+#		for src in $(VHDL_SIM); do \
+#			echo "$$src \"; \
+#		done; \
+#		echo "}]} { quit -code 1 }"; \
+#
+#		for src in $(VERILOG_SHARED) $(VERILOG_SYSTEM) $(VERILOG_SIM); do \
+#			echo "if {[catch {vlog -work work $$src}]} { quit -code 1 }"; \
+#		done; \
+#	} > "$@"
 
 compile: deps $(STAMP)
 
