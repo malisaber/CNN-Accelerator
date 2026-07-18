@@ -270,11 +270,11 @@ run: check-run-vars check-run-tools packages
 	@mkdir -p $(DDG_DIR)/ID $(DDG_DIR)/WD $(SOFTWARE_DIR) $(BUILD_DIR) $(MEM_INIT_DIR) $(DUMP_DIR)
 	@echo ">>> [1/6] DRAM input/weight data generation (IDG/WDG -> $(DDG_DIR)/)"
 	$(call LOG,01-idg-wdg,\
-		i=1; for f in $(DRAM_INPUTS); do \
+		i=1; for f in $$(find $(DRAM_INPUTS) -type f -name "*.npy" | sort); do \
 			python3 packages/CNN-DRAM-Data-Gen/IDG.py "$$f" "$(DDG_DIR)/ID/Input_$${i}.bin" || exit 1; \
 			i=$$((i+1)); \
 		done; \
-		i=1; for f in $(DRAM_WEIGHTS); do \
+		i=1; for f in $$(find $(DRAM_WEIGHTS) -type f -name "*.png" | sort); do \
 			python3 packages/CNN-DRAM-Data-Gen/WDG.py "$$f" "$(DDG_DIR)/WD/Weight_$${i}.bin" || exit 1; \
 			i=$$((i+1)); \
 		done)
