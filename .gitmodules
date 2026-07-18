@@ -4,3 +4,12 @@
 [submodule "packages/CNN-DRAM-Data-Gen"]
 	path = packages/CNN-DRAM-Data-Gen
 	url = https://github.com/malisaber/CNN-DRAM-Data-Gen.git
+[submodule "packages/CNN-Code-Converter"]
+	path = packages/CNN-Code-Converter
+	url = https://github.com/malisaber/CNN-Code-Converter.git
+[submodule "packages/CNN-Text-Converter"]
+	path = packages/CNN-Text-Converter
+	url = https://github.com/malisaber/CNN-Text-Converter.git
+[submodule "packages/CNN-PC-Tracer"]
+	path = packages/CNN-PC-Tracer
+	url = https://github.com/malisaber/CNN-PC-Tracer.git
