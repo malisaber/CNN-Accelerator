@@ -3,10 +3,6 @@ WORK_DIR := $(BUILD_DIR)/work
 LOG_DIR := $(BUILD_DIR)/logs
 TOP ?= SIM_SYSTEM
 
-VLIB ?= vlib
-VMAP ?= vmap
-VCOM ?= vcom
-VLOG ?= vlog
 VSIM ?= vsim
 
 # NOTE: vlib/vmap/vcom/vlog are only used here to *verify they're
@@ -51,10 +47,6 @@ all: compile
 deps: check-tools
 
 check-tools:
-	@command -v "$(VLIB)" >/dev/null 2>&1 || { printf '%s\n' "Missing ModelSim/Questa tool: vlib" >&2; exit 1; }
-	@command -v "$(VMAP)" >/dev/null 2>&1 || { printf '%s\n' "Missing ModelSim/Questa tool: vmap" >&2; exit 1; }
-	@command -v "$(VCOM)" >/dev/null 2>&1 || { printf '%s\n' "Missing ModelSim/Questa tool: vcom" >&2; exit 1; }
-	@command -v "$(VLOG)" >/dev/null 2>&1 || { printf '%s\n' "Missing ModelSim/Questa tool: vlog" >&2; exit 1; }
 	@command -v "$(VSIM)" >/dev/null 2>&1 || { printf '%s\n' "Missing ModelSim/Questa tool: vsim" >&2; exit 1; }
 
 # Generates the compile script: vlib + vmap + one vcom/vlog line per
