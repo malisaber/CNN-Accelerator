@@ -291,8 +291,12 @@ run: check-run-vars check-run-tools packages
 			-w $(DDG_DIR)/WD/*.bin)
 	@echo ">>> [3/6] Cross-compiling $(SOFTWARE_DIR)/ for CORE=$(CORE) ($(CROSS)-gcc -> $(BUILD_DIR)/)"
 	$(call LOG,03-riscv-compile,\
-		$(CROSS)-gcc -mabi=ilp32 -O2 -march=rv32im -Wa\,-march=rv32im -Wextra -Wall -Wno-unused-parameter \
-			-Wno-unused-variable -Wno-unused-function -fdata-sections -ffunction-sections -fdiagnostics-color=always \
+		$(CROSS)-gcc -mabi=ilp32 -O2 \
+			-march=rv32im {-Wa,-march=rv32im} \
+			-Wextra -Wall -Wno-unused-parameter \
+			-Wno-unused-variable -Wno-unused-function \
+			-fdata-sections -ffunction-sections \
+			-fdiagnostics-color=always \
 			-I$(SOFTWARE_DIR)/include \
 			-T $(BOOT_DIR)/$(CORE)/link.riscv.ld -nostartfiles -Wl,--gc-sections \
 			-lm $(SOFTWARE_DIR)/src/*.cpp $(BOOT_DIR)/$(CORE)/crt0.boot_M.S \
