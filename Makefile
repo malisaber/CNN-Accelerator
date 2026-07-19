@@ -271,11 +271,13 @@ run: check-run-vars check-run-tools packages
 	@echo ">>> [1/6] DRAM input/weight data generation (IDG/WDG -> $(DDG_DIR)/)"
 	$(call LOG,01-idg-wdg,\
 		i=1; for f in $$(find $(DRAM_INPUTS) -type f -name "*.npy" | sort); do \
-			python3 packages/CNN-DRAM-Data-Gen/IDG.py "$$f" "$(DDG_DIR)/ID/Input_$${i}.bin" || exit 1; \
+			name=$$(basename "$$f" .npy); \
+			python3 packages/CNN-DRAM-Data-Gen/IDG.py "$$f" "$(DDG_DIR)/ID/$${name}.bin" || exit 1; \
 			i=$$((i+1)); \
 		done; \
-		i=1; for f in $$(find $(DRAM_WEIGHTS) -type f -name "*.png" | sort); do \
-			python3 packages/CNN-DRAM-Data-Gen/WDG.py "$$f" "$(DDG_DIR)/WD/Weight_$${i}.bin" || exit 1; \
+		i=1; for f in $$(find $(DRAM_WEIGHTS) -type f -name "*.npy" | sort); do \
+			name=$$(basename "$$f" .npy); \
+			python3 packages/CNN-DRAM-Data-Gen/WDG.py "$$f" "$(DDG_DIR)/WD/$${name}.bin" || exit 1; \
 			i=$$((i+1)); \
 		done)
 	@echo ">>> [2/6] CNN-Compiler ($(NETWORK) -> $(SOFTWARE_DIR)/, dump in $(DUMP_DIR)/)"
