@@ -292,14 +292,24 @@ run: check-run-vars check-run-tools packages
 			-w $(DDG_DIR)/WD/*.bin)
 	@echo ">>> [3/6] Cross-compiling $(SOFTWARE_DIR)/ for CORE=$(CORE) ($(CROSS)-gcc -> $(BUILD_DIR)/)"
 	$(call LOG,03-riscv-compile,\
-		$(CROSS)-gcc -mabi=ilp32 -O2 \
-			-march=rv32im_zicsr_zifencei  -Wa$(comma)-march=rv32im_zicsr_zifencei \
-			-Wextra -Wall -Wno-unused-parameter \
-			-Wno-unused-variable -Wno-unused-function \
-			-fdata-sections -ffunction-sections \
+		$(CROSS)-gcc \
+			-mabi=ilp32 \
+			-O2 \
+			-march=rv32im_zicsr_zifencei \
+			-Wa$(comma)-march=rv32im_zicsr_zifencei \
+			-Wextra \
+			-Wall \
+			-Wno-unused-parameter \
+			-Wno-unused-variable \
+			-Wno-unused-function \
+			-fdata-sections \
+			-ffunction-sections \
 			-fdiagnostics-color=always \
 			-I$(SOFTWARE_DIR)/include \
-			-T $(BOOT_DIR)/$(CORE)/link.riscv.ld -nostartfiles -Wl$(comma)--gc-sections \
+			-T $(BOOT_DIR)/$(CORE)/link.riscv.ld \
+			-Wl$(comma)-L$(comma)$(BOOT_DIR)/$(CORE)/ \
+			-nostartfiles \
+			-Wl$(comma)--gc-sections \
 			-lm $(SOFTWARE_DIR)/src/*.cpp $(BOOT_DIR)/$(CORE)/crt0.boot_M.S \
 			-o $(BUILD_DIR)/main.elf )
 	$(call LOG,03-riscv-compile-text, $(CROSS)-objdump -s -l --inlines $(BUILD_DIR)/main.elf > $(BUILD_DIR)/text.txt)
