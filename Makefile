@@ -301,9 +301,9 @@ run: check-run-vars check-run-tools packages
 			-I$(SOFTWARE_DIR)/include \
 			-T $(BOOT_DIR)/$(CORE)/link.riscv.ld -nostartfiles -Wl$(comma)--gc-sections \
 			-lm $(SOFTWARE_DIR)/src/*.cpp $(BOOT_DIR)/$(CORE)/crt0.boot_M.S \
-			-o $(BUILD_DIR)/main.elf && \
-		$(CROSS)-objdump -s -l --inlines $(BUILD_DIR)/main.elf > $(BUILD_DIR)/text.txt && \
-		$(CROSS)-objdump -d -l --inlines $(BUILD_DIR)/main.elf > $(BUILD_DIR)/code.txt)
+			-o $(BUILD_DIR)/main.elf )
+	$(call LOG,03-riscv-compile-text, $(CROSS)-objdump -s -l --inlines $(BUILD_DIR)/main.elf > $(BUILD_DIR)/text.txt)
+	$(call LOG,03-riscv-compile-text, $(CROSS)-objdump -d -l --inlines $(BUILD_DIR)/main.elf > $(BUILD_DIR)/code.txt)
 	@echo ">>> [4/6] Text-Converter ($(BUILD_DIR)/text.txt -> $(MEM_INIT_DIR)/)"
 	$(call LOG,04-text-converter,\
 		packages/Text-Converter/build/Text-Converter \
