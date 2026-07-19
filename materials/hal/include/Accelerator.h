@@ -261,13 +261,13 @@ void MPDR_EC_CNTR_get_value				(unsigned int EC_add, unsigned int& value, unsign
 //	void CONT_REG_DRAM_disconnect();
 //};
 
-inline void CONT_REG_ACC_Plane_normal	(unsigned int plane);
+void CONT_REG_ACC_Plane_normal	(unsigned int plane);
 
-inline void CONT_REG_ACC_Plane_reset	(unsigned int plane);
+void CONT_REG_ACC_Plane_reset	(unsigned int plane);
 
-inline void CONT_REG_DRAM_connect		();
+void CONT_REG_DRAM_connect		();
 
-inline void CONT_REG_DRAM_disconnect	();
+void CONT_REG_DRAM_disconnect	();
 
 
 
@@ -551,9 +551,9 @@ void INTH_disable_PSU_done				(unsigned int plane, unsigned int pe_add);
 
 void INTH_disable_PSU_done_group		(unsigned int plane, unsigned int pe_group);
 
-inline void INTH_get_intr_address		(unsigned int& next_intr_address, unsigned int& this_intr_address, unsigned int& next_intr_code, unsigned int& this_intr_code);
+void INTH_get_intr_address		(unsigned int& next_intr_address, unsigned int& this_intr_address, unsigned int& next_intr_code, unsigned int& this_intr_code);
 
-inline void INTH_get_intr_address		(unsigned int& this_intr_address, unsigned int& this_intr_code);
+void INTH_get_intr_address		(unsigned int& this_intr_address, unsigned int& this_intr_code);
 
 
 
