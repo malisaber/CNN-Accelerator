@@ -293,7 +293,7 @@ run: check-run-vars check-run-tools packages
 	@echo ">>> [3/6] Cross-compiling $(SOFTWARE_DIR)/ for CORE=$(CORE) ($(CROSS)-gcc -> $(BUILD_DIR)/)"
 	$(call LOG,03-riscv-compile,\
 		$(CROSS)-gcc -mabi=ilp32 -O2 \
-			-march=rv32im_zicsr_zifencei  -Wa$(comma)-march=rv32im \
+			-march=rv32im_zicsr_zifencei  -Wa$(comma)-march=rv32im_zicsr_zifencei \
 			-Wextra -Wall -Wno-unused-parameter \
 			-Wno-unused-variable -Wno-unused-function \
 			-fdata-sections -ffunction-sections \
