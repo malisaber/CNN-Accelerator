@@ -1677,7 +1677,7 @@ void PE_CONT_Configure_Update_Start		(unsigned int plane_add, unsigned int pe_ad
 				(info.accumulate_with_buffer << C_Buffer_Accumulation_Enable_pos) |
 				(info.load_enable << C_Load_Row_pos) |
 				(info.Automatic << C_AUTOMATIC_STA_pos));
-	*(C_PERIPHERAL_PLANE_0_REG_PEs_CONTROL_PE_1_1 + (plane_add * C_PERIPHERAL_PLAN_INTERVAL) + pe_add) = tmp;
+	*(C_PERIPHERAL_PLANE_0_REG_PEs_CONTROL_PE_1_1 + (plane_add * C_PERIPHERAL_PLAN_INTERVAL) + pe_add) = lod;
 
 	/// Update
 	tmp =	lod	| (1 << C_Update_WFM_pos);

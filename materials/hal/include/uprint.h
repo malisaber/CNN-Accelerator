@@ -1,9 +1,9 @@
 #include "Accelerator.h"
+#include <string>
 
 
 #ifndef _UPRINT_H_
 #define _UPRINT_H_
-
 
 
 void uprint_initiate(unsigned int boud_rate)
