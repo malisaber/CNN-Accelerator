@@ -435,16 +435,16 @@ extern	"C"	{	void Disable_GINT();		}	//	Enable Disable The Interrupt
 
 
 enum				E_FSM_Src		{	FSM_CNN_1=0,	FSM_CNN_2=1, 	FSM_MLP_1=2,	FSM_MLP_2=3};
-unsigned int		E_Shift_cnt;
+//unsigned int		E_Shift_cnt;
 enum				E_FH_Arith		{	HALF=0,			FULL=1	};
 enum				E_IFM_NS		{	IUNSIGN=0,		ISIGN=1	};
 enum				E_WFM_NS		{	WUNSIGN=0,		WSIGN=1	};
-unsigned int		E_Zpad_max;
-unsigned int		E_Kern_max;
-unsigned int		E_Colm_max;
-unsigned int		E_Chnl_max;
-unsigned int		E_Rows_max;
-unsigned int		E_Cntr_max;
+//unsigned int		E_Zpad_max;
+//unsigned int		E_Kern_max;
+//unsigned int		E_Colm_max;
+//unsigned int		E_Chnl_max;
+//unsigned int		E_Rows_max;
+//unsigned int		E_Cntr_max;
 
 
 struct	S_PE_cofig
