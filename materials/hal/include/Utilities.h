@@ -2,6 +2,7 @@
 #ifndef _UTILITIES_H_
 #define _UTILITIES_H_
 
+#include "common.h"
 
 //#include "EventCallBacker.h"
 //extern EventCallBacker_I* ECB;

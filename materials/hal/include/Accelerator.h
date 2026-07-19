@@ -625,7 +625,7 @@ void UART_read_TBF_flag					(unsigned int& TBF_flg)
 
 void UART_read_RBE_flag					(unsigned int& RBE_flg)
 {
-	TBF_flg = (*C_PERIPHERAL_REG_TRx_UNIT_CONT_WORD >> C_TRx_Unit_Rx_Buff_Empty_Flg_pos	) & 0x1;
+	RBE_flg = (*C_PERIPHERAL_REG_TRx_UNIT_CONT_WORD >> C_TRx_Unit_Rx_Buff_Empty_Flg_pos	) & 0x1;
 }
 
 
