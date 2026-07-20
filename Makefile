@@ -33,7 +33,7 @@ REPORT_DIR := report
 # $(call LOG,<log-name>,<shell command>) runs a command, tees its
 # combined stdout/stderr into report/<log-name>.log, and still fails
 # the build if the command fails (pipefail).
-LOG = @mkdir -p $(REPORT_DIR); set -o pipefail; ( set -x; $(2) ) 2>&1 | tee "$(REPORT_DIR)/$(1).log"
+LOG = @mkdir -p $(REPORT_DIR); set -o pipefail; ( $(2) ) 2>&1 | tee "$(REPORT_DIR)/$(1).log"
 
 # Tool packages with their own Makefile (2 native + 2 submodules)
 PACKAGE_DIRS := \
