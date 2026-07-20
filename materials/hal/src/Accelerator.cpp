@@ -383,22 +383,22 @@ void MPDR_EC_CNTR_get_value				(unsigned int EC_add, unsigned int& value, unsign
 //						ACC_CONTROL_REG				//
 //***************************************************/
 
-inline void CONT_REG_ACC_Plane_normal	(unsigned int plane)
+void CONT_REG_ACC_Plane_normal			(unsigned int plane)
 {
 	*C_PERIPHERAL_REG_CONTROL_REGISTE = *C_PERIPHERAL_REG_CONTROL_REGISTE | (1 << plane);
 }
 
-inline void CONT_REG_ACC_Plane_reset	(unsigned int plane)
+void CONT_REG_ACC_Plane_reset			(unsigned int plane)
 {
 	*C_PERIPHERAL_REG_CONTROL_REGISTE = *C_PERIPHERAL_REG_CONTROL_REGISTE & (~(1 << plane));
 }
 
-inline void CONT_REG_DRAM_connect		()
+void CONT_REG_DRAM_connect				()
 {
 	*C_PERIPHERAL_REG_CONTROL_REGISTE = *C_PERIPHERAL_REG_CONTROL_REGISTE | (1 << C_Accelerator_Connect_pos);
 }
 
-inline void CONT_REG_DRAM_disconnect	()
+void CONT_REG_DRAM_disconnect			()
 {
 	*C_PERIPHERAL_REG_CONTROL_REGISTE = *C_PERIPHERAL_REG_CONTROL_REGISTE & (~(1 << C_Accelerator_Connect_pos));
 }
@@ -608,7 +608,7 @@ void INTH_disable_PSU_done_group		(unsigned int plane, unsigned int pe_group)
 	*(C_PERIPHERAL_REG_INTERRUPT_ENABLE_PSU_PLANE_0+plane) = *(C_PERIPHERAL_REG_INTERRUPT_ENABLE_PSU_PLANE_0+plane) & (~(group << C_INT_PSU_1_1_Done_pos));
 }
 
-inline void INTH_get_intr_address		(unsigned int& next_intr_address, unsigned int& this_intr_address, unsigned int& next_intr_code, unsigned int& this_intr_code)
+void INTH_get_intr_address				(unsigned int& next_intr_address, unsigned int& this_intr_address, unsigned int& next_intr_code, unsigned int& this_intr_code)
 {
 	unsigned int value = *(C_PERIPHERAL_REG_INTERRUPT_ADDRESS);
 	next_intr_address	=	(value >> C_INT_NEXT_Address_pos)	& 0x000000FF;
@@ -617,7 +617,7 @@ inline void INTH_get_intr_address		(unsigned int& next_intr_address, unsigned in
 	this_intr_code		=	(value >> C_INT_THIS_code_pos)		& 0x0000000F;
 }
 
-inline void INTH_get_intr_address		(unsigned int& this_intr_address, unsigned int& this_intr_code)
+void INTH_get_intr_address				(unsigned int& this_intr_address, unsigned int& this_intr_code)
 {
 	unsigned int value = *(C_PERIPHERAL_REG_INTERRUPT_ADDRESS);
 	this_intr_address	=	(value >> C_INT_THIS_Address_pos)	& 0x000000FF;
