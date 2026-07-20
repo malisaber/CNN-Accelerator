@@ -316,7 +316,7 @@ run: check-run-vars check-run-tools packages
 	$(call LOG,03-riscv-compile-text, $(CROSS)-objdump -d -l --inlines $(BUILD_DIR)/main.elf > $(BUILD_DIR)/code.txt)
 	@echo ">>> [4/6] Text-Converter ($(BUILD_DIR)/text.txt -> $(MEM_INIT_DIR)/)"
 	$(call LOG,04-text-converter,\
-		packages/Text-Converter/build/Text-Converter \
+		packages/CNN-Text-Converter/build/Text-Converter \
 			-i $(BUILD_DIR)/text.txt \
 			-o $(MEM_INIT_DIR))
 	@echo ">>> [5/6] Selecting CORE=$(CORE) in rtl/packages/MY_Pack_v2.vhd"
