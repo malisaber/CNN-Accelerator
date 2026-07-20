@@ -90,7 +90,7 @@ extern unsigned int DMA_ZDBT_info[16];
 
 
 
-void DMA_CallBack	(int cntrol_word);
+void DMA_CallBack	(unsigned int cntrol_word);
 
 
 
