@@ -297,7 +297,6 @@ run: check-run-vars check-run-tools packages
 			-O2 \
 			-march=rv32im_zicsr_zifencei \
 			-Wa$(comma)-march=rv32im_zicsr_zifencei \
-			--specs=/usr/lib/gcc/riscv64-unknown-elf/14.2.0/picolibcpp.specs \
 			-Wextra \
 			-Wall \
 			-Wno-unused-parameter \
