@@ -7,6 +7,13 @@ TOP ?= SIM_SYSTEM
 
 VSIM ?= vsim
 
+# make run VERBOSE=1  -> full vsim banner/info output. Default (0)
+# passes vsim's own -quiet flag to suppress it. Can be set directly
+# here (make -C rtl run VERBOSE=1) or inherited from the top-level
+# Makefile, which forwards command-line VERBOSE= automatically.
+VERBOSE ?= 0
+VSIM_QUIET := $(if $(filter 1,$(VERBOSE)),,-quiet)
+
 # NOTE: vlib/vmap/vcom/vlog are only used here to *verify they're
 # installed* (check-tools). The actual compilation now happens via
 # vsim's own built-in vlib/vmap/vcom/vlog Tcl commands, run from a
@@ -43,7 +50,6 @@ STAMP := $(BUILD_DIR)/.compiled
 COMPILE_DO := $(BUILD_DIR)/compile.do
 RUN_DO := $(BUILD_DIR)/run.do
 GUI_DO := $(BUILD_DIR)/gui.do
-GUI_SIM_DO := $(BUILD_DIR)/gui-sim.do
 OUTDATED_DO := $(BUILD_DIR)/outdated.do
 
 # Checked after every vsim invocation that compiles something: even
@@ -55,7 +61,7 @@ CHECK_LOG = if grep -qE '\*\* (Error|Fatal)' "$(1)"; then \
 		exit 1; \
 	fi
 
-.PHONY: all compile run gui gui-sim outdated clean deps check-tools
+.PHONY: all compile run gui outdated clean deps check-tools
 
 all: compile
 
@@ -130,7 +136,7 @@ $(COMPILE_DO): $(VHDL_SOURCES) $(VERILOG_SOURCES) | $(BUILD_DIR)
 compile: deps $(STAMP)
 
 $(STAMP): $(COMPILE_DO) | $(LOG_DIR)
-	$(VSIM) -c -do "do $(COMPILE_DO); quit -f" -l $(LOG_DIR)/compile.log
+	$(VSIM) $(VSIM_QUIET) -c -do "do $(COMPILE_DO); quit -f" -l $(LOG_DIR)/compile.log
 	@$(call CHECK_LOG,$(LOG_DIR)/compile.log)
 	@touch "$@"
 
@@ -154,22 +160,12 @@ $(GUI_DO): $(COMPILE_DO) | $(BUILD_DIR)
 		echo "run -all"; \
 	} > "$@"
 
-$(GUI_SIM_DO): $(COMPILE_DO) | $(BUILD_DIR)
-	@{ \
-		echo "vsim work.$(TOP)"; \
-		echo "run -all"; \
-	} > "$@"
-
 run: deps $(RUN_DO) | $(LOG_DIR)
-	$(VSIM) -c -do $(RUN_DO) -l $(LOG_DIR)/$(TOP).log
+	$(VSIM) $(VSIM_QUIET) -c -do $(RUN_DO) -l $(LOG_DIR)/$(TOP).log
 	@$(call CHECK_LOG,$(LOG_DIR)/$(TOP).log)
 
 gui: deps $(GUI_DO) | $(LOG_DIR)
-	$(VSIM) -do $(GUI_DO) -l $(LOG_DIR)/$(TOP).log
-	@$(call CHECK_LOG,$(LOG_DIR)/$(TOP).log)
-
-gui-sim: deps $(GUI_SIM_DO) | $(LOG_DIR)
-	$(VSIM) -c -do $(GUI_SIM_DO) -l $(LOG_DIR)/$(TOP).log
+	$(VSIM) $(VSIM_QUIET) -do $(GUI_DO) -l $(LOG_DIR)/$(TOP).log
 	@$(call CHECK_LOG,$(LOG_DIR)/$(TOP).log)
 
 # Recompiles only the source files that changed since the last
@@ -202,7 +198,7 @@ outdated: deps $(COMPILE_DO) | $(LOG_DIR)
 			echo "if {[catch {vlog -work work $$src}]} { quit -code 1 }"; \
 		done; \
 	} > "$(OUTDATED_DO)"; \
-	$(VSIM) -c -do "do $(OUTDATED_DO); quit -f" -l $(LOG_DIR)/outdated.log; \
+	$(VSIM) $(VSIM_QUIET) -c -do "do $(OUTDATED_DO); quit -f" -l $(LOG_DIR)/outdated.log; \
 	$(call CHECK_LOG,$(LOG_DIR)/outdated.log); \
 	touch "$(STAMP)"
 

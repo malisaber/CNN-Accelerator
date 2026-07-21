@@ -14,6 +14,9 @@
 #   make clean           -> clean every component + run artifacts
 #   make distclean       -> clean + deinit submodules
 #
+# Add VERBOSE=1 to any target for full command tracing + a chattier
+# vsim (drops -quiet), e.g.:  make run VERBOSE=1
+#
 # ------------------------------------------------------------------
 # make run: network -> DRAM data -> firmware -> memory-init files -> rtl
 # ------------------------------------------------------------------
@@ -31,10 +34,18 @@ SHELL := /bin/bash
 
 REPORT_DIR := report
 
+# make run VERBOSE=1  -> trace every command inside each LOG'd step
+# (set -x) instead of just the summarized ">>> [n/7] ..." headers.
+# Command-line assignments like this are passed down automatically to
+# every $(MAKE) -C ... sub-invocation below (packages/*, rtl), so
+# VERBOSE=1 reaches them too -- see rtl/Makefile, which uses it to
+# drop vsim's -quiet flag.
+VERBOSE ?= 0
+
 # $(call LOG,<log-name>,<shell command>) runs a command, tees its
 # combined stdout/stderr into report/<log-name>.log, and still fails
 # the build if the command fails (pipefail).
-LOG = @mkdir -p $(REPORT_DIR); set -o pipefail; ( $(2) ) 2>&1 | tee "$(REPORT_DIR)/$(1).log"
+LOG = @mkdir -p $(REPORT_DIR); set -o pipefail; $(if $(filter 1,$(VERBOSE)),set -x;) ( $(2) ) 2>&1 | tee "$(REPORT_DIR)/$(1).log"
 
 # Tool packages with their own Makefile (2 native + 2 submodules)
 PACKAGE_DIRS := \
@@ -51,7 +62,7 @@ CLEAN_DIRS := $(PACKAGE_DIRS) rtl materials/hal
 # what you have, override with CROSS=riscv64-unknown-elf.
 CROSS ?= riscv32-unknown-elf
 
-.PHONY: all submodules packages $(PACKAGE_DIRS) hal rtl sim gui-sim \
+.PHONY: all submodules packages $(PACKAGE_DIRS) hal rtl sim \
         deps check-tools install-tools \
         run check-run-vars check-run-tools \
         clean clean-run distclean
@@ -80,9 +91,6 @@ rtl:
 # "make rtl" first if there's nothing compiled yet, or if it's stale.
 sim:
 	$(call LOG,rtl-sim,$(MAKE) -C rtl run)
-
-gui-sim:
-	$(call LOG,rtl-sim,$(MAKE) -C rtl gui-sim)
 
 # ------------------------------------------------------------------
 # Tool checking / best-effort install
@@ -297,7 +305,8 @@ run: check-run-vars check-run-tools packages
 	
 	@echo ">>> [2/7] CNN-Compiler ($(NETWORK) -> $(SOFTWARE_DIR)/, dump in $(DUMP_DIR)/)"
 	$(call LOG,02-cnn-compiler,\
-		packages/CNN-Compiler/build/CNN-Compiler -v \
+		packages/CNN-Compiler/build/CNN-Compiler \
+			-v \
 			-n "$(NETWORK)" \
 			-l "$(HAL_DIR)" \
 			-d "$(DUMP_DIR)" \
