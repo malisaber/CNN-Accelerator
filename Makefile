@@ -51,7 +51,7 @@ CLEAN_DIRS := $(PACKAGE_DIRS) rtl materials/hal
 # what you have, override with CROSS=riscv64-unknown-elf.
 CROSS ?= riscv32-unknown-elf
 
-.PHONY: all submodules packages $(PACKAGE_DIRS) hal rtl sim gui \
+.PHONY: all submodules packages $(PACKAGE_DIRS) hal rtl sim gui-sim \
         deps check-tools install-tools \
         run check-run-vars check-run-tools \
         clean clean-run distclean
@@ -81,8 +81,8 @@ rtl:
 sim:
 	$(call LOG,rtl-sim,$(MAKE) -C rtl run)
 
-gui:
-	$(call LOG,rtl-sim,$(MAKE) -C rtl run)
+gui-sim:
+	$(call LOG,rtl-sim,$(MAKE) -C rtl gui-sim)
 
 # ------------------------------------------------------------------
 # Tool checking / best-effort install
