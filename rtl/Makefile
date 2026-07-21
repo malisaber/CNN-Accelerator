@@ -43,6 +43,7 @@ STAMP := $(BUILD_DIR)/.compiled
 COMPILE_DO := $(BUILD_DIR)/compile.do
 RUN_DO := $(BUILD_DIR)/run.do
 GUI_DO := $(BUILD_DIR)/gui.do
+GUI_SIM_DO := $(BUILD_DIR)/gui-sim.do
 OUTDATED_DO := $(BUILD_DIR)/outdated.do
 
 # Checked after every vsim invocation that compiles something: even
@@ -54,7 +55,7 @@ CHECK_LOG = if grep -qE '\*\* (Error|Fatal)' "$(1)"; then \
 		exit 1; \
 	fi
 
-.PHONY: all compile run gui outdated clean deps check-tools
+.PHONY: all compile run gui gui-sim outdated clean deps check-tools
 
 all: compile
 
@@ -153,12 +154,22 @@ $(GUI_DO): $(COMPILE_DO) | $(BUILD_DIR)
 		echo "run -all"; \
 	} > "$@"
 
+$(GUI_SIM_DO): $(COMPILE_DO) | $(BUILD_DIR)
+	@{ \
+		echo "vsim work.$(TOP)"; \
+		echo "run -all"; \
+	} > "$@"
+
 run: deps $(RUN_DO) | $(LOG_DIR)
 	$(VSIM) -c -do $(RUN_DO) -l $(LOG_DIR)/$(TOP).log
 	@$(call CHECK_LOG,$(LOG_DIR)/$(TOP).log)
 
 gui: deps $(GUI_DO) | $(LOG_DIR)
 	$(VSIM) -do $(GUI_DO) -l $(LOG_DIR)/$(TOP).log
+	@$(call CHECK_LOG,$(LOG_DIR)/$(TOP).log)
+
+gui-sim: deps $(GUI_SIM_DO) | $(LOG_DIR)
+	$(VSIM) -c -do $(GUI_SIM_DO) -l $(LOG_DIR)/$(TOP).log
 	@$(call CHECK_LOG,$(LOG_DIR)/$(TOP).log)
 
 # Recompiles only the source files that changed since the last
