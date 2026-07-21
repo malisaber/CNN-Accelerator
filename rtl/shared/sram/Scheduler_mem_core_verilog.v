@@ -1,3 +1,7 @@
+`timescale 1ns / 1ns
+`include "packages/defines.vh"
+
+
 module Scheduler_mem_core_verilog	
 	#(
 	parameter	line_count	=	100)(
