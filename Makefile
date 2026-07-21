@@ -288,7 +288,7 @@ run: check-run-vars check-run-tools packages
 	$(call LOG,02-cnn-compiler,\
 		packages/CNN-Compiler/build/CNN-Compiler -v \
 			-n "$(NETWORK)" \
-			-h "$(HAL_DIR)" \
+			-l "$(HAL_DIR)" \
 			-d "$(DUMP_DIR)" \
 			-o "$(SOFTWARE_DIR)" \
 			-r "$(DRAM_DIR)" \
