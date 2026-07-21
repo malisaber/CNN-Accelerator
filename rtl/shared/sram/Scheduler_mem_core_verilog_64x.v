@@ -19,17 +19,21 @@
     output	reg		[63:0]	data_out3);
 
     
-	reg	[31:0]	mem	[line_count-1:0];
-	integer file_addr;
-	integer file_data;
-	reg [31:0] addr;
-	reg [31:0] data;
+	reg		[31:0]		mem		[line_count-1:0];
+	integer				file_addr;
+	integer				file_data;
+	reg		[31:0]		addr;
+	reg		[31:0]		data;
+	reg		[50*8-1:0]	addr_file_name = "";
+	reg		[50*8-1:0]	data_file_name = "";
 	
 	initial
 	begin
         // Open the file in read mode
-        file_addr = $fopen("Main_Mem_Addr.txt", "r");
-        file_data = $fopen("Main_Mem_Data.txt", "r");
+		$sformat	(addr_file_name, "%s/Main_Mem_Addr.txt", `SCHEDULER_CODE_DIR);
+		$sformat	(data_file_name, "%s/Main_Mem_Data.txt", `SCHEDULER_CODE_DIR);
+        file_addr = $fopen(addr_file_name, "r");
+        file_data = $fopen(data_file_name, "r");
         
         if (file_addr == 0)
 		begin

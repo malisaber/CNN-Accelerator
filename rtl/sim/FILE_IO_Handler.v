@@ -1,4 +1,5 @@
 `timescale 1ns / 1ns
+`include "packages/defines.vh"
 
 module	FILE_IO_Handler	
 	#(
@@ -15,7 +16,7 @@ module	FILE_IO_Handler
 
 	
 	reg		[15:0]		mem	[2**per_file_width-1:0];
-	reg		[50*8-1:0]	file_name = "DRAM_DATAS/DRAM_DATA_dummy.txt";
+	reg		[50*8-1:0]	file_name = "";
 	wire	[31:0]		this_file;
 	reg		[31:0]		prev_file = -1;
 	integer				log_fid;
@@ -51,7 +52,7 @@ module	FILE_IO_Handler
 			begin
 				if(wrote_on_this == 1'b1) 
 					$writememb	(file_name, mem);
-				$sformat	(file_name, "DRAM_DATAS/DRAM_DATA_%1d.txt", this_file);
+				$sformat	(file_name, "%s/DRAM_DATA_%1d.txt", `DRAM_DATA_DIR, this_file);
 				log_fid	=	$fopen("FILE_IO_HANDLER_LOG.txt", "a");
 				$fwrite		(log_fid, "FIOH %2d: Reading DRAM_DATA_%1d.txt    @%0t", handler_id, this_file, $time);
 				chk_fid	=	$fopen(file_name, "r");
