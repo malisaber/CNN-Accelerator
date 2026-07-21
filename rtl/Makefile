@@ -22,17 +22,19 @@ define rwildcard
 $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst *,%,$2),$d))
 endef
 
-VHDL_PACKAGES	:= $(sort $(call rwildcard,packages/,*.vhd))
-VHDL_SHARED		:= $(sort $(call rwildcard,shared/,*.vhd))
-VHDL_SYSTEM		:= $(sort $(call rwildcard,system/,*.vhd))
 # SYSTEM.vhd lives at the project root (not under system/), so the
 # system/ glob above doesn't catch it -- add it explicitly, compiled
 # after system/ (which it depends on) and before sim/ (which wraps it).
-VHDL_TOP		:= SYSTEM.vhd
-VHDL_SIM		:= $(sort $(call rwildcard,sim/,*.vhd))
-VERILOG_SHARED	:= $(sort $(call rwildcard,shared/,*.v))
-VERILOG_SYSTEM	:= $(sort $(call rwildcard,system/,*.v))
-VERILOG_SIM		:= $(sort $(call rwildcard,sim/,*.v))
+VHDL_TOP			:= SYSTEM.vhd
+VHDL_PACKAGES		:= $(sort $(call rwildcard,packages/,*.vhd))
+VHDL_SHARED			:= $(sort $(call rwildcard,shared/,*.vhd))
+VHDL_SYSTEM			:= $(sort $(call rwildcard,system/,*.vhd))
+VHDL_SIM			:= $(sort $(call rwildcard,sim/,*.vhd))
+
+VERILOG_PACKAGES	:= $(sort $(call rwildcard,packages/,*.vh))
+VERILOG_SHARED		:= $(sort $(call rwildcard,shared/,*.v))
+VERILOG_SYSTEM		:= $(sort $(call rwildcard,system/,*.v))
+VERILOG_SIM			:= $(sort $(call rwildcard,sim/,*.v))
 
 VHDL_SOURCES := $(VHDL_PACKAGES) $(VHDL_SHARED) $(VHDL_SYSTEM) $(VHDL_TOP) $(VHDL_SIM)
 VERILOG_SOURCES := $(VERILOG_SHARED) $(VERILOG_SYSTEM) $(VERILOG_SIM)
@@ -79,7 +81,7 @@ $(COMPILE_DO): $(VHDL_SOURCES) $(VERILOG_SOURCES) | $(BUILD_DIR)
 		for src in $(VHDL_PACKAGES) $(VHDL_SHARED) $(VHDL_SYSTEM) $(VHDL_TOP) $(VHDL_SIM); do \
 			echo "if {[catch {vcom -2008 -work work $$src}]} { quit -code 1 }"; \
 		done; \
-		for src in $(VERILOG_SHARED) $(VERILOG_SYSTEM) $(VERILOG_SIM); do \
+		for src in $(VERILOG_PACKAGES) $(VERILOG_SHARED) $(VERILOG_SYSTEM) $(VERILOG_SIM); do \
 			echo "if {[catch {vlog -work work $$src}]} { quit -code 1 }"; \
 		done; \
 	} > "$@"
