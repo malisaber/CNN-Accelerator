@@ -42,6 +42,9 @@ REPORT_DIR := report
 # drop vsim's -quiet flag.
 VERBOSE ?= 0
 
+# -v is CNN-Compiler's own verbose flag; only pass it when VERBOSE=1.
+CNN_COMPILER_V := $(if $(filter 1,$(VERBOSE)),-v,)
+
 # $(call LOG,<log-name>,<shell command>) runs a command, tees its
 # combined stdout/stderr into report/<log-name>.log, and still fails
 # the build if the command fails (pipefail).
@@ -305,8 +308,8 @@ run: check-run-vars check-run-tools packages
 	
 	@echo ">>> [2/7] CNN-Compiler ($(NETWORK) -> $(SOFTWARE_DIR)/, dump in $(DUMP_DIR)/)"
 	$(call LOG,02-cnn-compiler,\
-		packages/CNN-Compiler/build/CNN-Compiler \
-			-v \
+		packages/CNN-Compiler/build/CNN-Compiler \ 
+			$(CNN_COMPILER_V) \
 			-n "$(NETWORK)" \
 			-l "$(HAL_DIR)" \
 			-d "$(DUMP_DIR)" \
