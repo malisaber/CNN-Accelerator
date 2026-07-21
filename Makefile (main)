@@ -7,7 +7,6 @@
 #   make                -> submodules + all packages + rtl sim build
 #   make packages       -> just the C++/Python tool packages
 #   make rtl            -> just the RTL simulation build
-#   make sim            -> just simulate rtl/, without rebuilding it first
 #   make check-tools    -> report on every tool this project needs
 #   make install-tools  -> best-effort install of what apt/pip can provide
 #   make run ...         -> full network-to-bitstream-input pipeline, see below
@@ -51,7 +50,7 @@ CLEAN_DIRS := $(PACKAGE_DIRS) rtl materials/hal
 # what you have, override with CROSS=riscv64-unknown-elf.
 CROSS ?= riscv32-unknown-elf
 
-.PHONY: all submodules packages $(PACKAGE_DIRS) hal rtl sim \
+.PHONY: all submodules packages $(PACKAGE_DIRS) hal rtl \
         deps check-tools install-tools \
         run check-run-vars check-run-tools \
         clean clean-run distclean
@@ -73,13 +72,6 @@ $(PACKAGE_DIRS):
 # --- RTL simulation build (VHDL/Verilog via ModelSim/Questa) ---
 rtl:
 	$(call LOG,rtl-build,$(MAKE) -C rtl all)
-
-# --- RTL simulation run only, against whatever's already compiled in
-# rtl/build/work -- does NOT rebuild first (rtl's "run" target only
-# depends on check-tools, not on compile/the .compiled stamp). Run
-# "make rtl" first if there's nothing compiled yet, or if it's stale.
-sim:
-	$(call LOG,rtl-sim,$(MAKE) -C rtl run)
 
 # ------------------------------------------------------------------
 # Tool checking / best-effort install
@@ -348,8 +340,7 @@ run: check-run-vars check-run-tools packages
 	@echo ">>> [6/7] Building rtl/"
 	$(call LOG,06-rtl-build,$(MAKE) -C rtl all)
 
-	@echo ">>> [7/7] Running a simulation"
-	$(call LOG,07-rtl-sim,$(MAKE) -C rtl run)
+	@echo ">>> [7/7] Runnign a simulation"
 
 	@echo ">>> done: firmware in $(BUILD_DIR)/, memory-init files in $(MEM_INIT_DIR)/, logs in $(REPORT_DIR)/"
 
