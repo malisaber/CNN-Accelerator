@@ -200,8 +200,9 @@ outdated: deps $(COMPILE_DO) | $(LOG_DIR) $(REPORT_DIR)
 # changes, same as $(COMPILE_DO).
 $(PROJECT_DO): $(VHDL_SOURCES) $(VERILOG_SOURCES) | $(BUILD_DIR)
 	@{ \
+		echo "if {![file exists {modelsim.ini}]} { vmap -c }"; \
 		echo "if {[file exists {$(PROJECT_MPF)}]} { project close; file delete {$(PROJECT_MPF)} }"; \
-		echo "project new {$(BUILD_DIR)} {$(PROJECT_NAME)} work"; \
+		echo "if {[catch {project new {$(BUILD_DIR)} {$(PROJECT_NAME)} work} perr]} { puts \"project new failed: \$$perr\"; quit -code 1 }"; \
 		echo "project addfile {packages/MY_Pack_v2.vhd}"; \
 		for src in $(VHDL_PACKAGES) $(VHDL_SHARED) $(VHDL_SYSTEM) $(VHDL_TOP) $(VHDL_SIM); do \
 			echo "project addfile {$$src}"; \
@@ -241,6 +242,6 @@ $(BUILD_DIR) $(LOG_DIR) $(REPORT_DIR):
 
 clean:
 	rm -rf $(BUILD_DIR) $(REPORT_DIR)
-
-
 	
+
+
