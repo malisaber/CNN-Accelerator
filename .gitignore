@@ -1,5 +1,10 @@
 warnings.log
-software/
+software/ 
+report/ 
+build/ 
+DDGS/ 
+dram-data/ 
+scheduler-data/
 
 
 

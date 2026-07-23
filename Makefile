@@ -308,7 +308,7 @@ run: check-run-vars check-run-tools packages
 	
 	@echo ">>> [2/7] CNN-Compiler ($(NETWORK) -> $(SOFTWARE_DIR)/, dump in $(DUMP_DIR)/)"
 	$(call LOG,02-cnn-compiler,\
-		packages/CNN-Compiler/build/CNN-Compiler \ 
+		packages/CNN-Compiler/build/CNN-Compiler \
 			$(CNN_COMPILER_V) \
 			-n "$(NETWORK)" \
 			-l "$(HAL_DIR)" \

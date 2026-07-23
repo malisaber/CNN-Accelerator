@@ -80,58 +80,34 @@ check-tools:
 # still exits 0 at "quit -f" -- so a failed compile would look
 # successful to Make, the stamp file would get touched anyway, and
 # re-running make would see nothing to do and silently skip the fix.
+# $(COMPILE_DO): $(VHDL_SOURCES) $(VERILOG_SOURCES) | $(BUILD_DIR)
+# 	@{ \
+# 		echo "vlib $(WORK_DIR)"; \
+# 		echo "vmap work $(WORK_DIR)"; \
+# 		echo "vcom -2008 -work work packages/MY_Pack_v2.vhd"; \
+# 		for src in $(VHDL_PACKAGES) $(VHDL_SHARED) $(VHDL_SYSTEM) $(VHDL_TOP) $(VHDL_SIM); do \
+# 			echo "if {[catch {vcom -2008 -work work $$src}]} { quit -code 1 }"; \
+# 		done; \
+# 		for src in $(VERILOG_PACKAGES) $(VERILOG_SHARED) $(VERILOG_SYSTEM) $(VERILOG_SIM); do \
+# 			echo "if {[catch {vlog -work work $$src}]} { quit -code 1 }"; \
+# 		done; \
+# 	} > "$@"
 $(COMPILE_DO): $(VHDL_SOURCES) $(VERILOG_SOURCES) | $(BUILD_DIR)
 	@{ \
 		echo "vlib $(WORK_DIR)"; \
 		echo "vmap work $(WORK_DIR)"; \
-		echo "vcom -2008 -work work packages/MY_Pack_v2.vhd"; \
+		echo "puts \"Compiling: packages/MY_Pack_v2.vhd\""; \
+		echo "vcom -quiet -2008 -work work packages/MY_Pack_v2.vhd"; \
 		for src in $(VHDL_PACKAGES) $(VHDL_SHARED) $(VHDL_SYSTEM) $(VHDL_TOP) $(VHDL_SIM); do \
-			echo "if {[catch {vcom -2008 -work work $$src}]} { quit -code 1 }"; \
+			echo "puts \"Compiling: $$src\""; \
+			echo "if {[catch {vcom -quiet -2008 -work work $$src}]} { quit -code 1 }"; \
 		done; \
 		for src in $(VERILOG_PACKAGES) $(VERILOG_SHARED) $(VERILOG_SYSTEM) $(VERILOG_SIM); do \
-			echo "if {[catch {vlog -work work $$src}]} { quit -code 1 }"; \
+			echo "puts \"Compiling: $$src\""; \
+			echo "if {[catch {vlog -quiet -work work $$src}]} { quit -code 1 }"; \
 		done; \
 	} > "$@"
-#$(COMPILE_DO): $(VHDL_SOURCES) $(VERILOG_SOURCES) | $(BUILD_DIR)
-#	@{ \
-#		echo "vlib $(WORK_DIR)"; \
-#		echo "vmap work $(WORK_DIR)"; \
-#		echo "vcom -2008 -work work packages/MY_Pack_v2.vhd"; \
-#
-#		echo "if {[catch {vcom -2008 -work work \"; \
-#		for src in $(VHDL_PACKAGES); do \
-#			echo "$$src \"; \
-#		done; \
-#		echo "}]} { quit -code 1 }"; \
-#
-#		echo "if {[catch {vcom -2008 -work work \"; \
-#		for src in $(VHDL_SHARED); do \
-#			echo "$$src \"; \
-#		done; \
-#		echo "}]} { quit -code 1 }"; \
-#
-#		echo "if {[catch {vcom -2008 -work work \"; \
-#		for src in $(VHDL_SYSTEM); do \
-#			echo "$$src \"; \
-#		done; \
-#		echo "}]} { quit -code 1 }"; \
-#
-#		echo "if {[catch {vcom -2008 -work work \"; \
-#		for src in $(VHDL_TOP); do \
-#			echo "$$src \"; \
-#		done; \
-#		echo "}]} { quit -code 1 }"; \
-#
-#		echo "if {[catch {vcom -2008 -work work \"; \
-#		for src in $(VHDL_SIM); do \
-#			echo "$$src \"; \
-#		done; \
-#		echo "}]} { quit -code 1 }"; \
-#
-#		for src in $(VERILOG_SHARED) $(VERILOG_SYSTEM) $(VERILOG_SIM); do \
-#			echo "if {[catch {vlog -work work $$src}]} { quit -code 1 }"; \
-#		done; \
-#	} > "$@"
+
 
 compile: deps $(STAMP)
 
@@ -192,10 +168,12 @@ outdated: deps $(COMPILE_DO) | $(LOG_DIR)
 		echo "if {![file exists {$(WORK_DIR)}]} { vlib $(WORK_DIR) }"; \
 		echo "vmap work $(WORK_DIR)"; \
 		for src in "$${vhdl_out[@]}"; do \
-			echo "if {[catch {vcom -2008 -work work $$src}]} { quit -code 1 }"; \
+			echo "puts \"Compiling: $$src\""; \
+			echo "if {[catch {vcom -quiet -2008 -work work $$src}]} { quit -code 1 }"; \
 		done; \
 		for src in "$${verilog_out[@]}"; do \
-			echo "if {[catch {vlog -work work $$src}]} { quit -code 1 }"; \
+			echo "puts \"Compiling: $$src\""; \
+			echo "if {[catch {vlog -quiet -work work $$src}]} { quit -code 1 }"; \
 		done; \
 	} > "$(OUTDATED_DO)"; \
 	$(VSIM) $(VSIM_QUIET) -c -do "do $(OUTDATED_DO); quit -f" -l $(LOG_DIR)/outdated.log; \
