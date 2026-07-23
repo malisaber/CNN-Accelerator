@@ -3,6 +3,7 @@ SHELL := /bin/bash
 BUILD_DIR ?= build
 WORK_DIR := $(BUILD_DIR)/work
 LOG_DIR := $(BUILD_DIR)/logs
+REPORT_DIR := report
 TOP ?= SIM_SYSTEM
 
 VSIM ?= vsim
@@ -111,7 +112,7 @@ $(COMPILE_DO): $(VHDL_SOURCES) $(VERILOG_SOURCES) | $(BUILD_DIR)
 
 compile: deps $(STAMP)
 
-$(STAMP): $(COMPILE_DO) | $(LOG_DIR)
+$(STAMP): $(COMPILE_DO) | $(LOG_DIR) | $(REPORT_DIR)
 	$(VSIM) $(VSIM_QUIET) -c -do "do $(COMPILE_DO); quit -f" -l $(LOG_DIR)/compile.log
 	@$(call CHECK_LOG,$(LOG_DIR)/compile.log)
 	@touch "$@"
@@ -183,5 +184,11 @@ outdated: deps $(COMPILE_DO) | $(LOG_DIR)
 $(BUILD_DIR) $(LOG_DIR):
 	mkdir -p $@
 
+$(REPORT_DIR):
+	mkdir -p $@
+
 clean:
 	rm -rf $(BUILD_DIR)
+	rm -rf $(REPORT_DIR)
+
+
