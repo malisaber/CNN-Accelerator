@@ -60,7 +60,7 @@ OUTDATED_DO := $(BUILD_DIR)/outdated.do
 # it in the ModelSim GUI with the file list already populated. Pick
 # one flow or the other -- they don't need to be used together.
 PROJECT_NAME ?= rtl_project
-PROJECT_MPF := $(BUILD_DIR)/$(PROJECT_NAME).mpf
+PROJECT_MPF := $(PROJECT_NAME).mpf
 PROJECT_DO := $(BUILD_DIR)/project.do
 PROJECT_STAMP := $(BUILD_DIR)/.project_compiled
 PROJECT_RUN_DO := $(BUILD_DIR)/project_run.do
@@ -202,7 +202,7 @@ $(PROJECT_DO): $(VHDL_SOURCES) $(VERILOG_SOURCES) | $(BUILD_DIR)
 	@{ \
 		echo "if {![file exists {modelsim.ini}]} { vmap -c }"; \
 		echo "if {[file exists {$(PROJECT_MPF)}]} { project close; file delete {$(PROJECT_MPF)} }"; \
-		echo "if {[catch {project new {$(BUILD_DIR)} {$(PROJECT_NAME)} work} perr]} { puts \"project new failed: \$$perr\"; quit -code 1 }"; \
+		echo "if {[catch {project new {.} {$(PROJECT_NAME)} work} perr]} { puts \"project new failed: \$$perr\"; quit -code 1 }"; \
 		echo "project addfile {packages/MY_Pack_v2.vhd}"; \
 		for src in $(VHDL_PACKAGES) $(VHDL_SHARED) $(VHDL_SYSTEM) $(VHDL_TOP) $(VHDL_SIM); do \
 			echo "project addfile {$$src}"; \
@@ -217,8 +217,15 @@ $(PROJECT_DO): $(VHDL_SOURCES) $(VERILOG_SOURCES) | $(BUILD_DIR)
 project: deps $(PROJECT_STAMP)
 
 $(PROJECT_STAMP): $(PROJECT_DO) | $(LOG_DIR) $(REPORT_DIR)
-	$(VSIM) $(VSIM_QUIET) -c -do "do $(PROJECT_DO); quit -f" -l $(LOG_DIR)/project.log
+	$(VSIM) $(VSIM_QUIET) -c -do "source $(PROJECT_DO); quit -f" -l $(LOG_DIR)/project.log
 	@$(call CHECK_LOG,$(LOG_DIR)/project.log)
+	@test -f "$(PROJECT_MPF)" || { \
+		echo "$(PROJECT_MPF) was not created -- see $(LOG_DIR)/project.log."; \
+		echo "This can happen if 'project new' fails without raising a catchable"; \
+		echo "Tcl error (silent no-op) -- known to occur for the ModelSim 'project'"; \
+		echo "command family under headless/-c batch execution on some installs."; \
+		exit 1; \
+	}
 	@touch "$@"
 
 # Opens the compiled project and simulates $(TOP), same shape as
@@ -232,7 +239,7 @@ $(PROJECT_RUN_DO): $(PROJECT_DO) | $(BUILD_DIR)
 	} > "$@"
 
 project-run: project $(PROJECT_RUN_DO) | $(LOG_DIR) $(REPORT_DIR)
-	$(VSIM) $(VSIM_QUIET) -c -do $(PROJECT_RUN_DO) -l $(LOG_DIR)/$(TOP).log
+	$(VSIM) $(VSIM_QUIET) -c -do "source $(PROJECT_RUN_DO)" -l $(LOG_DIR)/$(TOP).log
 	@$(call CHECK_LOG,$(LOG_DIR)/$(TOP).log)
 
 $(BUILD_DIR) $(LOG_DIR) $(REPORT_DIR):
@@ -241,7 +248,8 @@ $(BUILD_DIR) $(LOG_DIR) $(REPORT_DIR):
 
 
 clean:
-	rm -rf $(BUILD_DIR) $(REPORT_DIR) modelsim.ini
+	rm -rf $(BUILD_DIR) $(REPORT_DIR)
+	rm -f $(PROJECT_MPF) modelsim.ini
 	
 
 
