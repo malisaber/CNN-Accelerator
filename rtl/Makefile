@@ -241,7 +241,7 @@ $(BUILD_DIR) $(LOG_DIR) $(REPORT_DIR):
 
 
 clean:
-	rm -rf $(BUILD_DIR) $(REPORT_DIR)
+	rm -rf $(BUILD_DIR) $(REPORT_DIR) modelsim.ini
 	
 
 
