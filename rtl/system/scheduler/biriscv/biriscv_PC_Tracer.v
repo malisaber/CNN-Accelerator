@@ -9,7 +9,7 @@ module	biriscv_PC_Tracer(
 	initial
 	begin
 		old_PC		= 32'hDEADBEEF;
-		track_fid	= $fopen("PC_trac_log.txt", "w");
+		track_fid	= $fopen("report/PC_trac_log.log", "w");
 		//$fclose(track_fid);
 	end
 	

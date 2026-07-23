@@ -6,6 +6,7 @@
 - [ ] code concerter should takes directory
 - [ ] add dump directory to code_converter
 - [ ] Implement interrupt handling.
+- [ ] Verbose flag for mompiler.
 
 ## Medium Priority
 

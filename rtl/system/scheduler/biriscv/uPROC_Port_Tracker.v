@@ -9,7 +9,7 @@ module	uPROC_Port_Tracker(
 	
 	initial
 	begin
-		track_fid = $fopen("uPROC_Transaction_LOG.txt", "w");
+		track_fid = $fopen("report/uPROC_Transaction_LOG.log", "w");
 		//$fclose(track_fid);
 	end
 	
