@@ -66,6 +66,7 @@ CLEAN_DIRS := $(PACKAGE_DIRS) rtl materials/hal
 CROSS ?= riscv32-unknown-elf
 
 .PHONY: all submodules packages $(PACKAGE_DIRS) hal rtl sim \
+        rtl-project rtl-project-run \
         deps check-tools install-tools \
         run check-run-vars check-run-tools \
         clean clean-run distclean
@@ -93,7 +94,18 @@ rtl:
 # depends on check-tools, not on compile/the .compiled stamp). Run
 # "make rtl" first if there's nothing compiled yet, or if it's stale.
 sim:
-	$(call LOG,rtl-sim,$(MAKE) -C rtl run)
+	$(call LOG,rtl-sim,$(MAKE) -C rtl gui)
+
+# --- RTL ModelSim *project* (.mpf) flow -- an alternative to "rtl"/
+# "sim" above. Forwards to rtl/Makefile's own project/project-run
+# targets; see rtl/Makefile for what these do differently (they
+# register files via "project addfile" and produce a .mpf you can
+# later open in the ModelSim GUI with the file list pre-populated).
+rtl-project:
+	$(call LOG,rtl-project,$(MAKE) -C rtl project)
+
+rtl-project-run:
+	$(call LOG,rtl-project-run,$(MAKE) -C rtl project-run)
 
 # ------------------------------------------------------------------
 # Tool checking / best-effort install

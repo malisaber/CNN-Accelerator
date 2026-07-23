@@ -238,7 +238,7 @@ BEGIN
 	heartbeat_proc : process
 	begin
 		loop
-			wait for 1 us;
+			wait for 100 us;
 			report "HEARTBEAT: t = " & time'image(now);
 		end loop;
 	end process;

@@ -53,6 +53,18 @@ RUN_DO := $(BUILD_DIR)/run.do
 GUI_DO := $(BUILD_DIR)/gui.do
 OUTDATED_DO := $(BUILD_DIR)/outdated.do
 
+# ModelSim *project* (.mpf) flow -- an alternative to the raw
+# vlib/vcom/vlog flow above. Functionally compiles the same files in
+# the same order; the only difference is the files end up registered
+# in a .mpf project file, which is useful if you want to later open
+# it in the ModelSim GUI with the file list already populated. Pick
+# one flow or the other -- they don't need to be used together.
+PROJECT_NAME ?= rtl_project
+PROJECT_MPF := $(BUILD_DIR)/$(PROJECT_NAME).mpf
+PROJECT_DO := $(BUILD_DIR)/project.do
+PROJECT_STAMP := $(BUILD_DIR)/.project_compiled
+PROJECT_RUN_DO := $(BUILD_DIR)/project_run.do
+
 # Checked after every vsim invocation that compiles something: even
 # with the catch/quit-code guard below, this is a cheap belt-and-
 # suspenders check in case a given ModelSim/Questa version doesn't
@@ -62,7 +74,7 @@ CHECK_LOG = if grep -qE '\*\* (Error|Fatal)' "$(1)"; then \
 		exit 1; \
 	fi
 
-.PHONY: all compile run gui outdated clean deps check-tools
+.PHONY: all compile run gui outdated project project-run clean deps check-tools
 
 all: compile
 
@@ -181,6 +193,47 @@ outdated: deps $(COMPILE_DO) | $(LOG_DIR) $(REPORT_DIR)
 	$(call CHECK_LOG,$(LOG_DIR)/outdated.log); \
 	touch "$(STAMP)"
 
+# Generates the project script: deletes any stale .mpf, creates a
+# fresh project, registers every source file via "project addfile"
+# (same file set/order as $(COMPILE_DO) above), then compiles the
+# whole project in one go. Regenerated whenever the source file set
+# changes, same as $(COMPILE_DO).
+$(PROJECT_DO): $(VHDL_SOURCES) $(VERILOG_SOURCES) | $(BUILD_DIR)
+	@{ \
+		echo "if {[file exists {$(PROJECT_MPF)}]} { project close; file delete {$(PROJECT_MPF)} }"; \
+		echo "project new {$(BUILD_DIR)} {$(PROJECT_NAME)} work"; \
+		echo "project addfile {packages/MY_Pack_v2.vhd}"; \
+		for src in $(VHDL_PACKAGES) $(VHDL_SHARED) $(VHDL_SYSTEM) $(VHDL_TOP) $(VHDL_SIM); do \
+			echo "project addfile {$$src}"; \
+		done; \
+		for src in $(VERILOG_PACKAGES) $(VERILOG_SHARED) $(VERILOG_SYSTEM) $(VERILOG_SIM); do \
+			echo "project addfile {$$src}"; \
+		done; \
+		echo "project compileall"; \
+		echo "project close"; \
+	} > "$@"
+
+project: deps $(PROJECT_STAMP)
+
+$(PROJECT_STAMP): $(PROJECT_DO) | $(LOG_DIR) $(REPORT_DIR)
+	$(VSIM) $(VSIM_QUIET) -c -do "do $(PROJECT_DO); quit -f" -l $(LOG_DIR)/project.log
+	@$(call CHECK_LOG,$(LOG_DIR)/project.log)
+	@touch "$@"
+
+# Opens the compiled project and simulates $(TOP), same shape as
+# $(RUN_DO) above but via "project open" instead of a bare work lib.
+$(PROJECT_RUN_DO): $(PROJECT_DO) | $(BUILD_DIR)
+	@{ \
+		echo "project open {$(PROJECT_MPF)}"; \
+		echo "vsim work.$(TOP)"; \
+		echo "run -all"; \
+		echo "quit -f"; \
+	} > "$@"
+
+project-run: project $(PROJECT_RUN_DO) | $(LOG_DIR) $(REPORT_DIR)
+	$(VSIM) $(VSIM_QUIET) -c -do $(PROJECT_RUN_DO) -l $(LOG_DIR)/$(TOP).log
+	@$(call CHECK_LOG,$(LOG_DIR)/$(TOP).log)
+
 $(BUILD_DIR) $(LOG_DIR) $(REPORT_DIR):
 	mkdir -p $@
 
@@ -188,6 +241,6 @@ $(BUILD_DIR) $(LOG_DIR) $(REPORT_DIR):
 
 clean:
 	rm -rf $(BUILD_DIR) $(REPORT_DIR)
+
+
 	
-
-
