@@ -391,7 +391,7 @@ clean:
 	rm -f $(BUILD_DIR)/$(notdir $(MODELSIM_INSTALL_URL))
 
 clean-run:
-	rm -rf $(DDG_DIR) $(SOFTWARE_DIR) $(BUILD_DIR) $(MEM_INIT_DIR) $(DUMP_DIR)
+	rm -rf $(DDG_DIR) $(SOFTWARE_DIR) $(BUILD_DIR) $(MEM_INIT_DIR) $(DUMP_DIR) $(DRAM_DIR)
 	rm -f rtl/packages/MY_Pack_v2.vhd.bak
 
 distclean: clean clean-run
