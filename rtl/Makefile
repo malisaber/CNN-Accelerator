@@ -112,7 +112,7 @@ $(COMPILE_DO): $(VHDL_SOURCES) $(VERILOG_SOURCES) | $(BUILD_DIR)
 
 compile: deps $(STAMP)
 
-$(STAMP): $(COMPILE_DO) | $(LOG_DIR) | $(REPORT_DIR)
+$(STAMP): $(COMPILE_DO) | $(LOG_DIR) $(REPORT_DIR)
 	$(VSIM) $(VSIM_QUIET) -c -do "do $(COMPILE_DO); quit -f" -l $(LOG_DIR)/compile.log
 	@$(call CHECK_LOG,$(LOG_DIR)/compile.log)
 	@touch "$@"
@@ -137,11 +137,11 @@ $(GUI_DO): $(COMPILE_DO) | $(BUILD_DIR)
 		echo "run -all"; \
 	} > "$@"
 
-run: deps $(RUN_DO) | $(LOG_DIR)
+run: deps $(RUN_DO) | $(LOG_DIR) $(REPORT_DIR)
 	$(VSIM) $(VSIM_QUIET) -c -do $(RUN_DO) -l $(LOG_DIR)/$(TOP).log
 	@$(call CHECK_LOG,$(LOG_DIR)/$(TOP).log)
 
-gui: deps $(GUI_DO) | $(LOG_DIR)
+gui: deps $(GUI_DO) | $(LOG_DIR) $(REPORT_DIR)
 	$(VSIM) $(VSIM_QUIET) -do $(GUI_DO) -l $(LOG_DIR)/$(TOP).log
 	@$(call CHECK_LOG,$(LOG_DIR)/$(TOP).log)
 
@@ -150,7 +150,7 @@ gui: deps $(GUI_DO) | $(LOG_DIR)
 # the existing work library -- no vlib/full rebuild. Useful while
 # iterating on a handful of files instead of paying for a full
 # recompile every time via "run"/"gui".
-outdated: deps $(COMPILE_DO) | $(LOG_DIR)
+outdated: deps $(COMPILE_DO) | $(LOG_DIR) $(REPORT_DIR)
 	@vhdl_out=(); \
 	for src in $(VHDL_PACKAGES) $(VHDL_SHARED) $(VHDL_SYSTEM) $(VHDL_TOP) $(VHDL_SIM); do \
 		if [ ! -e "$(STAMP)" ] || [ "$$src" -nt "$(STAMP)" ]; then vhdl_out+=("$$src"); fi; \
@@ -181,14 +181,13 @@ outdated: deps $(COMPILE_DO) | $(LOG_DIR)
 	$(call CHECK_LOG,$(LOG_DIR)/outdated.log); \
 	touch "$(STAMP)"
 
-$(BUILD_DIR) $(LOG_DIR):
+$(BUILD_DIR) $(LOG_DIR) $(REPORT_DIR):
 	mkdir -p $@
 
-$(REPORT_DIR):
-	mkdir -p $@
+
 
 clean:
-	rm -rf $(BUILD_DIR)
-	rm -rf $(REPORT_DIR)
+	rm -rf $(BUILD_DIR) $(REPORT_DIR)
+	
 
 
