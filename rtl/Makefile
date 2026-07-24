@@ -248,8 +248,9 @@ $(BUILD_DIR) $(LOG_DIR) $(REPORT_DIR):
 
 
 clean:
-	rm -rf $(BUILD_DIR) $(REPORT_DIR)
-	rm -f $(PROJECT_MPF) modelsim.ini
+	rm -rf $(BUILD_DIR) $(REPORT_DIR) work
+	rm -f $(PROJECT_MPF) modelsim.ini 
+	rm -f rtl_project.cr.mti
 	
 
 
