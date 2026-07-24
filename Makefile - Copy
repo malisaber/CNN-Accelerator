@@ -4,21 +4,15 @@
 # packages/*; it drives them from one place, fills in the steps that
 # were still manual, and logs everything under report/.
 #
-# Every top-level target here is independent -- none of them pull
-# each other in implicitly. Pick the one that does what you want:
-#
-#   make                 -> submodules + all packages (NO rtl build)
-#   make packages        -> just the C++/Python tool packages
-#   make rtl              -> just the RTL build (vlib/vcom/vlog via rtl/Makefile)
-#   make sim               -> simulate rtl/'s already-compiled work lib (GUI)
-#   make rtl-project       -> RTL build via ModelSim's .mpf project flow instead
-#   make rtl-project-run   -> simulate via that .mpf project
-#   make check-tools     -> report on every tool this project needs
-#   make install-tools   -> best-effort install of what apt/pip can provide
-#   make run ...          -> full network-to-bitstream-input pipeline (builds
-#                            packages AND rtl, then simulates), see below
-#   make clean            -> clean every component + run artifacts
-#   make distclean        -> clean + deinit submodules
+#   make                -> submodules + all packages + rtl sim build
+#   make packages       -> just the C++/Python tool packages
+#   make rtl            -> just the RTL simulation build
+#   make sim            -> just simulate rtl/, without rebuilding it first
+#   make check-tools    -> report on every tool this project needs
+#   make install-tools  -> best-effort install of what apt/pip can provide
+#   make run ...         -> full network-to-bitstream-input pipeline, see below
+#   make clean           -> clean every component + run artifacts
+#   make distclean       -> clean + deinit submodules
 #
 # Add VERBOSE=1 to any target for full command tracing + a chattier
 # vsim (drops -quiet), e.g.:  make run VERBOSE=1
@@ -64,23 +58,22 @@ PACKAGE_DIRS := \
 	packages/CNN-Compiler \
 	packages/CNN-DRAM-Data-Gen
 
+CLEAN_DIRS := $(PACKAGE_DIRS) rtl materials/hal
 
 # RISC-V cross toolchain prefix. Debian/Ubuntu's apt package installs
 # riscv64-unknown-elf-*, which also targets rv32im via -march; if that's
 # what you have, override with CROSS=riscv64-unknown-elf.
 CROSS ?= riscv32-unknown-elf
 
-.PHONY: all submodules packages $(PACKAGE_DIRS) rtl sim \
+.PHONY: all submodules packages $(PACKAGE_DIRS) hal rtl sim \
         rtl-project rtl-project-run \
-        check-tools install-tools install-modelsim \
+        deps check-tools install-tools \
         run check-run-vars check-run-tools \
         clean clean-run distclean
 
-# All top-level targets are independent of each other -- "all" only
-# builds submodules + packages, it does NOT touch rtl/. Use "make rtl"
-# (or "make rtl-project") separately when you want the RTL build too,
-# or "make run" for the full pipeline (which does include rtl).
-all: submodules packages
+# hal/run are intentionally left out of "all": they need a specific
+# network + DRAM data supplied via variables, see "make run" above.
+all: submodules packages rtl
 
 # --- Git submodules: packages/CNN-Compiler, packages/CNN-DRAM-Data-Gen ---
 submodules:
@@ -96,12 +89,18 @@ $(PACKAGE_DIRS):
 rtl:
 	$(call LOG,rtl-build,$(MAKE) -C rtl all)
 
-# --- RTL ModelSim *project* (.mpf) flow -- a completely separate,
-# alternative path to "rtl"/"sim" above: it is never invoked by "all",
-# "run", or any other target here, and it doesn't invoke them either.
-# Forwards to rtl/Makefile's own project/project-run targets, which
+# --- RTL simulation run only, against whatever's already compiled in
+# rtl/build/work -- does NOT rebuild first (rtl's "run" target only
+# depends on check-tools, not on compile/the .compiled stamp). Run
+# "make rtl" first if there's nothing compiled yet, or if it's stale.
+sim:
+	$(call LOG,rtl-sim,$(MAKE) -C rtl gui)
+
+# --- RTL ModelSim *project* (.mpf) flow -- an alternative to "rtl"/
+# "sim" above. Forwards to rtl/Makefile's own project/project-run
+# targets; see rtl/Makefile for what these do differently (they
 # register files via "project addfile" and produce a .mpf you can
-# later open in the ModelSim GUI with the file list pre-populated.
+# later open in the ModelSim GUI with the file list pre-populated).
 rtl-project:
 	$(call LOG,rtl-project,$(MAKE) -C rtl project)
 
@@ -111,6 +110,7 @@ rtl-project-run:
 # ------------------------------------------------------------------
 # Tool checking / best-effort install
 # ------------------------------------------------------------------
+deps: check-tools
 
 # Tools needed somewhere in this project:
 #   git, g++, curl              -> submodules + packages/*
@@ -212,6 +212,8 @@ install-tools:
 
 MODELSIM_INSTALL_URL ?= https://download.altera.com/akdlm/software/acdsinst/20.1std.1/720/ib_installers/ModelSimSetup-20.1.1.720-linux.run
 MODELSIM_INSTALL_DIR ?= $(HOME)/intelFPGA
+
+.PHONY: install-modelsim
 
 install-modelsim:
 	@mkdir -p $(REPORT_DIR) $(BUILD_DIR)
