@@ -6,7 +6,7 @@
 - [ ] code concerter should takes directory
 - [ ] add dump directory to code_converter
 - [ ] Implement interrupt handling.
-- [ ] Verbose flag for mompiler.
+- [ ] Verbose flag for compiler.
 - [ ] remove extra space at warnings.
 
 ## Medium Priority

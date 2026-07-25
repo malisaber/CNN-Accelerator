@@ -54,7 +54,7 @@ CNN_COMPILER_V := $(if $(filter 1,$(VERBOSE)),-v,)
 # $(call LOG,<log-name>,<shell command>) runs a command, tees its
 # combined stdout/stderr into report/<log-name>.log, and still fails
 # the build if the command fails (pipefail).
-LOG = @mkdir -p $(REPORT_DIR); set -o pipefail; $(if $(filter 1,$(VERBOSE)),set -x;) ( $(2) ) 2>&1 | tee "$(REPORT_DIR)/$(1).log"
+LOG = @mkdir -p $(REPORT_DIR); echo "+ $(2)"; set -o pipefail; $(if $(filter 1,$(VERBOSE)),set -x;) ( $(2) ) 2>&1 | tee "$(REPORT_DIR)/$(1).log"
 
 # Tool packages with their own Makefile (2 native + 2 submodules)
 PACKAGE_DIRS := \
@@ -303,7 +303,7 @@ check-run-tools:
 run: check-run-vars check-run-tools packages
 	@mkdir -p $(DDG_DIR)/ID $(DDG_DIR)/WD $(SOFTWARE_DIR) $(DRAM_DIR) $(BUILD_DIR) $(MEM_INIT_DIR) $(DUMP_DIR)
 	
-	@echo ">>> [1/7] DRAM input/weight data generation (IDG/WDG -> $(DDG_DIR)/)"
+	@echo ">>> [1/6] DRAM input/weight data generation (IDG/WDG -> $(DDG_DIR)/)"
 	$(call LOG,01-idg-wdg,\
 		i=1; for f in $$(find $(DRAM_INPUTS) -type f -name "*.npy" | sort); do \
 			name=$$(basename "$$f" .npy); \
@@ -316,7 +316,7 @@ run: check-run-vars check-run-tools packages
 			i=$$((i+1)); \
 		done)
 	
-	@echo ">>> [2/7] CNN-Compiler ($(NETWORK) -> $(SOFTWARE_DIR)/, dump in $(DUMP_DIR)/)"
+	@echo ">>> [2/6] CNN-Compiler ($(NETWORK) -> $(SOFTWARE_DIR)/, dump in $(DUMP_DIR)/)"
 	$(call LOG,02-cnn-compiler,\
 		packages/CNN-Compiler/build/CNN-Compiler \
 			$(CNN_COMPILER_V) \
@@ -328,7 +328,7 @@ run: check-run-vars check-run-tools packages
 			-i $(DDG_DIR)/ID/*.bin \
 			-w $(DDG_DIR)/WD/*.bin)
 	
-	@echo ">>> [3/7] Cross-compiling $(SOFTWARE_DIR)/ for CORE=$(CORE) ($(CROSS)-gcc -> $(BUILD_DIR)/)"
+	@echo ">>> [3/6] Cross-compiling $(SOFTWARE_DIR)/ for CORE=$(CORE) ($(CROSS)-gcc -> $(BUILD_DIR)/)"
 	$(call LOG,03-riscv-compile,\
 		$(CROSS)-gcc \
 			-mabi=ilp32 \
@@ -353,13 +353,13 @@ run: check-run-vars check-run-tools packages
 	$(call LOG,03-riscv-compile-text, $(CROSS)-objdump -s -l --inlines $(BUILD_DIR)/main.elf > $(BUILD_DIR)/text.txt)
 	$(call LOG,03-riscv-compile-text, $(CROSS)-objdump -d -l --inlines $(BUILD_DIR)/main.elf > $(BUILD_DIR)/code.txt)
 	
-	@echo ">>> [4/7] Text-Converter ($(BUILD_DIR)/text.txt -> $(MEM_INIT_DIR)/)"
+	@echo ">>> [4/6] Text-Converter ($(BUILD_DIR)/text.txt -> $(MEM_INIT_DIR)/)"
 	$(call LOG,04-text-converter,\
 		packages/CNN-Text-Converter/build/Text-Converter \
 			-i $(BUILD_DIR)/text.txt \
 			-o $(MEM_INIT_DIR))
 	
-	@echo ">>> [5/7] Selecting CORE=$(CORE) in rtl/packages/MY_Pack_v2.vhd"
+	@echo ">>> [5/6] Selecting CORE=$(CORE) in rtl/packages/MY_Pack_v2.vhd"
 	$(call LOG,05-core-select,\
 		case "$(CORE)" in \
 			aftab)   NEWVAL=P_USE_AFTAB ;; \
@@ -370,13 +370,17 @@ run: check-run-vars check-run-tools packages
 			rtl/packages/MY_Pack_v2.vhd; \
 		grep -n "P_uProcessor_in_use" rtl/packages/MY_Pack_v2.vhd)
 	
-	@echo ">>> [6/7] Building rtl/"
+	@echo ">>> [6/6] Building rtl/"
 	$(call LOG,06-rtl-build,$(MAKE) -C rtl all)
 
-	@echo ">>> [7/7] Running a simulation"
-	$(call LOG,07-rtl-sim,$(MAKE) -C rtl run)
-
 	@echo ">>> done: firmware in $(BUILD_DIR)/, memory-init files in $(MEM_INIT_DIR)/, logs in $(REPORT_DIR)/"
+
+
+sim: packages
+	@echo ">>> Running a simulation"
+	$(call LOG,rtl-sim,  $(MAKE) -C rtl run)
+
+
 
 # ------------------------------------------------------------------
 # Housekeeping

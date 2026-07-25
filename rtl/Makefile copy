@@ -1,7 +1,7 @@
 SHELL := /bin/bash
 
 BUILD_DIR ?= build
-WORK_DIR := $(BUILD_DIR)/work
+WORK_DIR := work
 LOG_DIR := $(BUILD_DIR)/logs
 REPORT_DIR := report
 TOP ?= SIM_SYSTEM
@@ -222,4 +222,3 @@ clean:
 	rm -rf $(BUILD_DIR) $(REPORT_DIR) work
 	rm -f $(PROJECT_MPF) modelsim.ini 
 	rm -f rtl_project.cr.mti
-
