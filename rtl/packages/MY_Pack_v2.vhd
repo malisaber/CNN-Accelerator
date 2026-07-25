@@ -5,7 +5,7 @@ USE IEEE.math_real.ALL;
 USE std.textio.ALL;
 --USE work.my_pack_v2.ALL;
  
-
+ 
 package MY_Pack_v2	IS
 	TYPE		P_uProcessor_type				IS	(P_USE_BIRISC, P_USE_AFTAB);
 	

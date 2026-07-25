@@ -1,7 +1,7 @@
 SHELL := /bin/bash
 
 BUILD_DIR ?= build
-WORK_DIR := $(BUILD_DIR)/work
+WORK_DIR := work
 LOG_DIR := $(BUILD_DIR)/logs
 REPORT_DIR := report
 TOP ?= SIM_SYSTEM
@@ -18,7 +18,7 @@ VSIM_QUIET := $(if $(filter 1,$(VERBOSE)),,-quiet)
 # NOTE: vlib/vmap/vcom/vlog are only used here to *verify they're
 # installed* (check-tools). The actual compilation now happens via
 # vsim's own built-in vlib/vmap/vcom/vlog Tcl commands, run from a
-# generated .do script -- see $(COMPILE_DO)/$(RUN_DO) below.
+# generated .do script -- see $(LEGACY_DO)/$(LEGACY_SIM_DO) below.
 # vsim is the only tool Make invokes directly.
 
 # rwildcard must be defined before first use below: ':=' assignments
@@ -44,12 +44,9 @@ VERILOG_SHARED		:= $(sort $(call rwildcard,shared/,*.v))
 VERILOG_SYSTEM		:= $(sort $(call rwildcard,system/,*.v))
 VERILOG_SIM			:= $(sort $(call rwildcard,sim/,*.v))
 
-VHDL_SOURCES := $(VHDL_PACKAGES) $(VHDL_SHARED) $(VHDL_SYSTEM) $(VHDL_TOP) $(VHDL_SIM)
-VERILOG_SOURCES := $(VERILOG_SHARED) $(VERILOG_SYSTEM) $(VERILOG_SIM)
+VHDL_SOURCES        := $(VHDL_PACKAGES) $(VHDL_SHARED) $(VHDL_SYSTEM) $(VHDL_TOP) $(VHDL_SIM)
+VERILOG_SOURCES     := $(VERILOG_SHARED) $(VERILOG_SYSTEM) $(VERILOG_SIM)
 
-STAMP := $(BUILD_DIR)/.compiled
-COMPILE_DO := $(BUILD_DIR)/compile.do
-RUN_DO := $(BUILD_DIR)/run.do
 
 # ModelSim *project* (.mpf) flow -- an alternative to the raw
 # vlib/vcom/vlog flow above. Functionally compiles the same files in
@@ -62,11 +59,15 @@ RUN_DO := $(BUILD_DIR)/run.do
 # directory ($(WORK_DIR)) that the plain compile flow above uses, so
 # both flows share one compiled library instead of each maintaining
 # its own copy of "work" in a different location.
-PROJECT_NAME ?= rtl_project
-PROJECT_MPF := $(PROJECT_NAME).mpf
-PROJECT_DO := $(BUILD_DIR)/project.do
-PROJECT_STAMP := $(BUILD_DIR)/.project_compiled
-PROJECT_RUN_DO := $(BUILD_DIR)/project_run.do
+STAMP               := $(BUILD_DIR)/.compiled
+PROJECT_STAMP       := $(BUILD_DIR)/.project_compiled
+PROJECT_NAME        ?= rtl_project
+PROJECT_MPF         := $(PROJECT_NAME).mpf
+
+LEGACY_DO           := $(BUILD_DIR)/legacy_compile.do
+LEGACY_SIM_DO       := $(BUILD_DIR)/legacy_sim_compile.do
+PROJECT_DO          := $(BUILD_DIR)/project.do
+PROJECT_SIM_DO      := $(BUILD_DIR)/project_sim.do
 
 # Checked after every vsim invocation that compiles something: even
 # with the catch/quit-code guard below, this is a cheap belt-and-
@@ -77,9 +78,14 @@ CHECK_LOG = if grep -qE '\*\* (Error|Fatal)' "$(1)"; then \
 		exit 1; \
 	fi
 
-.PHONY: all compile run project project-run clean deps check-tools
+.PHONY: all deps \
+		compile run \
+		project simulate \
+		legacy legacy-simulate \
+		check-tools \
+		clean 
 
-all: compile
+all: deps
 
 deps: check-tools
 
@@ -100,7 +106,7 @@ check-tools:
 # still exits 0 at "quit -f" -- so a failed compile would look
 # successful to Make, the stamp file would get touched anyway, and
 # re-running make would see nothing to do and silently skip the fix.
-$(COMPILE_DO): $(VHDL_SOURCES) $(VERILOG_SOURCES) | $(BUILD_DIR)
+$(LEGACY_DO): $(VHDL_SOURCES) $(VERILOG_SOURCES) | $(BUILD_DIR)
 	@{ \
 		echo "vlib $(WORK_DIR)"; \
 		echo "vmap work $(WORK_DIR)"; \
@@ -119,28 +125,37 @@ $(COMPILE_DO): $(VHDL_SOURCES) $(VERILOG_SOURCES) | $(BUILD_DIR)
 
 compile: deps $(STAMP)
 
-# $(STAMP) depends only on $(COMPILE_DO) (not the sources directly),
+# $(STAMP) depends only on $(LEGACY_DO) (not the sources directly),
 # so re-running "make compile"/"make all" after no source files have
-# changed does nothing: $(COMPILE_DO) wasn't regenerated, so it's
+# changed does nothing: $(LEGACY_DO) wasn't regenerated, so it's
 # still older than $(STAMP), so this recipe is skipped and vsim is
 # never invoked.
-$(STAMP): $(COMPILE_DO) | $(LOG_DIR) $(REPORT_DIR)
-	$(VSIM) $(VSIM_QUIET) -c -do "do $(COMPILE_DO); quit -f" -l $(LOG_DIR)/compile.log
+$(STAMP): $(LEGACY_DO) | $(LOG_DIR) $(REPORT_DIR)
+	$(VSIM) $(VSIM_QUIET) -c -do "do $(LEGACY_DO); quit -f" -l $(LOG_DIR)/compile.log
 	@$(call CHECK_LOG,$(LOG_DIR)/compile.log)
 	@touch "$@"
 
 # run.do = compile.do plus a tail that loads $(TOP), runs to
 # completion, and quits.
-$(RUN_DO): $(COMPILE_DO) | $(BUILD_DIR)
+$(LEGACY_SIM_DO): $(LEGACY_DO) | $(BUILD_DIR)
 	@{ \
 		echo "vsim work.$(TOP)"; \
 		echo "run -all"; \
 		echo "quit -f"; \
 	} > "$@"
 
-run: deps $(RUN_DO) | $(LOG_DIR) $(REPORT_DIR)
-	$(VSIM) $(VSIM_QUIET) -c -do $(RUN_DO) -l $(LOG_DIR)/$(TOP).log
+run: deps $(LEGACY_SIM_DO) | $(LOG_DIR) $(REPORT_DIR)
+	$(VSIM) $(VSIM_QUIET) -c -do $(LEGACY_SIM_DO) -l $(LOG_DIR)/$(TOP).log
 	@$(call CHECK_LOG,$(LOG_DIR)/$(TOP).log)
+
+# Aliases for the top-level Makefile's "legacy-project"/"legacy-simulate"
+# targets, which invoke "$(MAKE) -C rtl legacy" / "... legacy-simulate".
+# Those target names didn't exist here at all (only "compile"/"run"
+# did), so "make legacy-project"/"make legacy-simulate" from the repo
+# root would have failed with "No rule to make target 'legacy'".
+legacy: compile
+legacy-simulate: run
+
 
 # Generates the project script: pre-creates/maps a "work" library at
 # $(WORK_DIR) (the same directory the plain compile flow above uses)
@@ -152,11 +167,28 @@ run: deps $(RUN_DO) | $(LOG_DIR) $(REPORT_DIR)
 # parse error -- so the library is set up ahead of time instead.)
 # Then deletes any stale .mpf, creates a fresh project, registers
 # every source file via "project addfile" (same file set/order as
-# $(COMPILE_DO)), printing a "Compiling: <file>" line per file just
-# like $(COMPILE_DO) does, then compiles the whole project in one go.
+# $(LEGACY_DO)), printing a "Compiling: <file>" line per file just
+# like $(LEGACY_DO) does, then compiles the whole project in one go.
+#
+# IMPORTANT: everything -- project creation, file registration, AND
+# the actual compile -- happens in this single .do script / single
+# vsim invocation, ending in "project compileall". Earlier revisions
+# of this Makefile split "create project" and "open + compile" across
+# two separate .do scripts/vsim sessions (referencing a second do-file
+# variable that was never actually defined, so it silently expanded to
+# an empty string and never got (re)generated). Splitting it that way
+# also meant re-opening the project and re-running
+# compileoutofdate/calculateorder/compileall in a second batch vsim
+# session, which is exactly the failure mode described below in
+# $(PROJECT_STAMP): the ModelSim/Questa "project" command family is
+# known to silently no-op under headless/-c batch execution on some
+# installs, which then leaves a stray empty result that Tcl tries to
+# execute as a command ("invalid command name \"\""). Doing it all in
+# one shot, in one session, avoids re-entering that command family a
+# second time.
 #
 # Regenerated whenever the source file set changes -- same mechanism
-# as $(COMPILE_DO), which is what lets $(PROJECT_STAMP) below skip
+# as $(LEGACY_DO), which is what lets $(PROJECT_STAMP) below skip
 # recompilation when nothing changed.
 $(PROJECT_DO): $(VHDL_SOURCES) $(VERILOG_SOURCES) | $(BUILD_DIR)
 	@{ \
@@ -165,18 +197,18 @@ $(PROJECT_DO): $(VHDL_SOURCES) $(VERILOG_SOURCES) | $(BUILD_DIR)
 		echo "vmap work $(WORK_DIR)"; \
 		echo "if {[file exists {$(PROJECT_MPF)}]} { project close; file delete {$(PROJECT_MPF)} }"; \
 		echo "if {[catch {project new {.} {$(PROJECT_NAME)} work} perr]} { puts \"project new failed: \$$perr\"; quit -code 1 }"; \
-		echo "puts \"Compiling: packages/MY_Pack_v2.vhd\""; \
+		echo "puts \"Adding VHDL files\""; \
 		echo "project addfile {packages/MY_Pack_v2.vhd}"; \
 		for src in $(VHDL_PACKAGES) $(VHDL_SHARED) $(VHDL_SYSTEM) $(VHDL_TOP) $(VHDL_SIM); do \
-			echo "puts \"Compiling: $$src\""; \
 			echo "project addfile {$$src}"; \
 		done; \
+		echo "puts \"Adding Verilog files\""; \
 		for src in $(VERILOG_PACKAGES) $(VERILOG_SHARED) $(VERILOG_SYSTEM) $(VERILOG_SIM); do \
-			echo "puts \"Compiling: $$src\""; \
 			echo "project addfile {$$src}"; \
 		done; \
-		echo "project compileall"; \
-		echo "project close"; \
+		echo "puts \"Recalculating compilation order\""; \
+		echo "puts \"Compiling project\""; \
+		echo "project calculateorder"; \
 	} > "$@"
 
 project: deps $(PROJECT_STAMP)
@@ -196,21 +228,28 @@ $(PROJECT_STAMP): $(PROJECT_DO) | $(LOG_DIR) $(REPORT_DIR)
 	}
 	@touch "$@"
 
-# Opens the compiled project and simulates $(TOP), same shape as
-# $(RUN_DO) above but via "project open" instead of a bare work lib.
-# Because the project's "work" library physically lives at
-# $(WORK_DIR) (see $(PROJECT_DO) above), this reuses the exact same
-# compiled library as "run"/"compile" instead of a separate copy.
-$(PROJECT_RUN_DO): $(PROJECT_DO) | $(BUILD_DIR)
+# Simulate $(TOP) using the library the project flow just compiled.
+#
+# NOTE: this deliberately does NOT re-open the .mpf or call any
+# "project ..." Tcl subcommand. $(PROJECT_DO) above already mapped
+# "work" to $(WORK_DIR) and fully compiled it via "project compileall"
+# -- that mapping is persisted in modelsim.ini in this directory, so a
+# brand new vsim invocation can just load "work.$(TOP)" directly, the
+# same way $(LEGACY_SIM_DO) does for the plain compile flow. This
+# avoids re-entering the "project" command family a second time at
+# simulate time, which is what previously produced
+# "invalid command name \"\"" (one of project open/compileoutofdate/
+# calculateorder/compileall silently returning nothing in a second
+# batch session, and vsim then trying to execute the empty result).
+$(PROJECT_SIM_DO): $(PROJECT_DO) | $(BUILD_DIR)
 	@{ \
-		echo "project open {$(PROJECT_MPF)}"; \
+		echo "pwd"; \
 		echo "vsim work.$(TOP)"; \
 		echo "run -all"; \
-		echo "quit -f"; \
 	} > "$@"
 
-project-run: project $(PROJECT_RUN_DO) | $(LOG_DIR) $(REPORT_DIR)
-	$(VSIM) $(VSIM_QUIET) -c -do "source $(PROJECT_RUN_DO)" -l $(LOG_DIR)/$(TOP).log
+simulate: project $(PROJECT_SIM_DO) | $(LOG_DIR) $(REPORT_DIR)
+	$(VSIM) $(VSIM_QUIET) -c -do "do $(PROJECT_SIM_DO); quit -f" -l $(LOG_DIR)/$(TOP).log
 	@$(call CHECK_LOG,$(LOG_DIR)/$(TOP).log)
 
 $(BUILD_DIR) $(LOG_DIR) $(REPORT_DIR):
@@ -222,4 +261,4 @@ clean:
 	rm -rf $(BUILD_DIR) $(REPORT_DIR) work
 	rm -f $(PROJECT_MPF) modelsim.ini 
 	rm -f rtl_project.cr.mti
-
+	rm -f rtl_project.mpf

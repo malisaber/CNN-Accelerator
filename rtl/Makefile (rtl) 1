@@ -18,7 +18,7 @@ VSIM_QUIET := $(if $(filter 1,$(VERBOSE)),,-quiet)
 # NOTE: vlib/vmap/vcom/vlog are only used here to *verify they're
 # installed* (check-tools). The actual compilation now happens via
 # vsim's own built-in vlib/vmap/vcom/vlog Tcl commands, run from a
-# generated .do script -- see $(LEGACY_DO)/$(LEGACY_SIM_DO) below.
+# generated .do script -- see $(COMPILE_DO)/$(RUN_DO)/$(GUI_DO) below.
 # vsim is the only tool Make invokes directly.
 
 # rwildcard must be defined before first use below: ':=' assignments
@@ -44,9 +44,14 @@ VERILOG_SHARED		:= $(sort $(call rwildcard,shared/,*.v))
 VERILOG_SYSTEM		:= $(sort $(call rwildcard,system/,*.v))
 VERILOG_SIM			:= $(sort $(call rwildcard,sim/,*.v))
 
-VHDL_SOURCES        := $(VHDL_PACKAGES) $(VHDL_SHARED) $(VHDL_SYSTEM) $(VHDL_TOP) $(VHDL_SIM)
-VERILOG_SOURCES     := $(VERILOG_SHARED) $(VERILOG_SYSTEM) $(VERILOG_SIM)
+VHDL_SOURCES := $(VHDL_PACKAGES) $(VHDL_SHARED) $(VHDL_SYSTEM) $(VHDL_TOP) $(VHDL_SIM)
+VERILOG_SOURCES := $(VERILOG_SHARED) $(VERILOG_SYSTEM) $(VERILOG_SIM)
 
+STAMP := $(BUILD_DIR)/.compiled
+COMPILE_DO := $(BUILD_DIR)/compile.do
+RUN_DO := $(BUILD_DIR)/run.do
+GUI_DO := $(BUILD_DIR)/gui.do
+OUTDATED_DO := $(BUILD_DIR)/outdated.do
 
 # ModelSim *project* (.mpf) flow -- an alternative to the raw
 # vlib/vcom/vlog flow above. Functionally compiles the same files in
@@ -54,20 +59,11 @@ VERILOG_SOURCES     := $(VERILOG_SHARED) $(VERILOG_SYSTEM) $(VERILOG_SIM)
 # in a .mpf project file, which is useful if you want to later open
 # it in the ModelSim GUI with the file list already populated. Pick
 # one flow or the other -- they don't need to be used together.
-#
-# The project's "work" library is pointed at the same physical
-# directory ($(WORK_DIR)) that the plain compile flow above uses, so
-# both flows share one compiled library instead of each maintaining
-# its own copy of "work" in a different location.
-STAMP               := $(BUILD_DIR)/.compiled
-PROJECT_STAMP       := $(BUILD_DIR)/.project_compiled
-PROJECT_NAME        ?= rtl_project
-PROJECT_MPF         := $(PROJECT_NAME).mpf
-
-LEGACY_DO           := $(BUILD_DIR)/legacy_compile.do
-LEGACY_SIM_DO       := $(BUILD_DIR)/legacy_sim_compile.do
-PROJECT_DO          := $(BUILD_DIR)/project.do
-PROJECT_SIM_DO      := $(BUILD_DIR)/project_sim.do
+PROJECT_NAME ?= rtl_project
+PROJECT_MPF := $(PROJECT_NAME).mpf
+PROJECT_DO := $(BUILD_DIR)/project.do
+PROJECT_STAMP := $(BUILD_DIR)/.project_compiled
+PROJECT_RUN_DO := $(BUILD_DIR)/project_run.do
 
 # Checked after every vsim invocation that compiles something: even
 # with the catch/quit-code guard below, this is a cheap belt-and-
@@ -78,14 +74,9 @@ CHECK_LOG = if grep -qE '\*\* (Error|Fatal)' "$(1)"; then \
 		exit 1; \
 	fi
 
-.PHONY: all deps \
-		compile run \
-		project simulate \
-		legacy legacy-simulate \
-		check-tools \
-		clean 
+.PHONY: all compile run gui outdated project project-run clean deps check-tools
 
-all: deps
+all: compile
 
 deps: check-tools
 
@@ -94,11 +85,7 @@ check-tools:
 
 # Generates the compile script: vlib + vmap + one vcom/vlog line per
 # source file, in dependency order (packages -> shared -> system ->
-# SYSTEM.vhd -> sim). Regenerated whenever the source file set changes,
-# which is also what lets $(STAMP) below know whether a recompile is
-# actually needed: if no source file changed, this file's mtime is
-# untouched, $(STAMP) stays newer than it, and Make skips recompiling
-# entirely.
+# SYSTEM.vhd -> sim). Regenerated whenever the source file set changes.
 #
 # Each vcom/vlog call is wrapped in a Tcl catch that force-quits with
 # a non-zero exit code on the first real compile error. Without this,
@@ -106,7 +93,19 @@ check-tools:
 # still exits 0 at "quit -f" -- so a failed compile would look
 # successful to Make, the stamp file would get touched anyway, and
 # re-running make would see nothing to do and silently skip the fix.
-$(LEGACY_DO): $(VHDL_SOURCES) $(VERILOG_SOURCES) | $(BUILD_DIR)
+# $(COMPILE_DO): $(VHDL_SOURCES) $(VERILOG_SOURCES) | $(BUILD_DIR)
+# 	@{ \
+# 		echo "vlib $(WORK_DIR)"; \
+# 		echo "vmap work $(WORK_DIR)"; \
+# 		echo "vcom -2008 -work work packages/MY_Pack_v2.vhd"; \
+# 		for src in $(VHDL_PACKAGES) $(VHDL_SHARED) $(VHDL_SYSTEM) $(VHDL_TOP) $(VHDL_SIM); do \
+# 			echo "if {[catch {vcom -2008 -work work $$src}]} { quit -code 1 }"; \
+# 		done; \
+# 		for src in $(VERILOG_PACKAGES) $(VERILOG_SHARED) $(VERILOG_SYSTEM) $(VERILOG_SIM); do \
+# 			echo "if {[catch {vlog -work work $$src}]} { quit -code 1 }"; \
+# 		done; \
+# 	} > "$@"
+$(COMPILE_DO): $(VHDL_SOURCES) $(VERILOG_SOURCES) | $(BUILD_DIR)
 	@{ \
 		echo "vlib $(WORK_DIR)"; \
 		echo "vmap work $(WORK_DIR)"; \
@@ -125,74 +124,100 @@ $(LEGACY_DO): $(VHDL_SOURCES) $(VERILOG_SOURCES) | $(BUILD_DIR)
 
 compile: deps $(STAMP)
 
-# $(STAMP) depends only on $(LEGACY_DO) (not the sources directly),
-# so re-running "make compile"/"make all" after no source files have
-# changed does nothing: $(LEGACY_DO) wasn't regenerated, so it's
-# still older than $(STAMP), so this recipe is skipped and vsim is
-# never invoked.
-$(STAMP): $(LEGACY_DO) | $(LOG_DIR) $(REPORT_DIR)
-	$(VSIM) $(VSIM_QUIET) -c -do "do $(LEGACY_DO); quit -f" -l $(LOG_DIR)/compile.log
+$(STAMP): $(COMPILE_DO) | $(LOG_DIR) $(REPORT_DIR)
+	$(VSIM) $(VSIM_QUIET) -c -do "do $(COMPILE_DO); quit -f" -l $(LOG_DIR)/compile.log
 	@$(call CHECK_LOG,$(LOG_DIR)/compile.log)
 	@touch "$@"
 
-# run.do = compile.do plus a tail that loads $(TOP), runs to
-# completion, and quits.
-$(LEGACY_SIM_DO): $(LEGACY_DO) | $(BUILD_DIR)
+# run.do / gui.do = compile.do plus a tail that loads $(TOP) and
+# either runs to completion and quits (run), or runs and stays open
+# for inspection (gui). Whether ModelSim actually shows a GUI is
+# controlled by the outer vsim invocation's -c flag below, not by
+# anything in the .do file itself.
+#		cat "$(COMPILE_DO)"; 
+$(RUN_DO): $(COMPILE_DO) | $(BUILD_DIR)
 	@{ \
 		echo "vsim work.$(TOP)"; \
 		echo "run -all"; \
 		echo "quit -f"; \
 	} > "$@"
 
-run: deps $(LEGACY_SIM_DO) | $(LOG_DIR) $(REPORT_DIR)
-	$(VSIM) $(VSIM_QUIET) -c -do $(LEGACY_SIM_DO) -l $(LOG_DIR)/$(TOP).log
+$(GUI_DO): $(COMPILE_DO) | $(BUILD_DIR)
+	@{ \
+		cat "$(COMPILE_DO)"; \
+		echo "vsim work.$(TOP)"; \
+		echo "run -all"; \
+	} > "$@"
+
+run: deps $(RUN_DO) | $(LOG_DIR) $(REPORT_DIR)
+	$(VSIM) $(VSIM_QUIET) -c -do $(RUN_DO) -l $(LOG_DIR)/$(TOP).log
 	@$(call CHECK_LOG,$(LOG_DIR)/$(TOP).log)
 
-# Generates the project script: pre-creates/maps a "work" library at
-# $(WORK_DIR) (the same directory the plain compile flow above uses)
-# *before* creating the project, so "project new" picks up that
-# existing mapping instead of creating its own default "work" library
-# under ".". (Passing the library path directly as an extra argument
-# to "project new" is not accepted by all vsim/Questa versions --
-# some report a bogus "invalid Configuration/Project file suffix"
-# parse error -- so the library is set up ahead of time instead.)
-# Then deletes any stale .mpf, creates a fresh project, registers
-# every source file via "project addfile" (same file set/order as
-# $(LEGACY_DO)), printing a "Compiling: <file>" line per file just
-# like $(LEGACY_DO) does, then compiles the whole project in one go.
-#
-# Regenerated whenever the source file set changes -- same mechanism
-# as $(LEGACY_DO), which is what lets $(PROJECT_STAMP) below skip
-# recompilation when nothing changed.
+gui: deps $(GUI_DO) | $(LOG_DIR) $(REPORT_DIR)
+	$(VSIM) $(VSIM_QUIET) -do $(GUI_DO) -l $(LOG_DIR)/$(TOP).log
+	@$(call CHECK_LOG,$(LOG_DIR)/$(TOP).log)
+
+# Recompiles only the source files that changed since the last
+# successful full compile (i.e. newer than $(STAMP)), directly into
+# the existing work library -- no vlib/full rebuild. Useful while
+# iterating on a handful of files instead of paying for a full
+# recompile every time via "run"/"gui".
+outdated: deps $(COMPILE_DO) | $(LOG_DIR) $(REPORT_DIR)
+	@vhdl_out=(); \
+	for src in $(VHDL_PACKAGES) $(VHDL_SHARED) $(VHDL_SYSTEM) $(VHDL_TOP) $(VHDL_SIM); do \
+		if [ ! -e "$(STAMP)" ] || [ "$$src" -nt "$(STAMP)" ]; then vhdl_out+=("$$src"); fi; \
+	done; \
+	verilog_out=(); \
+	for src in $(VERILOG_SHARED) $(VERILOG_SYSTEM) $(VERILOG_SIM); do \
+		if [ ! -e "$(STAMP)" ] || [ "$$src" -nt "$(STAMP)" ]; then verilog_out+=("$$src"); fi; \
+	done; \
+	if [ $${#vhdl_out[@]} -eq 0 ] && [ $${#verilog_out[@]} -eq 0 ]; then \
+		echo "Nothing out of date."; \
+		exit 0; \
+	fi; \
+	echo "Out of date:"; \
+	printf '  %s\n' "$${vhdl_out[@]}" "$${verilog_out[@]}"; \
+	{ \
+		echo "if {![file exists {$(WORK_DIR)}]} { vlib $(WORK_DIR) }"; \
+		echo "vmap work $(WORK_DIR)"; \
+		for src in "$${vhdl_out[@]}"; do \
+			echo "puts \"Compiling: $$src\""; \
+			echo "if {[catch {vcom -quiet -2008 -work work $$src}]} { quit -code 1 }"; \
+		done; \
+		for src in "$${verilog_out[@]}"; do \
+			echo "puts \"Compiling: $$src\""; \
+			echo "if {[catch {vlog -quiet -work work $$src}]} { quit -code 1 }"; \
+		done; \
+	} > "$(OUTDATED_DO)"; \
+	$(VSIM) $(VSIM_QUIET) -c -do "do $(OUTDATED_DO); quit -f" -l $(LOG_DIR)/outdated.log; \
+	$(call CHECK_LOG,$(LOG_DIR)/outdated.log); \
+	touch "$(STAMP)"
+
+# Generates the project script: deletes any stale .mpf, creates a
+# fresh project, registers every source file via "project addfile"
+# (same file set/order as $(COMPILE_DO) above), then compiles the
+# whole project in one go. Regenerated whenever the source file set
+# changes, same as $(COMPILE_DO).
 $(PROJECT_DO): $(VHDL_SOURCES) $(VERILOG_SOURCES) | $(BUILD_DIR)
 	@{ \
 		echo "if {![file exists {modelsim.ini}]} { vmap -c }"; \
-		echo "if {![file exists {$(WORK_DIR)}]} { vlib $(WORK_DIR) }"; \
-		echo "vmap work $(WORK_DIR)"; \
 		echo "if {[file exists {$(PROJECT_MPF)}]} { project close; file delete {$(PROJECT_MPF)} }"; \
 		echo "if {[catch {project new {.} {$(PROJECT_NAME)} work} perr]} { puts \"project new failed: \$$perr\"; quit -code 1 }"; \
-		echo "puts \"Adding VHDL files\""; \
 		echo "project addfile {packages/MY_Pack_v2.vhd}"; \
 		for src in $(VHDL_PACKAGES) $(VHDL_SHARED) $(VHDL_SYSTEM) $(VHDL_TOP) $(VHDL_SIM); do \
 			echo "project addfile {$$src}"; \
 		done; \
-		echo "puts \"Adding Verilog files\""; \
 		for src in $(VERILOG_PACKAGES) $(VERILOG_SHARED) $(VERILOG_SYSTEM) $(VERILOG_SIM); do \
 			echo "project addfile {$$src}"; \
 		done; \
-		echo "project compileorder"; \
-		echo "puts \"Recalculating compilation order\""; \
-		echo "project calculateorder"; \
-		echo "project compileoutofdate"; \
+		echo "project compileall"; \
+		echo "project close"; \
 	} > "$@"
 
 project: deps $(PROJECT_STAMP)
 
-# Same skip-if-unchanged behavior as $(STAMP) above: this recipe only
-# runs when $(PROJECT_DO) is newer than $(PROJECT_STAMP), i.e. when
-# the source file set actually changed.
-$(PROJECT_STAMP): $(PROJECT_DO) $(PROJECT_RUN_DO) | $(LOG_DIR) $(REPORT_DIR)
-	$(VSIM) $(VSIM_QUIET) -c -do "source $(PROJECT_DO); source $(PROJECT_RUN_DO); quit -f" -l $(LOG_DIR)/project.log
+$(PROJECT_STAMP): $(PROJECT_DO) | $(LOG_DIR) $(REPORT_DIR)
+	$(VSIM) $(VSIM_QUIET) -c -do "source $(PROJECT_DO); quit -f" -l $(LOG_DIR)/project.log
 	@$(call CHECK_LOG,$(LOG_DIR)/project.log)
 	@test -f "$(PROJECT_MPF)" || { \
 		echo "$(PROJECT_MPF) was not created -- see $(LOG_DIR)/project.log."; \
@@ -204,25 +229,18 @@ $(PROJECT_STAMP): $(PROJECT_DO) $(PROJECT_RUN_DO) | $(LOG_DIR) $(REPORT_DIR)
 	@touch "$@"
 
 # Opens the compiled project and simulates $(TOP), same shape as
-# $(LEGACY_SIM_DO) above but via "project open" instead of a bare work lib.
-# Because the project's "work" library physically lives at
-# $(WORK_DIR) (see $(PROJECT_DO) above), this reuses the exact same
-# compiled library as "run"/"compile" instead of a separate copy.
+# $(RUN_DO) above but via "project open" instead of a bare work lib.
 $(PROJECT_RUN_DO): $(PROJECT_DO) | $(BUILD_DIR)
 	@{ \
 		echo "project open {$(PROJECT_MPF)}"; \
-		echo "puts \"1\""; \
-		echo "project compileoutofdate"; \
-		echo "puts \"2\""; \
-		echo "project calculateorder"; \
-		echo "puts \"3\""; \
-		echo "project compileall"; \
-		echo "puts \"4\""; \
+		echo "vsim work.$(TOP)"; \
+		echo "run -all"; \
+		echo "quit -f"; \
 	} > "$@"
-# 
-# simulate: project $(PROJECT_RUN_DO) | $(LOG_DIR) $(REPORT_DIR)
-# 	$(VSIM) $(VSIM_QUIET) -c -do "source $(PROJECT_RUN_DO); quit -f" -l $(LOG_DIR)/$(TOP).log
-# 	@$(call CHECK_LOG,$(LOG_DIR)/$(TOP).log)
+
+project-run: project $(PROJECT_RUN_DO) | $(LOG_DIR) $(REPORT_DIR)
+	$(VSIM) $(VSIM_QUIET) -c -do "source $(PROJECT_RUN_DO)" -l $(LOG_DIR)/$(TOP).log
+	@$(call CHECK_LOG,$(LOG_DIR)/$(TOP).log)
 
 $(BUILD_DIR) $(LOG_DIR) $(REPORT_DIR):
 	mkdir -p $@
@@ -233,5 +251,6 @@ clean:
 	rm -rf $(BUILD_DIR) $(REPORT_DIR) work
 	rm -f $(PROJECT_MPF) modelsim.ini 
 	rm -f rtl_project.cr.mti
-	rm -f rtl_project.mpf
+	
+
 
