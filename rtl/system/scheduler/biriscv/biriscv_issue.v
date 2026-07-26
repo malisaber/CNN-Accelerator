@@ -178,6 +178,17 @@ module biriscv_issue
     ,output          mul_hold_o
     ,output          interrupt_inhibit_o
 	
+	// Trace file 
+	// added by me
+    ,output          pipe0_valid_wb_o
+    ,output [ 31:0]  pipe0_pc_wb_o
+    ,output [ 31:0]  pipe0_opcode_wb_o
+    ,output          pipe1_valid_wb_o
+    ,output [ 31:0]  pipe1_pc_wb_o
+    ,output [ 31:0]  pipe1_opcode_wb_o
+	
+	
+	
 	//	Hardware Content Switching
 	//	Added by me
     ,input           On_Tmporary_i
@@ -1082,6 +1093,17 @@ begin
 end
 endfunction
 `endif
+
+
+
+
+assign pipe0_valid_wb_o  = pipe0_valid_wb_w;
+assign pipe0_pc_wb_o     = pipe0_pc_wb_w;
+assign pipe0_opcode_wb_o = pipe0_opc_wb_w;
+assign pipe1_valid_wb_o  = pipe1_valid_wb_w;
+assign pipe1_pc_wb_o     = pipe1_pc_wb_w;
+assign pipe1_opcode_wb_o = pipe1_opc_wb_w;
+
 
 
 endmodule

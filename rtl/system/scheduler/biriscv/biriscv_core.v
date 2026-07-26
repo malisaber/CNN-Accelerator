@@ -335,12 +335,26 @@ u_frontend
 );
 
 
-
-biriscv_PC_Tracer	
-PC_Tracer
+// Added by me
+wire        pipe0_valid_wb_w2;
+wire [31:0] pipe0_pc_wb_w2;
+wire [31:0] pipe0_opcode_wb_w2;
+wire		pipe1_valid_wb_w2;
+wire [31:0] pipe1_pc_wb_w2;
+wire [31:0] pipe1_opcode_wb_w2;
+biriscv_pc_tracer2
+u_pc_tracer2
 (
-	 .clk(clk_i)
-	,.PC(fetch0_pc_w)
+     .clk_i(clk_i)
+    ,.rst_i(rst_i)
+    ,.pipe0_valid_i(pipe0_valid_wb_w2)
+    ,.pipe0_pc_i(pipe0_pc_wb_w2)
+    ,.pipe0_opcode_i(pipe0_opcode_wb_w2)
+    ,.pipe1_valid_i(pipe1_valid_wb_w2)
+    ,.pipe1_pc_i(pipe1_pc_wb_w2)
+    ,.pipe1_opcode_i(pipe1_opcode_wb_w2)
+    ,.exception_i(csr_writeback_exception_w)
+    ,.exception_pc_i(csr_writeback_exception_pc_w)
 );
 
 
@@ -706,7 +720,14 @@ u_issue
     ,.exec1_hold_o(exec1_hold_w)
     ,.mul_hold_o(mul_hold_w)
     ,.interrupt_inhibit_o(interrupt_inhibit_w)
-	
+	// Trace file 
+	// added by me
+    ,.pipe0_valid_wb_o(pipe0_valid_wb_w2)
+    ,.pipe0_pc_wb_o(pipe0_pc_wb_w2)
+    ,.pipe0_opcode_wb_o(pipe0_opcode_wb_w2)
+    ,.pipe1_valid_wb_o(pipe1_valid_wb_w2)
+    ,.pipe1_pc_wb_o(pipe1_pc_wb_w2)
+    ,.pipe1_opcode_wb_o(pipe1_opcode_wb_w2)
 	//	Hardware Content Switching
 	//	Added by me
     ,.On_Tmporary_i(On_Tmporary_w)
