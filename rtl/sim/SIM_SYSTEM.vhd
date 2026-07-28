@@ -227,8 +227,8 @@ BEGIN
 	BEGIN
 		INT_REQ_SYS_PC		<=	'0';
 		WAIT FOR 20 US;
-		--INT_REQ_SYS_PC		<=	'1';
-		--WAIT ON	 INT_ACK_SYS_PC;
+		INT_REQ_SYS_PC		<=	'1';
+		WAIT ON	 INT_ACK_SYS_PC;
 		WAIT FOR clk_per;
 		INT_REQ_SYS_PC		<=	'0';
 		WAIT;

@@ -340,8 +340,8 @@ firmware: check-run-vars check-run-tools packages
 		$(CROSS)-gcc \
 			-mabi=ilp32 \
 			-O2 \
-			-march=rv32im \
-			-Wa$(comma)-march=rv32im \
+			-march=rv32im_zicsr_zifencei \
+			-Wa$(comma)-march=rv32im_zicsr_zifencei \
 			-Wextra \
 			-Wall \
 			-Wno-unused-parameter \
