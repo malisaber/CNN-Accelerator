@@ -131,8 +131,8 @@ compile: deps $(STAMP)
 # still older than $(STAMP), so this recipe is skipped and vsim is
 # never invoked.
 $(STAMP): $(LEGACY_DO) | $(LOG_DIR) $(REPORT_DIR)
-	$(VSIM) $(VSIM_QUIET) -c -do "do $(LEGACY_DO); quit -f" -l $(LOG_DIR)/compile.log
-	@$(call CHECK_LOG,$(LOG_DIR)/compile.log)
+	$(VSIM) $(VSIM_QUIET) -c -do "do $(LEGACY_DO); quit -f" -l $(LOG_DIR)/$(TOP)_legacy_compile.log
+	@$(call CHECK_LOG,$(LOG_DIR)/$(TOP)_legacy_compile.log)
 	@touch "$@"
 
 # run.do = compile.do plus a tail that loads $(TOP), runs to
@@ -145,8 +145,8 @@ $(LEGACY_SIM_DO): $(LEGACY_DO) | $(BUILD_DIR)
 	} > "$@"
 
 run: deps $(LEGACY_SIM_DO) | $(LOG_DIR) $(REPORT_DIR)
-	$(VSIM) $(VSIM_QUIET) -c -do $(LEGACY_SIM_DO) -l $(LOG_DIR)/$(TOP).log
-	@$(call CHECK_LOG,$(LOG_DIR)/$(TOP).log)
+	$(VSIM) $(VSIM_QUIET) -c -do $(LEGACY_SIM_DO) -l $(LOG_DIR)/$(TOP)_legacy_simulate.log
+	@$(call CHECK_LOG,$(LOG_DIR)/$(TOP)_legacy_simulate.log)
 
 # Aliases for the top-level Makefile's "legacy-project"/"legacy-simulate"
 # targets, which invoke "$(MAKE) -C rtl legacy" / "... legacy-simulate".
@@ -217,8 +217,8 @@ project: deps $(PROJECT_STAMP)
 # runs when $(PROJECT_DO) is newer than $(PROJECT_STAMP), i.e. when
 # the source file set actually changed.
 $(PROJECT_STAMP): $(PROJECT_DO) | $(LOG_DIR) $(REPORT_DIR)
-	$(VSIM) $(VSIM_QUIET) -c -do "source $(PROJECT_DO); quit -f" -l $(LOG_DIR)/project.log
-	@$(call CHECK_LOG,$(LOG_DIR)/project.log)
+	$(VSIM) $(VSIM_QUIET) -c -do "source $(PROJECT_DO); quit -f" -l $(LOG_DIR)/$(TOP)_project_compile.log
+	@$(call CHECK_LOG,$(LOG_DIR)/$(TOP)_project_compile.log)
 	@test -f "$(PROJECT_MPF)" || { \
 		echo "$(PROJECT_MPF) was not created -- see $(LOG_DIR)/project.log."; \
 		echo "This can happen if 'project new' fails without raising a catchable"; \
@@ -249,8 +249,8 @@ $(PROJECT_SIM_DO): $(PROJECT_DO) | $(BUILD_DIR)
 	} > "$@"
 
 simulate: project $(PROJECT_SIM_DO) | $(LOG_DIR) $(REPORT_DIR)
-	$(VSIM) $(VSIM_QUIET) -c -do "do $(PROJECT_SIM_DO); quit -f" -l $(LOG_DIR)/$(TOP).log
-	@$(call CHECK_LOG,$(LOG_DIR)/$(TOP).log)
+	$(VSIM) $(VSIM_QUIET) -c -do "do $(PROJECT_SIM_DO); quit -f" -l $(LOG_DIR)/$(TOP)_project_simulate.log
+	@$(call CHECK_LOG,$(LOG_DIR)/$(TOP)_project_simulate.log)
 
 $(BUILD_DIR) $(LOG_DIR) $(REPORT_DIR):
 	mkdir -p $@

@@ -108,11 +108,11 @@ rtl-simulate:
 
 # without making a project
 legacy-project:
-	$(call LOG,rtl-project,$(MAKE) -C rtl legacy)
+	$(call LOG,legacy-project,$(MAKE) -C rtl legacy)
 
 # Simulation
 legacy-simulate:
-	$(call LOG,rtl-simulate,$(MAKE) -C rtl legacy-simulate)
+	$(call LOG,legacy-simulate,$(MAKE) -C rtl legacy-simulate)
 
 
 # ------------------------------------------------------------------
@@ -340,8 +340,8 @@ firmware: check-run-vars check-run-tools packages
 		$(CROSS)-gcc \
 			-mabi=ilp32 \
 			-O2 \
-			-march=rv32im_zicsr_zifencei \
-			-Wa$(comma)-march=rv32im_zicsr_zifencei \
+			-march=rv32im \
+			-Wa$(comma)-march=rv32im \
 			-Wextra \
 			-Wall \
 			-Wno-unused-parameter \

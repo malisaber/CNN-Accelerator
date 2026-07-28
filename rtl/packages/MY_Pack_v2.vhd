@@ -13,7 +13,7 @@ package MY_Pack_v2	IS
 	
 	
 	-- Main Memory Size, 
-	CONSTANT	P_Main_MEMx_LINE_COUNT			:	INTEGER	:=	8; -- 10000
+	CONSTANT	P_Main_MEMx_LINE_COUNT			:	INTEGER	:=	10000; -- 10000
 	
 	
 	--		First level constant
