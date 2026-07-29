@@ -549,7 +549,7 @@ architecture Behavioral of Scheduler IS
 	--------------------------------------------------------------------------
 	SIGNAL	ERROR						:	std_logic;
 	SIGNAL	ERROR_cmb					:	std_logic;
-	SIGNAL	ERROR_flg					:	std_logic;
+	SIGNAL	ERROR_flg					:	std_logic	:=	'0';
 	SIGNAL	RISCV_rst					:	std_logic;
 	--------------------------------------------------------------------------
 	SIGNAL	uPROC_PORT_rd				:	std_logic;
@@ -1006,6 +1006,11 @@ begin
 		END IF;
 	END PROCESS;
 	--------------------------------------------------------------------------
+	PROCESS(ERROR_flg)
+	BEGIN
+		ASSERT ERROR_flg = '0' REPORT "Error occurred" SEVERITY FAILURE;
+	END PROCESS;
+	--------------------------------------------------------------------------
 end Behavioral;
 
-
+

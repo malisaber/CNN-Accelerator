@@ -110,7 +110,7 @@ $(LEGACY_DO): $(VHDL_SOURCES) $(VERILOG_SOURCES) | $(BUILD_DIR)
 	@{ \
 		echo "vlib $(WORK_DIR)"; \
 		echo "vmap work $(WORK_DIR)"; \
-		echo "puts \"Compiling: packages/MY_Pack_v2.vhd\""; \
+		echo "puts \"Compiling: hdl/packages/MY_Pack_v2.vhd\""; \
 		echo "vcom -quiet -2008 -work work packages/MY_Pack_v2.vhd"; \
 		for src in $(VHDL_PACKAGES) $(VHDL_SHARED) $(VHDL_SYSTEM) $(VHDL_TOP) $(VHDL_SIM); do \
 			echo "puts \"Compiling: $$src\""; \
@@ -198,7 +198,7 @@ $(PROJECT_DO): $(VHDL_SOURCES) $(VERILOG_SOURCES) | $(BUILD_DIR)
 		echo "if {[file exists {$(PROJECT_MPF)}]} { project close; file delete {$(PROJECT_MPF)} }"; \
 		echo "if {[catch {project new {.} {$(PROJECT_NAME)} work} perr]} { puts \"project new failed: \$$perr\"; quit -code 1 }"; \
 		echo "puts \"Adding VHDL files\""; \
-		echo "project addfile {packages/MY_Pack_v2.vhd}"; \
+		echo "project addfile {hdl/packages/MY_Pack_v2.vhd}"; \
 		for src in $(VHDL_PACKAGES) $(VHDL_SHARED) $(VHDL_SYSTEM) $(VHDL_TOP) $(VHDL_SIM); do \
 			echo "project addfile {$$src}"; \
 		done; \

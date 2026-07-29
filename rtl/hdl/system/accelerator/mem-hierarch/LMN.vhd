@@ -309,8 +309,8 @@ architecture Behavioral of LMN is
 	--------------------------------------------------------------------------------------
 	SIGNAL	Arb_M_MSM					:	Unc_2D_array		(NOM-1	DOWNTO 0,	SM_size-1	DOWNTO 0);
 	SIGNAL	Arb_S_SSM					:	Unc_2D_array		(NOS-1	DOWNTO 0,	SM_size-1	DOWNTO 0);
-	SIGNAL	MSB_MSM						:	Unc_1D_3bit_array	(NOM-1	DOWNTO 0);
-	SIGNAL	SSB_SSM						:	Unc_1D_3bit_array	(NOS-1	DOWNTO 0);
+	SIGNAL	MSB_MSM						:	Unc_1D_4bit_array	(NOM-1	DOWNTO 0);
+	SIGNAL	SSB_SSM						:	Unc_1D_4bit_array	(NOS-1	DOWNTO 0);
 	--------------------------------------------------------------------------------------
 	--------------------------------------------------------------------------------------
 begin

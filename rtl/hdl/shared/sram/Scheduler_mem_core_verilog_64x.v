@@ -1,5 +1,5 @@
 `timescale 1ns / 1ns
-`include "packages/defines.vh"
+`include "hdl/packages/defines.vh"
  
  module Scheduler_mem_core_verilog_64x	
 	#(

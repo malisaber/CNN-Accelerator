@@ -30,7 +30,7 @@ void DMA_start_transfer					(unsigned int DMA_add, unsigned int read_add, unsign
 	DMA_wait_for_done(DMA_add);
 	*C_PERIPHERAL_REG_DMA_READ_ADDRESS = read_add;
 	*C_PERIPHERAL_REG_DMA_WRITE_ADDRESS= write_add;
-	*C_PERIPHERAL_REG_DMA_TRANS_COUNT  = cnt;
+	*C_PERIPHERAL_REG_DMA_TRANS_COUNT	= cnt;
 	*C_PERIPHERAL_REG_DMA_CONTROL = (1 << C_DMA_Start_pos) | (DMA_add << 0);
 }
 
@@ -127,11 +127,11 @@ void MPDR_Initiate_Start				(unsigned int H_Ivals,	unsigned int L_Ivals,	const u
 	unsigned int MPDR_add	= ((H_Ivals >> 24) & 0xFF);
 	unsigned int Max_colm	= ((H_Ivals >> 20) & 0xF);
 	unsigned int Max_chan	= ((H_Ivals >> 16) & 0xF);
-	unsigned int Outs_Ival	= ((H_Ivals >>  0) & 0xFF) << 8;
+	unsigned int Outs_Ival	= ((H_Ivals >>	0) & 0xFF) << 8;
 	unsigned int R1C1_Ival	= ((L_Ivals >> 24) & 0xFF) << 8;
 	unsigned int R1C2_Ival	= ((L_Ivals >> 16) & 0xFF) << 8;
-	unsigned int R2C1_Ival	= ((L_Ivals >>  8) & 0xFF) << 8;
-	unsigned int R2C2_Ival	= ((L_Ivals >>  0) & 0xFF) << 8;
+	unsigned int R2C1_Ival	= ((L_Ivals >>	8) & 0xFF) << 8;
+	unsigned int R2C2_Ival	= ((L_Ivals >>	0) & 0xFF) << 8;
 
 	unsigned int cnt = ((Max_colm+1) * (Max_chan+1))-1;
 	unsigned int val;
@@ -301,7 +301,7 @@ void PDR_EC_CNTR_config_start			(unsigned int H_Cont_Word)
 	//			1	->	rising Edge
 
 	unsigned int EC_add		= ((H_Cont_Word >> 24) & 0xFF);
-	unsigned int TOP		= ((H_Cont_Word >>  8) & 0xFF);
+	unsigned int TOP		= ((H_Cont_Word >>	8) & 0xFF);
 
 	unsigned int tmp = 0;
 	tmp |= (TOP << C_Event_Max_pos);
@@ -681,50 +681,50 @@ void PE_INIT_SA_load_bias_data			(unsigned int plane_add, unsigned int pe_add, u
 	}
 }
 
-void PE_INIT_SA_load_address 			(unsigned int plane_add, unsigned int pe_add, S_Addressing_Info load_add,   S_Addressing_Info store_add)
+void PE_INIT_SA_load_address 			(unsigned int plane_add, unsigned int pe_add, S_Addressing_Info load_add,	S_Addressing_Info store_add)
 {
-	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT		+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=   load_add.base_add;
-	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR	+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=   (1 << C_SUU_Address_Point_Base_Wen_pos) |
+	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT		+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=	load_add.base_add;
+	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR	+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=	(1 << C_SUU_Address_Point_Base_Wen_pos) |
 																												(0 << C_SUU_Address_Point_Count_Wen_pos) |
 																												(0 << C_SUU_Address_Point_Interval_Wen_pos) |
 																												(1 << C_SUU_Address_Point_SA_UAb_pos) |
 																												(pe_add << C_SUU_Address_Point_Unit_Add_pos) |
 																												(0 << C_SUU_Address_Point_Target_Add_pos);
 	
-	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT		+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=   load_add.count;
-	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR	+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=   (0 << C_SUU_Address_Point_Base_Wen_pos) |
+	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT		+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=	load_add.count;
+	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR	+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=	(0 << C_SUU_Address_Point_Base_Wen_pos) |
 																												(1 << C_SUU_Address_Point_Count_Wen_pos) |
 																												(0 << C_SUU_Address_Point_Interval_Wen_pos) |
 																												(1 << C_SUU_Address_Point_SA_UAb_pos) |
 																												(pe_add << C_SUU_Address_Point_Unit_Add_pos) |
 																												(0 << C_SUU_Address_Point_Target_Add_pos);
 	
-	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT		+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=   load_add.interval;
-	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR	+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=   (0 << C_SUU_Address_Point_Base_Wen_pos) |
+	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT		+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=	load_add.interval;
+	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR	+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=	(0 << C_SUU_Address_Point_Base_Wen_pos) |
 																												(0 << C_SUU_Address_Point_Count_Wen_pos) |
 																												(1 << C_SUU_Address_Point_Interval_Wen_pos) |
 																												(1 << C_SUU_Address_Point_SA_UAb_pos) |
 																												(pe_add << C_SUU_Address_Point_Unit_Add_pos) |
 																												(0 << C_SUU_Address_Point_Target_Add_pos);
 	
-	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT		+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=   store_add.base_add;
-	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR	+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=   (1 << C_SUU_Address_Point_Base_Wen_pos) |
+	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT		+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=	store_add.base_add;
+	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR	+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=	(1 << C_SUU_Address_Point_Base_Wen_pos) |
 																												(0 << C_SUU_Address_Point_Count_Wen_pos) |
 																												(0 << C_SUU_Address_Point_Interval_Wen_pos) |
 																												(1 << C_SUU_Address_Point_SA_UAb_pos) |
 																												(pe_add << C_SUU_Address_Point_Unit_Add_pos) |
 																												(1 << C_SUU_Address_Point_Target_Add_pos);
 	
-	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT		+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=   store_add.count;
-	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR	+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=   (0 << C_SUU_Address_Point_Base_Wen_pos) |
+	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT		+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=	store_add.count;
+	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR	+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=	(0 << C_SUU_Address_Point_Base_Wen_pos) |
 																												(1 << C_SUU_Address_Point_Count_Wen_pos) |
 																												(0 << C_SUU_Address_Point_Interval_Wen_pos) |
 																												(1 << C_SUU_Address_Point_SA_UAb_pos) |
 																												(pe_add << C_SUU_Address_Point_Unit_Add_pos) |
 																												(1 << C_SUU_Address_Point_Target_Add_pos);
 	
-	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT		+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=   store_add.interval;
-	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR	+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=   (0 << C_SUU_Address_Point_Base_Wen_pos) |
+	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT		+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=	store_add.interval;
+	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR	+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=	(0 << C_SUU_Address_Point_Base_Wen_pos) |
 																												(0 << C_SUU_Address_Point_Count_Wen_pos) |
 																												(1 << C_SUU_Address_Point_Interval_Wen_pos) |
 																												(1 << C_SUU_Address_Point_SA_UAb_pos) |
@@ -736,24 +736,24 @@ void PE_INIT_UA_load_address 			(unsigned int plane_add, unsigned int pe_add, S_
 {
 	for (unsigned int i=0; i<9; i++)
 	{
-		*(plane_add + C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT)									=   wgt_add[i].base_add;
-		*(plane_add + C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR)								=   (1 << C_SUU_Address_Point_Base_Wen_pos) |
+		*(plane_add + C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT)									=	wgt_add[i].base_add;
+		*(plane_add + C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR)								=	(1 << C_SUU_Address_Point_Base_Wen_pos) |
 																												(0 << C_SUU_Address_Point_Count_Wen_pos) |
 																												(0 << C_SUU_Address_Point_Interval_Wen_pos) |
 																												(0 << C_SUU_Address_Point_SA_UAb_pos) |
 																												(pe_add << C_SUU_Address_Point_Unit_Add_pos) |
 																												(i << C_SUU_Address_Point_Target_Add_pos);
 
-		*(plane_add + C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT)									=   wgt_add[i].count;
-		*(plane_add + C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR)								=   (0 << C_SUU_Address_Point_Base_Wen_pos) |
+		*(plane_add + C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT)									=	wgt_add[i].count;
+		*(plane_add + C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR)								=	(0 << C_SUU_Address_Point_Base_Wen_pos) |
 																												(1 << C_SUU_Address_Point_Count_Wen_pos) |
 																												(0 << C_SUU_Address_Point_Interval_Wen_pos) |
 																												(0 << C_SUU_Address_Point_SA_UAb_pos) |
 																												(pe_add << C_SUU_Address_Point_Unit_Add_pos) |
 																												(i << C_SUU_Address_Point_Target_Add_pos);
 
-		*(plane_add + C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT)	   								=   wgt_add[i].interval;
-		*(plane_add + C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR) 							=   (0 << C_SUU_Address_Point_Base_Wen_pos) |
+		*(plane_add + C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT)										=	wgt_add[i].interval;
+		*(plane_add + C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR) 							=	(0 << C_SUU_Address_Point_Base_Wen_pos) |
 																												(0 << C_SUU_Address_Point_Count_Wen_pos) |
 																												(1 << C_SUU_Address_Point_Interval_Wen_pos) |
 																												(0 << C_SUU_Address_Point_SA_UAb_pos) |
@@ -762,24 +762,24 @@ void PE_INIT_UA_load_address 			(unsigned int plane_add, unsigned int pe_add, S_
 	}
 	
 	
-	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT		+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=   inp_add.base_add;
-	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR	+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=   (1 << C_SUU_Address_Point_Base_Wen_pos) |
+	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT		+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=	inp_add.base_add;
+	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR	+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=	(1 << C_SUU_Address_Point_Base_Wen_pos) |
 																												(0 << C_SUU_Address_Point_Count_Wen_pos) |
 																												(0 << C_SUU_Address_Point_Interval_Wen_pos) |
 																												(0 << C_SUU_Address_Point_SA_UAb_pos) |
 																												(pe_add << C_SUU_Address_Point_Unit_Add_pos) |
 																												(15 << C_SUU_Address_Point_Target_Add_pos);
 	
-	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT		+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=   inp_add.count;
-	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR	+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=   (0 << C_SUU_Address_Point_Base_Wen_pos) |
+	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT		+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=	inp_add.count;
+	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR	+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=	(0 << C_SUU_Address_Point_Base_Wen_pos) |
 																												(1 << C_SUU_Address_Point_Count_Wen_pos) |
 																												(0 << C_SUU_Address_Point_Interval_Wen_pos) |
 																												(0 << C_SUU_Address_Point_SA_UAb_pos) |
 																												(pe_add << C_SUU_Address_Point_Unit_Add_pos) |
 																												(15 << C_SUU_Address_Point_Target_Add_pos);
 	
-	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT		+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=   inp_add.interval;
-	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR	+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=   (0 << C_SUU_Address_Point_Base_Wen_pos) |
+	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT		+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=	inp_add.interval;
+	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR	+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=	(0 << C_SUU_Address_Point_Base_Wen_pos) |
 																												(0 << C_SUU_Address_Point_Count_Wen_pos) |
 																												(1 << C_SUU_Address_Point_Interval_Wen_pos) |
 																												(0 << C_SUU_Address_Point_SA_UAb_pos) |
@@ -789,51 +789,51 @@ void PE_INIT_UA_load_address 			(unsigned int plane_add, unsigned int pe_add, S_
 }
 
 void PE_INIT_SA_load_address 			(unsigned int plane_add,				unsigned int pe_add, 
-										unsigned int load_base_add,				unsigned int load_Count,	unsigned int load_Ival,   
+										unsigned int load_base_add,				unsigned int load_Count,	unsigned int load_Ival,	
 										unsigned int store_base_add,			unsigned int store_Count,	unsigned int store_Ival)
 {
-	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT		+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=   load_base_add;
-	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR	+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=   (1 << C_SUU_Address_Point_Base_Wen_pos) |
+	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT		+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=	load_base_add;
+	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR	+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=	(1 << C_SUU_Address_Point_Base_Wen_pos) |
 																												(0 << C_SUU_Address_Point_Count_Wen_pos) |
 																												(0 << C_SUU_Address_Point_Interval_Wen_pos) |
 																												(1 << C_SUU_Address_Point_SA_UAb_pos) |
 																												(pe_add << C_SUU_Address_Point_Unit_Add_pos) |
 																												(0 << C_SUU_Address_Point_Target_Add_pos);
 	
-	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT		+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=   load_Count;
-	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR	+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=   (0 << C_SUU_Address_Point_Base_Wen_pos) |
+	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT		+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=	load_Count;
+	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR	+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=	(0 << C_SUU_Address_Point_Base_Wen_pos) |
 																												(1 << C_SUU_Address_Point_Count_Wen_pos) |
 																												(0 << C_SUU_Address_Point_Interval_Wen_pos) |
 																												(1 << C_SUU_Address_Point_SA_UAb_pos) |
 																												(pe_add << C_SUU_Address_Point_Unit_Add_pos) |
 																												(0 << C_SUU_Address_Point_Target_Add_pos);
 	
-	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT		+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=   load_Ival;
-	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR	+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=   (0 << C_SUU_Address_Point_Base_Wen_pos) |
+	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT		+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=	load_Ival;
+	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR	+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=	(0 << C_SUU_Address_Point_Base_Wen_pos) |
 																												(0 << C_SUU_Address_Point_Count_Wen_pos) |
 																												(1 << C_SUU_Address_Point_Interval_Wen_pos) |
 																												(1 << C_SUU_Address_Point_SA_UAb_pos) |
 																												(pe_add << C_SUU_Address_Point_Unit_Add_pos) |
 																												(0 << C_SUU_Address_Point_Target_Add_pos);
 	
-	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT		+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=   store_base_add;
-	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR	+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=   (1 << C_SUU_Address_Point_Base_Wen_pos) |
+	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT		+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=	store_base_add;
+	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR	+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=	(1 << C_SUU_Address_Point_Base_Wen_pos) |
 																												(0 << C_SUU_Address_Point_Count_Wen_pos) |
 																												(0 << C_SUU_Address_Point_Interval_Wen_pos) |
 																												(1 << C_SUU_Address_Point_SA_UAb_pos) |
 																												(pe_add << C_SUU_Address_Point_Unit_Add_pos) |
 																												(1 << C_SUU_Address_Point_Target_Add_pos);
 	
-	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT		+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=   store_Count;
-	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR	+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=   (0 << C_SUU_Address_Point_Base_Wen_pos) |
+	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT		+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=	store_Count;
+	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR	+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=	(0 << C_SUU_Address_Point_Base_Wen_pos) |
 																												(1 << C_SUU_Address_Point_Count_Wen_pos) |
 																												(0 << C_SUU_Address_Point_Interval_Wen_pos) |
 																												(1 << C_SUU_Address_Point_SA_UAb_pos) |
 																												(pe_add << C_SUU_Address_Point_Unit_Add_pos) |
 																												(1 << C_SUU_Address_Point_Target_Add_pos);
 	
-	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT		+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=   store_Ival;
-	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR	+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=   (0 << C_SUU_Address_Point_Base_Wen_pos) |
+	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT		+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=	store_Ival;
+	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR	+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=	(0 << C_SUU_Address_Point_Base_Wen_pos) |
 																												(0 << C_SUU_Address_Point_Count_Wen_pos) |
 																												(1 << C_SUU_Address_Point_Interval_Wen_pos) |
 																												(1 << C_SUU_Address_Point_SA_UAb_pos) |
@@ -841,27 +841,27 @@ void PE_INIT_SA_load_address 			(unsigned int plane_add,				unsigned int pe_add,
 																												(1 << C_SUU_Address_Point_Target_Add_pos);
 }
 
-void PE_INIT_UA_Inp_load_address		(unsigned int plane_add,				unsigned int pe_add,   
+void PE_INIT_UA_Inp_load_address		(unsigned int plane_add,				unsigned int pe_add,	
 										unsigned int Input_base_add,			unsigned int Input_Count,	unsigned int Input_Ival)
 {
-	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT		+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=   Input_base_add;
-	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR	+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=   (1 << C_SUU_Address_Point_Base_Wen_pos) |
+	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT		+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=	Input_base_add;
+	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR	+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=	(1 << C_SUU_Address_Point_Base_Wen_pos) |
 																												(0 << C_SUU_Address_Point_Count_Wen_pos) |
 																												(0 << C_SUU_Address_Point_Interval_Wen_pos) |
 																												(0 << C_SUU_Address_Point_SA_UAb_pos) |
 																												(pe_add << C_SUU_Address_Point_Unit_Add_pos) |
 																												(15 << C_SUU_Address_Point_Target_Add_pos);
 	
-	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT		+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=   Input_Count;
-	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR	+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=   (0 << C_SUU_Address_Point_Base_Wen_pos) |
+	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT		+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=	Input_Count;
+	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR	+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=	(0 << C_SUU_Address_Point_Base_Wen_pos) |
 																												(1 << C_SUU_Address_Point_Count_Wen_pos) |
 																												(0 << C_SUU_Address_Point_Interval_Wen_pos) |
 																												(0 << C_SUU_Address_Point_SA_UAb_pos) |
 																												(pe_add << C_SUU_Address_Point_Unit_Add_pos) |
 																												(15 << C_SUU_Address_Point_Target_Add_pos);
 	
-	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT		+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=   Input_Ival;
-	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR	+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=   (0 << C_SUU_Address_Point_Base_Wen_pos) |
+	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT		+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=	Input_Ival;
+	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR	+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=	(0 << C_SUU_Address_Point_Base_Wen_pos) |
 																												(0 << C_SUU_Address_Point_Count_Wen_pos) |
 																												(1 << C_SUU_Address_Point_Interval_Wen_pos) |
 																												(0 << C_SUU_Address_Point_SA_UAb_pos) |
@@ -873,10 +873,10 @@ void PE_INIT_UA_Inp_load_address		(unsigned int plane_add,				unsigned int pe_ad
 void PE_INIT_UA_Wgt_load_address		(unsigned int plane_add,				unsigned int pe_add,
 										const unsigned int* Weight_base_add,	unsigned int Weight_Count,	unsigned int Weight_Ival)
 {
-	*(plane_add + C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT)										=   Weight_Count;
+	*((plane_add * C_PERIPHERAL_PLAN_INTERVAL) + C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT)		=	Weight_Count;
 	for (unsigned int i=0; i<9; i++)
 	{
-		*(plane_add + C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR)								=   (0 << C_SUU_Address_Point_Base_Wen_pos) |
+		*((plane_add * C_PERIPHERAL_PLAN_INTERVAL) + C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR)=	(0 << C_SUU_Address_Point_Base_Wen_pos) |
 																												(1 << C_SUU_Address_Point_Count_Wen_pos) |
 																												(0 << C_SUU_Address_Point_Interval_Wen_pos) |
 																												(0 << C_SUU_Address_Point_SA_UAb_pos) |
@@ -885,10 +885,10 @@ void PE_INIT_UA_Wgt_load_address		(unsigned int plane_add,				unsigned int pe_ad
 	}
 
 
-	*(plane_add + C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT)	   									=   Weight_Ival;
+	*((plane_add * C_PERIPHERAL_PLAN_INTERVAL) + C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT)		=	Weight_Ival;
 	for (unsigned int i=0; i<9; i++)
 	{
-		*(plane_add + C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR) 							=   (0 << C_SUU_Address_Point_Base_Wen_pos) |
+		*((plane_add * C_PERIPHERAL_PLAN_INTERVAL) + C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR)=	(0 << C_SUU_Address_Point_Base_Wen_pos) |
 																												(0 << C_SUU_Address_Point_Count_Wen_pos) |
 																												(1 << C_SUU_Address_Point_Interval_Wen_pos) |
 																												(0 << C_SUU_Address_Point_SA_UAb_pos) |
@@ -898,8 +898,8 @@ void PE_INIT_UA_Wgt_load_address		(unsigned int plane_add,				unsigned int pe_ad
 
 	for (unsigned int i=0; i<9; i++)
 	{
-		*(plane_add + C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT)									=   Weight_base_add[i];
-		*(plane_add + C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR)								=   (1 << C_SUU_Address_Point_Base_Wen_pos) |
+		*((plane_add * C_PERIPHERAL_PLAN_INTERVAL) + C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT)	=	Weight_base_add[i];
+		*((plane_add * C_PERIPHERAL_PLAN_INTERVAL) + C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR)=	(1 << C_SUU_Address_Point_Base_Wen_pos) |
 																												(0 << C_SUU_Address_Point_Count_Wen_pos) |
 																												(0 << C_SUU_Address_Point_Interval_Wen_pos) |
 																												(0 << C_SUU_Address_Point_SA_UAb_pos) |
@@ -911,24 +911,24 @@ void PE_INIT_UA_Wgt_load_address		(unsigned int plane_add,				unsigned int pe_ad
 void PE_INIT_SA_Out_load_address 		(unsigned int plane_add,				unsigned int pe_add, 
 										unsigned int store_base_add,			unsigned int store_Count,	unsigned int store_Ival)
 {
-	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT		+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=   store_base_add;
-	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR	+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=   (1 << C_SUU_Address_Point_Base_Wen_pos) |
+	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT		+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=	store_base_add;
+	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR	+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=	(1 << C_SUU_Address_Point_Base_Wen_pos) |
 																												(0 << C_SUU_Address_Point_Count_Wen_pos) |
 																												(0 << C_SUU_Address_Point_Interval_Wen_pos) |
 																												(1 << C_SUU_Address_Point_SA_UAb_pos) |
 																												(pe_add << C_SUU_Address_Point_Unit_Add_pos) |
 																												(1 << C_SUU_Address_Point_Target_Add_pos);
 	
-	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT		+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=   store_Count;
-	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR	+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=   (0 << C_SUU_Address_Point_Base_Wen_pos) |
+	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT		+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=	store_Count;
+	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR	+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=	(0 << C_SUU_Address_Point_Base_Wen_pos) |
 																												(1 << C_SUU_Address_Point_Count_Wen_pos) |
 																												(0 << C_SUU_Address_Point_Interval_Wen_pos) |
 																												(1 << C_SUU_Address_Point_SA_UAb_pos) |
 																												(pe_add << C_SUU_Address_Point_Unit_Add_pos) |
 																												(1 << C_SUU_Address_Point_Target_Add_pos);
 	
-	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT		+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=   store_Ival;
-	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR	+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=   (0 << C_SUU_Address_Point_Base_Wen_pos) |
+	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT		+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=	store_Ival;
+	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR	+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=	(0 << C_SUU_Address_Point_Base_Wen_pos) |
 																												(0 << C_SUU_Address_Point_Count_Wen_pos) |
 																												(1 << C_SUU_Address_Point_Interval_Wen_pos) |
 																												(1 << C_SUU_Address_Point_SA_UAb_pos) |
@@ -939,24 +939,24 @@ void PE_INIT_SA_Out_load_address 		(unsigned int plane_add,				unsigned int pe_a
 void PE_INIT_SA_Acc_load_address 		(unsigned int plane_add,				unsigned int pe_add, 
 										unsigned int load_base_add,				unsigned int load_Count,	unsigned int load_Ival)
 {
-	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT		+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=   load_base_add;
-	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR	+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=   (1 << C_SUU_Address_Point_Base_Wen_pos) |
+	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT		+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=	load_base_add;
+	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR	+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=	(1 << C_SUU_Address_Point_Base_Wen_pos) |
 																												(0 << C_SUU_Address_Point_Count_Wen_pos) |
 																												(0 << C_SUU_Address_Point_Interval_Wen_pos) |
 																												(1 << C_SUU_Address_Point_SA_UAb_pos) |
 																												(pe_add << C_SUU_Address_Point_Unit_Add_pos) |
 																												(0 << C_SUU_Address_Point_Target_Add_pos);
 	
-	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT		+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=   load_Count;
-	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR	+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=   (0 << C_SUU_Address_Point_Base_Wen_pos) |
+	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT		+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=	load_Count;
+	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR	+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=	(0 << C_SUU_Address_Point_Base_Wen_pos) |
 																												(1 << C_SUU_Address_Point_Count_Wen_pos) |
 																												(0 << C_SUU_Address_Point_Interval_Wen_pos) |
 																												(1 << C_SUU_Address_Point_SA_UAb_pos) |
 																												(pe_add << C_SUU_Address_Point_Unit_Add_pos) |
 																												(0 << C_SUU_Address_Point_Target_Add_pos);
 	
-	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT		+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=   load_Ival;
-	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR	+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=   (0 << C_SUU_Address_Point_Base_Wen_pos) |
+	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT		+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=	load_Ival;
+	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR	+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=	(0 << C_SUU_Address_Point_Base_Wen_pos) |
 																												(0 << C_SUU_Address_Point_Count_Wen_pos) |
 																												(1 << C_SUU_Address_Point_Interval_Wen_pos) |
 																												(1 << C_SUU_Address_Point_SA_UAb_pos) |
@@ -1022,7 +1022,7 @@ void PE_CONT_STA_resume					(unsigned int plane_add, unsigned int pe_add)
 void PE_CONT_STA_load_config			(unsigned int plane_add, unsigned int pe_add, S_CONF_STA_info info)
 {
 	unsigned int tmp = *(C_PERIPHERAL_PLANE_0_REG_PEs_CONTROL_PE_1_1 + (plane_add * C_PERIPHERAL_PLAN_INTERVAL) + pe_add);
-	tmp &= ~(   (1 << C_Update_Store_Base_Address_pos) | 
+	tmp &= ~(	(1 << C_Update_Store_Base_Address_pos) | 
 				(1 << C_Update_load_Base_Address_pos) |
 				(1 << C_Store_Row_pos) |
 				(1 << C_Enable_Activation_pos) |
@@ -1032,7 +1032,7 @@ void PE_CONT_STA_load_config			(unsigned int plane_add, unsigned int pe_add, S_C
 				(1 << C_Buffer_Accumulation_Enable_pos) |
 				(1 << C_Load_Row_pos) |
 				(1 << C_AUTOMATIC_STA_pos));
-	tmp |=  (   (info.update_store_address << C_Update_Store_Base_Address_pos) | 
+	tmp |=	(	(info.update_store_address << C_Update_Store_Base_Address_pos) | 
 				(info.update_load_address << C_Update_load_Base_Address_pos) |
 				(info.store_enable << C_Store_Row_pos) |
 				(info.activation_enable << C_Enable_Activation_pos) |
@@ -1048,7 +1048,7 @@ void PE_CONT_STA_load_config			(unsigned int plane_add, unsigned int pe_add, S_C
 void PE_CONT_STA_ACK					(unsigned int plane_add, unsigned int pe_add)
 {
 	unsigned int tmp = *(C_PERIPHERAL_PLANE_0_REG_PEs_CONTROL_PE_1_1 + (plane_add * C_PERIPHERAL_PLAN_INTERVAL) + pe_add);
-	tmp |=  (1 << C_ACK_STA_pos);
+	tmp |=	(1 << C_ACK_STA_pos);
 	*(C_PERIPHERAL_PLANE_0_REG_PEs_CONTROL_PE_1_1 + (plane_add * C_PERIPHERAL_PLAN_INTERVAL) + pe_add) = tmp;
 }
 
@@ -1207,7 +1207,7 @@ void PSU_EC_CNTR_get_value				(unsigned int plane_add, unsigned int SEC_add, uns
 	value = tmp % (1 << C_Event_Max_pos);
 	event_status = ((tmp & (1 << C_Event_Event_Value_pos)) >> C_Event_Event_Value_pos); 
 	intr_status = ((tmp & (1 << C_Event_Int_Value_pos)) >> C_Event_Int_Value_pos);
-	Source =  ((tmp & (3 << C_Event_Event_Source_pos)) >> C_Event_Event_Source_pos); 
+	Source =	((tmp & (3 << C_Event_Event_Source_pos)) >> C_Event_Event_Source_pos); 
 }
 
 

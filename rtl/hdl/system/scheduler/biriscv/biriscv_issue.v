@@ -803,6 +803,25 @@ u_regfile
     .rb1_value_o(issue_b_rb_value_w)    
 );
 
+
+
+//	Register Log file
+//	Added by me
+biriscv_regfile_tracer
+u_regfile_tracer
+(
+     .clk(clk_i)
+    ,.rst(rst_i)
+    ,.On_Tmporary_i(On_Tmporary_w)
+    ,.Clear_Tmporary_i(Clear_Tmporary_w)
+    ,.rd0_i(pipe0_rd_wb_w)
+    ,.rd0_value_i(pipe0_result_wb_w)
+    ,.rd1_i(pipe1_rd_wb_w)
+    ,.rd1_value_i(pipe1_result_wb_w)
+);
+
+
+
 //-------------------------------------------------------------
 // Issue Slot 0
 //------------------------------------------------------------- 
