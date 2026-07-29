@@ -33,7 +33,7 @@ endef
 # SYSTEM.vhd lives at the project root (not under system/), so the
 # system/ glob above doesn't catch it -- add it explicitly, compiled
 # after system/ (which it depends on) and before sim/ (which wraps it).
-VHDL_TOP			:= SYSTEM.vhd
+VHDL_TOP			:= hdl/system/SYSTEM.vhd
 VHDL_PACKAGES		:= $(sort $(call rwildcard,hdl/packages/,*.vhd))
 VHDL_SHARED			:= $(sort $(call rwildcard,hdl/shared/,*.vhd))
 VHDL_SYSTEM			:= $(sort $(call rwildcard,hdl/system/,*.vhd))

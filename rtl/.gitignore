@@ -7,3 +7,4 @@ packages/*.bak
 rtl_project.cr.mti
 rtl_project.mpf
 old/
+*.wlf
