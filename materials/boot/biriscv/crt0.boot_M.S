@@ -46,13 +46,7 @@ reset_handler:
   csrrw  x1, mstatus, x1 
   csrrwi x1, mtvec, 0x11
   
-  # by ali
-  # Enable machine-mode software interrupts (MSIE), timer interrupts (MTIE), and external interrupts (MEIE)
-  li t0, 0x888             # Load immediate for enabling MSIE (0x8), MTIE (0x80), and MEIE (0x800)
-  csrs mie, t0             # Set these bits in the mie register
-  # Enable global interrupts by setting the MIE (Machine Interrupt Enable) bit in mstatus
-  li t0, 0x8               # Load immediate: 0x8 enables global machine interrupts (MIE bit in mstatus)
-  csrs mstatus, t0         # Set the MIE bit in the mstatus register
+  
 
   
   /* set all registers to zero */
@@ -90,8 +84,19 @@ reset_handler:
 
   /* stack initilization */
   la   x2, _stack_start
-
-
+  
+  
+  # by ali
+  # Enable machine-mode software interrupts (MSIE), timer interrupts (MTIE), and external interrupts (MEIE)
+  li t0, 0x888             # Load immediate for enabling MSIE (0x8), MTIE (0x80), and MEIE (0x800)
+  csrs mie, t0             # Set these bits in the mie register
+  # Enable global interrupts by setting the MIE (Machine Interrupt Enable) bit in mstatus
+  li t0, 0x8               # Load immediate: 0x8 enables global machine interrupts (MIE bit in mstatus)
+  csrs mstatus, t0         # Set the MIE bit in the mstatus register
+  
+  
+  
+  
 _start:
   .global _start
 
@@ -101,11 +106,21 @@ _start:
 
   bge x26, x27, zero_loop_end
 
+/**********************************************/
+/***************** MY EDITHIN *****************/
+/**********************************************/
+#zero_loop:
+#  sw x0, 0(x26)
+#  addi x26, x26, 4
+#  ble x26, x27, zero_loop
+#zero_loop_end:
 zero_loop:
-  sw x0, 0(x26)
+  bge x26, x27, zero_loop_end
+  sw  x0, 0(x26)
   addi x26, x26, 4
-  ble x26, x27, zero_loop
+  j   zero_loop
 zero_loop_end:
+
 
 main_entry:
   /* jump to main program entry point (argc = argv = 0) */

@@ -92,10 +92,19 @@ _start:
 
   bge x26, x27, zero_loop_end
 
+/**********************************************/
+/***************** MY EDITHIN *****************/
+/**********************************************/
+#zero_loop:
+#  sw x0, 0(x26)
+#  addi x26, x26, 4
+#  ble x26, x27, zero_loop
+#zero_loop_end:
 zero_loop:
-  sw x0, 0(x26)
+  bge x26, x27, zero_loop_end
+  sw  x0, 0(x26)
   addi x26, x26, 4
-  ble x26, x27, zero_loop
+  j   zero_loop
 zero_loop_end:
 
 main_entry:

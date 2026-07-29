@@ -72,7 +72,8 @@ CROSS ?= riscv32-unknown-elf
         check-tools install-tools install-modelsim \
         firmware check-run-vars check-run-tools \
         clean clean-run distclean \
-		legacy-project legacy-simulate
+		legacy-project legacy-simulate \
+		call-stack
 
 # All top-level targets are independent of each other -- "all" only
 # builds submodules + packages, it does NOT touch rtl/. Use "make rtl"
@@ -389,6 +390,19 @@ firmware: check-run-vars check-run-tools packages
 #
 #	@echo ">>> [7/7] Running a simulation"
 #	$(call LOG,07-rtl-sim,$(MAKE) -C rtl run)
+
+
+
+
+
+# call-stack
+call-stack: 
+	$(call LOG,call-stack,\
+		packages/CNN-PC-Tracer/build/PC-Tracer \
+			-i $(BUILD_DIR)/code.txt \
+			-l rtl/report/PC_trac_log.log \
+			-o $(BUILD_DIR))
+
 
 
 # ------------------------------------------------------------------
