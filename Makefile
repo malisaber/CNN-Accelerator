@@ -376,7 +376,7 @@ firmware: check-run-vars check-run-tools packages
 		sed -i.bak -E \
 			"s/(CONSTANT[[:space:]]+P_uProcessor_in_use[[:space:]]*:[[:space:]]*P_uProcessor_type[[:space:]]*:=[[:space:]]*)P_USE_[A-Z]+;/\1$${NEWVAL};/" \
 			rtl/packages/MY_Pack_v2.vhd; \
-		grep -n "P_uProcessor_in_use" rtl/packages/MY_Pack_v2.vhd)
+		grep -n "P_uProcessor_in_use" rtl/hdl/packages/MY_Pack_v2.vhd)
 	
 	@echo ">>> done: firmware in $(BUILD_DIR)/, memory-init files in $(MEM_INIT_DIR)/, logs in $(REPORT_DIR)/"
 
