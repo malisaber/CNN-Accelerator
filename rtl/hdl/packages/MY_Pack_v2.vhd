@@ -156,7 +156,7 @@ package MY_Pack_v2	IS
 	----------------------------------------------
 	----------------------------------------------
 	----------------------------------------------
-	CONSTANT	P_Number_of_Planes				:	INTEGER			:=	1;
+	CONSTANT	P_Number_of_Planes				:	INTEGER			:=	4;
 	
 	CONSTANT	P_LMN_Mem_Add_width				:	INTEGER			:=	12;	--	Maximum is 12
 	CONSTANT	P_LMN_Number_of_ways			:	INTEGER			:=	4;
