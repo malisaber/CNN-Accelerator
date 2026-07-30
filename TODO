@@ -5,6 +5,7 @@
 - [ ] consistency in number of planes in CNN-Compiler and rtl
 - [ ] and also consistency in other parameters
 - [ ] and also consistency in memory mapped
+- [ ] and also consistency in boot assembly code
 - [ ] *control++; warning on line 304
 - [ ] code concerter should takes directory
 - [ ] add dump directory to code_converter

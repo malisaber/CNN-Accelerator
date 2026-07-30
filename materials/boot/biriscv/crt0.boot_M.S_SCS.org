@@ -225,7 +225,7 @@ external_interrupt_signal_handler_0:
   jal x1, store_regs
   # Load the address 0xFFFF00C0 into register t0
   lui t0, 0xFFFF0           # Load upper immediate with high 20 bits of address (0xFFFF0)
-  addi t0, t0, 0x0C8        # Add the lower 12 bits (0x0C8) to form full address 0xFFFF00C8
+  addi t0, t0, 0x11C        # Add the lower 12 bits (0x0C8) to form full address 0xFFFF00C8
   # Load the value 0x1 into register t1
   li t1, 0x1                # Load immediate 0x1 into t1
   # Store the value in t1 to the address in t0
@@ -244,7 +244,7 @@ external_interrupt_signal_handler_1:
   jal x1, store_regs
   # Load the address 0xFFFF00C0 into register t0
   lui t0, 0xFFFF0           # Load upper immediate with high 20 bits of address (0xFFFF0)
-  addi t0, t0, 0x0C8        # Add the lower 12 bits (0x0C8) to form full address 0xFFFF00C8
+  addi t0, t0, 0x11C        # Add the lower 12 bits (0x0C8) to form full address 0xFFFF00C8
   # Load the value 0x1 into register t1
   li t1, 0x1                # Load immediate 0x1 into t1
   # Store the value in t1 to the address in t0
@@ -263,7 +263,7 @@ external_interrupt_signal_handler_2:
   jal x1, store_regs
   # Load the address 0xFFFF00C0 into register t0
   lui t0, 0xFFFF0           # Load upper immediate with high 20 bits of address (0xFFFF0)
-  addi t0, t0, 0x0C8        # Add the lower 12 bits (0x0C8) to form full address 0xFFFF00C8
+  addi t0, t0, 0x11C        # Add the lower 12 bits (0x0C8) to form full address 0xFFFF00C8
   # Load the value 0x1 into register t1
   li t1, 0x1                # Load immediate 0x1 into t1
   # Store the value in t1 to the address in t0
@@ -282,7 +282,7 @@ external_interrupt_signal_handler_3:
   jal x1, store_regs
   # Load the address 0xFFFF00C0 into register t0
   lui t0, 0xFFFF0           # Load upper immediate with high 20 bits of address (0xFFFF0)
-  addi t0, t0, 0x0C8        # Add the lower 12 bits (0x0C8) to form full address 0xFFFF00C8
+  addi t0, t0, 0x11C        # Add the lower 12 bits (0x0C8) to form full address 0xFFFF00C8
   # Load the value 0x1 into register t1
   li t1, 0x1                # Load immediate 0x1 into t1
   # Store the value in t1 to the address in t0
@@ -301,7 +301,7 @@ external_interrupt_signal_handler_4:
   jal x1, store_regs
   # Load the address 0xFFFF00C0 into register t0
   lui t0, 0xFFFF0           # Load upper immediate with high 20 bits of address (0xFFFF0)
-  addi t0, t0, 0x0C8        # Add the lower 12 bits (0x0C8) to form full address 0xFFFF00C8
+  addi t0, t0, 0x11C        # Add the lower 12 bits (0x0C8) to form full address 0xFFFF00C8
   # Load the value 0x1 into register t1
   li t1, 0x1                # Load immediate 0x1 into t1
   # Store the value in t1 to the address in t0
@@ -320,7 +320,7 @@ external_interrupt_signal_handler_5:
   jal x1, store_regs
   # Load the address 0xFFFF00C0 into register t0
   lui t0, 0xFFFF0           # Load upper immediate with high 20 bits of address (0xFFFF0)
-  addi t0, t0, 0x0C8        # Add the lower 12 bits (0x0C8) to form full address 0xFFFF00C8
+  addi t0, t0, 0x11C        # Add the lower 12 bits (0x0C8) to form full address 0xFFFF00C8
   # Load the value 0x1 into register t1
   li t1, 0x1                # Load immediate 0x1 into t1
   # Store the value in t1 to the address in t0
@@ -339,7 +339,7 @@ external_interrupt_signal_handler_6:
   jal x1, store_regs
   # Load the address 0xFFFF00C0 into register t0
   lui t0, 0xFFFF0           # Load upper immediate with high 20 bits of address (0xFFFF0)
-  addi t0, t0, 0x0C8        # Add the lower 12 bits (0x0C8) to form full address 0xFFFF00C8
+  addi t0, t0, 0x11C        # Add the lower 12 bits (0x0C8) to form full address 0xFFFF00C8
   # Load the value 0x1 into register t1
   li t1, 0x1                # Load immediate 0x1 into t1
   # Store the value in t1 to the address in t0
@@ -358,7 +358,7 @@ external_interrupt_signal_handler_7:
   jal x1, store_regs
   # Load the address 0xFFFF00C0 into register t0
   lui t0, 0xFFFF0           # Load upper immediate with high 20 bits of address (0xFFFF0)
-  addi t0, t0, 0x0C8        # Add the lower 12 bits (0x0C8) to form full address 0xFFFF00C8
+  addi t0, t0, 0x11C        # Add the lower 12 bits (0x0C8) to form full address 0xFFFF00C8
   # Load the value 0x1 into register t1
   li t1, 0x1                # Load immediate 0x1 into t1
   # Store the value in t1 to the address in t0
@@ -377,7 +377,7 @@ external_interrupt_signal_handler_8:
   jal x1, store_regs
   # Load the address 0xFFFF00C0 into register t0
   lui t0, 0xFFFF0           # Load upper immediate with high 20 bits of address (0xFFFF0)
-  addi t0, t0, 0x0C8        # Add the lower 12 bits (0x0C8) to form full address 0xFFFF00C8
+  addi t0, t0, 0x11C        # Add the lower 12 bits (0x0C8) to form full address 0xFFFF00C8
   # Load the value 0x1 into register t1
   li t1, 0x1                # Load immediate 0x1 into t1
   # Store the value in t1 to the address in t0
@@ -396,7 +396,7 @@ external_interrupt_signal_handler_9:
   jal x1, store_regs
   # Load the address 0xFFFF00C0 into register t0
   lui t0, 0xFFFF0           # Load upper immediate with high 20 bits of address (0xFFFF0)
-  addi t0, t0, 0x0C8        # Add the lower 12 bits (0x0C8) to form full address 0xFFFF00C8
+  addi t0, t0, 0x11C        # Add the lower 12 bits (0x0C8) to form full address 0xFFFF00C8
   # Load the value 0x1 into register t1
   li t1, 0x1                # Load immediate 0x1 into t1
   # Store the value in t1 to the address in t0
@@ -415,7 +415,7 @@ external_interrupt_signal_handler_A:
   jal x1, store_regs
   # Load the address 0xFFFF00C0 into register t0
   lui t0, 0xFFFF0           # Load upper immediate with high 20 bits of address (0xFFFF0)
-  addi t0, t0, 0x0C8        # Add the lower 12 bits (0x0C8) to form full address 0xFFFF00C8
+  addi t0, t0, 0x11C        # Add the lower 12 bits (0x0C8) to form full address 0xFFFF00C8
   # Load the value 0x1 into register t1
   li t1, 0x1                # Load immediate 0x1 into t1
   # Store the value in t1 to the address in t0
@@ -434,7 +434,7 @@ external_interrupt_signal_handler_B:
   jal x1, store_regs
   # Load the address 0xFFFF00C0 into register t0
   lui t0, 0xFFFF0           # Load upper immediate with high 20 bits of address (0xFFFF0)
-  addi t0, t0, 0x0C8        # Add the lower 12 bits (0x0C8) to form full address 0xFFFF00C8
+  addi t0, t0, 0x11C        # Add the lower 12 bits (0x0C8) to form full address 0xFFFF00C8
   # Load the value 0x1 into register t1
   li t1, 0x1                # Load immediate 0x1 into t1
   # Store the value in t1 to the address in t0
@@ -453,7 +453,7 @@ external_interrupt_signal_handler_C:
   jal x1, store_regs
   # Load the address 0xFFFF00C0 into register t0
   lui t0, 0xFFFF0           # Load upper immediate with high 20 bits of address (0xFFFF0)
-  addi t0, t0, 0x0C8        # Add the lower 12 bits (0x0C8) to form full address 0xFFFF00C8
+  addi t0, t0, 0x11C        # Add the lower 12 bits (0x0C8) to form full address 0xFFFF00C8
   # Load the value 0x1 into register t1
   li t1, 0x1                # Load immediate 0x1 into t1
   # Store the value in t1 to the address in t0
@@ -472,7 +472,7 @@ external_interrupt_signal_handler_D:
   jal x1, store_regs
   # Load the address 0xFFFF00C0 into register t0
   lui t0, 0xFFFF0           # Load upper immediate with high 20 bits of address (0xFFFF0)
-  addi t0, t0, 0x0C8        # Add the lower 12 bits (0x0C8) to form full address 0xFFFF00C8
+  addi t0, t0, 0x11C        # Add the lower 12 bits (0x0C8) to form full address 0xFFFF00C8
   # Load the value 0x1 into register t1
   li t1, 0x1                # Load immediate 0x1 into t1
   # Store the value in t1 to the address in t0
@@ -491,7 +491,7 @@ external_interrupt_signal_handler_E:
   jal x1, store_regs
   # Load the address 0xFFFF00C0 into register t0
   lui t0, 0xFFFF0           # Load upper immediate with high 20 bits of address (0xFFFF0)
-  addi t0, t0, 0x0C8        # Add the lower 12 bits (0x0C8) to form full address 0xFFFF00C8
+  addi t0, t0, 0x11C        # Add the lower 12 bits (0x0C8) to form full address 0xFFFF00C8
   # Load the value 0x1 into register t1
   li t1, 0x1                # Load immediate 0x1 into t1
   # Store the value in t1 to the address in t0
@@ -510,7 +510,7 @@ external_interrupt_signal_handler_F:
   jal x1, store_regs
   # Load the address 0xFFFF00C0 into register t0
   lui t0, 0xFFFF0           # Load upper immediate with high 20 bits of address (0xFFFF0)
-  addi t0, t0, 0x0C8        # Add the lower 12 bits (0x0C8) to form full address 0xFFFF00C8
+  addi t0, t0, 0x11C        # Add the lower 12 bits (0x0C8) to form full address 0xFFFF00C8
   # Load the value 0x1 into register t1
   li t1, 0x1                # Load immediate 0x1 into t1
   # Store the value in t1 to the address in t0

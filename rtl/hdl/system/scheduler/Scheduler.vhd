@@ -964,6 +964,8 @@ begin
 	
 	--------------------------------------------------------------------------
 	MAIN_PORT_DIN_Rdy					<=			MAIN_PORT_Dot_Redy_ECB	OR
+													MAIN_PORT_Dot_Redy_PCB	OR
+													MAIN_PORT_Dot_Redy_MCB	OR
 													MAIN_PORT_Dot_Redy_DCB	OR
 													MAIN_PORT_Dot_Redy_TCB	OR
 													MAIN_PORT_Dot_Redy_MEM	OR
@@ -975,6 +977,8 @@ begin
 	ERROR_cmb							<=		 ((	MAIN_PORT_WEN			OR
 													MAIN_PORT_OEN)			AND
 											NOT	(	MAIN_PORT_SEL_This_ECB	OR
+													MAIN_PORT_SEL_This_PCB	OR
+													MAIN_PORT_SEL_This_MCB	OR
 													MAIN_PORT_SEL_This_DCB	OR
 													MAIN_PORT_SEL_This_TCB	OR
 													MAIN_PORT_SEL_This_MEM	OR
