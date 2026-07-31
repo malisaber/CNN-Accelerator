@@ -1151,7 +1151,7 @@ void PSU_EC_reset						(unsigned int plane_add, unsigned int SEC_add)
 	*(C_PERIPHERAL_PLANE_0_REG_EVENT_COUNTER_PSU_1_1_DONE + (plane_add * C_PERIPHERAL_PLAN_INTERVAL) + SEC_add) = 0;
 }
 
-void PSU_EC_CNTR_start_with_config		(unsigned int plane_add, E_PSU_EC_target targ, unsigned int SEC_add, unsigned int max, unsigned int sens_level, unsigned int repeat, unsigned int intr_en)
+void PSU_EC_CNTR_start_with_config		(unsigned int plane_add, unsigned int targ, unsigned int SEC_add, unsigned int max, unsigned int sens_level, unsigned int repeat, unsigned int intr_en)
 {
 	unsigned int tmp = 0;
 	tmp |= ((max & 0xFFF) << C_Event_Max_pos);
@@ -1166,7 +1166,7 @@ void PSU_EC_CNTR_start_with_config		(unsigned int plane_add, E_PSU_EC_target tar
 	*(C_PERIPHERAL_PLANE_0_REG_EVENT_COUNTER_PSU_1_1_DONE + (plane_add * C_PERIPHERAL_PLAN_INTERVAL) + SEC_add) = tmp;
 }
 
-void PSU_EC_CNTR_config					(unsigned int plane_add, E_PSU_EC_target targ, unsigned int SEC_add, unsigned int max, unsigned int sens_level, unsigned int repeat, unsigned int intr_en)
+void PSU_EC_CNTR_config					(unsigned int plane_add, unsigned int targ, unsigned int SEC_add, unsigned int max, unsigned int sens_level, unsigned int repeat, unsigned int intr_en)
 {
 	unsigned int tmp = 0;
 	tmp |= ((max & 0xFFF) << C_Event_Max_pos);

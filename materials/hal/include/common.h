@@ -434,26 +434,31 @@ extern	"C"	{	void Disable_GINT();		}	//	Enable Disable The Interrupt
 		*/
 
 
-enum				E_FSM_Src		{	FSM_CNN_1=0,	FSM_CNN_2=1, 	FSM_MLP_1=2,	FSM_MLP_2=3};
-//unsigned int		E_Shift_cnt;
-enum				E_FH_Arith		{	HALF=0,			FULL=1	};
-enum				E_IFM_NS		{	IUNSIGN=0,		ISIGN=1	};
-enum				E_WFM_NS		{	WUNSIGN=0,		WSIGN=1	};
-//unsigned int		E_Zpad_max;
-//unsigned int		E_Kern_max;
-//unsigned int		E_Colm_max;
-//unsigned int		E_Chnl_max;
-//unsigned int		E_Rows_max;
-//unsigned int		E_Cntr_max;
+		
+#define				FSM_CNN_1		0
+#define				FSM_CNN_2		1
+#define				FSM_MLP_1		2
+#define				FSM_MLP_2		3
+#define				HALF			0
+#define				FULL			1
+#define				IUNSIGN			0
+#define				ISIGN			1
+#define				WUNSIGN			0
+#define				WSIGN			1
+#define				PEs				0
+#define				STA				0
+#define				UPA				0
+
+
 
 
 struct	S_PE_cofig
 {
-	E_FSM_Src		FSM_Src		=	FSM_CNN_1;
+	unsigned int	FSM_Src		=	FSM_CNN_1;
 	unsigned int 	E_Shift_cnt	=	0;
-	E_FH_Arith		FH_Arith	=	FULL;
-	E_IFM_NS		IFM_NS		=	IUNSIGN;
-	E_WFM_NS		WFM_NS		=	WUNSIGN;
+	unsigned int	FH_Arith	=	FULL;
+	unsigned int	IFM_NS		=	IUNSIGN;
+	unsigned int	WFM_NS		=	WUNSIGN;
 	unsigned int 	E_Zpad_max	=	3;
 	unsigned int 	E_Kern_max	=	15;
 	unsigned int 	E_Colm_max	=	15;
@@ -481,7 +486,7 @@ struct	S_CONF_STA_info
 	unsigned int Automatic;
 };
 
-enum	E_PSU_EC_target		{	PEs=0,		STA=1,		UPA=2};
+
 
 struct	S_UPA_Inp_Addressing_Info
 {

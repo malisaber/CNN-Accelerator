@@ -861,9 +861,9 @@ void PSU_EC_reset_all					(unsigned int plane_add);
 
 void PSU_EC_reset						(unsigned int plane_add, unsigned int SEC_add);
 
-void PSU_EC_CNTR_start_with_config		(unsigned int plane_add, E_PSU_EC_target targ, unsigned int SEC_add, unsigned int max, unsigned int sens_level, unsigned int repeat, unsigned int intr_en);
+void PSU_EC_CNTR_start_with_config		(unsigned int plane_add, unsigned int targ, unsigned int SEC_add, unsigned int max, unsigned int sens_level, unsigned int repeat, unsigned int intr_en);
 
-void PSU_EC_CNTR_config					(unsigned int plane_add, E_PSU_EC_target targ, unsigned int SEC_add, unsigned int max, unsigned int sens_level, unsigned int repeat, unsigned int intr_en);
+void PSU_EC_CNTR_config					(unsigned int plane_add, unsigned int targ, unsigned int SEC_add, unsigned int max, unsigned int sens_level, unsigned int repeat, unsigned int intr_en);
 
 void PSU_EC_CNTR_start					(unsigned int plane_add, unsigned int SEC_add);
 
