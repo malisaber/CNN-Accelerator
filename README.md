@@ -15,3 +15,5 @@ make rtl-project
 
 make rtl-simulate
 
+make call-stack
+

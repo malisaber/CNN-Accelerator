@@ -43,7 +43,14 @@ module	FILE_IO_Handler
 		MEM_Dout	<=	mem[MEM_Add[per_file_width-1:0]];
 	end 
 	
-	
+	initial 
+	begin
+		log_fid	= $fopen("report/FILE_IO_HANDLER_LOG.txt", "w");
+		err_fid	= $fopen("report/ERROR_LOG.txt", "w");
+		$fclose(log_fid);
+		$fclose(err_fid);
+	end
+
 	always @(this_file, cs)
 	begin
 		if (cs == 1'b1)
@@ -53,12 +60,12 @@ module	FILE_IO_Handler
 				if(wrote_on_this == 1'b1) 
 					$writememb	(file_name, mem);
 				$sformat	(file_name, "%s/DRAM_DATA_%1d.txt", `DRAM_DATA_DIR, this_file);
-				log_fid	=	$fopen("FILE_IO_HANDLER_LOG.txt", "a");
+				log_fid	=	$fopen("report/FILE_IO_HANDLER_LOG.txt", "a");
 				$fwrite		(log_fid, "FIOH %2d: Reading DRAM_DATA_%1d.txt    @%0t", handler_id, this_file, $time);
 				chk_fid	=	$fopen(file_name, "r");
 				if			(chk_fid == 0)
 				begin
-					err_fid	= $fopen("ERROR_LOG.txt", "a");
+					err_fid	= $fopen("report/ERROR_LOG.txt", "a");
 					$fwrite	(log_fid, "\tIT DOES NOT EXIST\t\t\t XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
 					$fwrite	(err_fid, "FIOH %2d: ERROR Reading DRAM_DATA_%1d.txt    @%0t\n", handler_id, this_file, $time);
 					$fclose		(err_fid);
