@@ -409,46 +409,46 @@ void CONT_REG_DRAM_disconnect			()
 //						ACC_USART					//
 //***************************************************/
 
-void UART_reset							()
-{
-	*C_PERIPHERAL_REG_TRx_UNIT_CONT_WORD = 0;
-}
-
-void UART_Initiate						(unsigned int Cont_Word)
-{
-	*C_PERIPHERAL_REG_TRx_UNIT_CONT_WORD = Cont_Word;
-}
-
-void UART_read_flags					(unsigned int& TBE_flg, unsigned int& TBF_flg, unsigned int& RBE_flg, unsigned int& RBF_flg)
-{
-	unsigned int word = *C_PERIPHERAL_REG_TRx_UNIT_CONT_WORD;
-	TBE_flg = (word >> C_TRx_Unit_Tx_Buff_Empty_Flg_pos	) & 0x1;
-	TBF_flg = (word >> C_TRx_Unit_Tx_Buff_Full_Flg_pos	) & 0x1;
-	RBE_flg = (word >> C_TRx_Unit_Rx_Buff_Empty_Flg_pos	) & 0x1;
-	RBF_flg = (word >> C_TRx_Unit_Rx_Buff_Full_Flg_pos	) & 0x1;
-}
-
-void UART_write_data					(unsigned int Data_Word)
-{
-	*C_PERIPHERAL_REG_TRx_UNIT_DATA_WORD = Data_Word;
-}
-
-void UART_read_data						(unsigned int& Data_Word, unsigned int& DOR_error)
-{
-	Data_Word = *C_PERIPHERAL_REG_TRx_UNIT_DATA_WORD;
-	DOR_error = Data_Word >> C_TRx_Unit_Rx_DORE_Flg_pos;
-	Data_Word = Data_Word & 0Xff;
-}
-
-void UART_read_TBF_flag					(unsigned int& TBF_flg)
-{
-	TBF_flg = (*C_PERIPHERAL_REG_TRx_UNIT_CONT_WORD >> C_TRx_Unit_Tx_Buff_Full_Flg_pos	) & 0x1;
-}
-
-void UART_read_RBE_flag					(unsigned int& RBE_flg)
-{
-	RBE_flg = (*C_PERIPHERAL_REG_TRx_UNIT_CONT_WORD >> C_TRx_Unit_Rx_Buff_Empty_Flg_pos	) & 0x1;
-}
+//void UART_reset							()
+//{
+//	*C_PERIPHERAL_REG_TRx_UNIT_CONT_WORD = 0;
+//}
+//
+//void UART_Initiate						(unsigned int Cont_Word)
+//{
+//	*C_PERIPHERAL_REG_TRx_UNIT_CONT_WORD = Cont_Word;
+//}
+//
+//void UART_read_flags					(unsigned int& TBE_flg, unsigned int& TBF_flg, unsigned int& RBE_flg, unsigned int& RBF_flg)
+//{
+//	unsigned int word = *C_PERIPHERAL_REG_TRx_UNIT_CONT_WORD;
+//	TBE_flg = (word >> C_TRx_Unit_Tx_Buff_Empty_Flg_pos	) & 0x1;
+//	TBF_flg = (word >> C_TRx_Unit_Tx_Buff_Full_Flg_pos	) & 0x1;
+//	RBE_flg = (word >> C_TRx_Unit_Rx_Buff_Empty_Flg_pos	) & 0x1;
+//	RBF_flg = (word >> C_TRx_Unit_Rx_Buff_Full_Flg_pos	) & 0x1;
+//}
+//
+//void UART_write_data					(unsigned int Data_Word)
+//{
+//	*C_PERIPHERAL_REG_TRx_UNIT_DATA_WORD = Data_Word;
+//}
+//
+//void UART_read_data						(unsigned int& Data_Word, unsigned int& DOR_error)
+//{
+//	Data_Word = *C_PERIPHERAL_REG_TRx_UNIT_DATA_WORD;
+//	DOR_error = Data_Word >> C_TRx_Unit_Rx_DORE_Flg_pos;
+//	Data_Word = Data_Word & 0Xff;
+//}
+//
+//void UART_read_TBF_flag					(unsigned int& TBF_flg)
+//{
+//	TBF_flg = (*C_PERIPHERAL_REG_TRx_UNIT_CONT_WORD >> C_TRx_Unit_Tx_Buff_Full_Flg_pos	) & 0x1;
+//}
+//
+//void UART_read_RBE_flag					(unsigned int& RBE_flg)
+//{
+//	RBE_flg = (*C_PERIPHERAL_REG_TRx_UNIT_CONT_WORD >> C_TRx_Unit_Rx_Buff_Empty_Flg_pos	) & 0x1;
+//}
 
 
 

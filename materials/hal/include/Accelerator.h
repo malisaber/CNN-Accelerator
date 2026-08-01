@@ -287,20 +287,20 @@ void CONT_REG_DRAM_disconnect	();
 //ACC_USART::~ACC_USART()
 //{
 //}
-//
-void UART_reset							();
 
-void UART_Initiate						(unsigned int Cont_Word);
-
-void UART_read_flags					(unsigned int& TBE_flg, unsigned int& TBF_flg, unsigned int& RBE_flg, unsigned int& RBF_flg);
-
-void UART_write_data					(unsigned int Data_Word);
-
-void UART_read_data						(unsigned int& Data_Word, unsigned int& DOR_error);
-
-void UART_read_TBF_flag					(unsigned int& TBF_flg);
-
-void UART_read_RBE_flag					(unsigned int& RBE_flg);
+// void UART_reset							();
+// 
+// void UART_Initiate						(unsigned int Cont_Word);
+// 
+// void UART_read_flags					(unsigned int& TBE_flg, unsigned int& TBF_flg, unsigned int& RBE_flg, unsigned int& RBF_flg);
+// 
+// void UART_write_data					(unsigned int Data_Word);
+// 
+// void UART_read_data						(unsigned int& Data_Word, unsigned int& DOR_error);
+// 
+// void UART_read_TBF_flag					(unsigned int& TBF_flg);
+// 
+// void UART_read_RBE_flag					(unsigned int& RBE_flg);
 
 
 

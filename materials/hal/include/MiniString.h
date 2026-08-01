@@ -31,9 +31,7 @@
 //   s += " world";
 //   send(s.c_str(), s.size());
 // ---------------------------------------------------------------------------
-
-#define N 31
-
+template <std::size_t N>
 class MiniString
 {
 public:
@@ -43,13 +41,13 @@ public:
     MiniString(const char* src) { assign(src); }
 
     template <std::size_t M>
-    MiniString(const MiniString& other) { assign(other.c_str()); }
+    MiniString(const MiniString<M>& other) { assign(other.c_str()); }
 
     // -- queries ----------------------------------------------------------
     std::size_t size()     const { return len_; }
     std::size_t length()   const { return len_; }
-    bool        empty()    const { return len_ == 0; }
-    bool        full()     const { return len_ == N; }
+    uint32_t    empty()    const { return len_ == 0 ? 1u : 0u; }
+    uint32_t    full()     const { return len_ == N ? 1u : 0u; }
     const char* c_str()    const { return buf_; }
     char*       data()           { return buf_; }
 
@@ -82,13 +80,14 @@ public:
     }
 
     // Appends raw bytes (not necessarily null-terminated), e.g. from a
-    // byte-at-a-time UART RX path. Returns false once the buffer is full.
-    bool push_back(char c)
+    // byte-at-a-time UART RX path. Returns 0 once the buffer is full,
+    // 1 on success.
+    uint32_t push_back(char c)
     {
-        if (len_ >= N) return false;
+        if (len_ >= N) return 0u;
         buf_[len_++] = c;
         buf_[len_] = '\0';
-        return true;
+        return 1u;
     }
 
     void pop_back()
@@ -103,15 +102,15 @@ public:
     char& operator[](std::size_t i)       { return buf_[i]; }
     char  operator[](std::size_t i) const { return buf_[i]; }
 
-    bool operator==(const char* rhs) const
+    uint32_t operator==(const char* rhs) const
     {
-        return std::strcmp(buf_, rhs) == 0;
+        return std::strcmp(buf_, rhs) == 0 ? 1u : 0u;
     }
 
     template <std::size_t M>
-    bool operator==(const MiniString& rhs) const
+    uint32_t operator==(const MiniString<M>& rhs) const
     {
-        return std::strcmp(buf_, rhs.c_str()) == 0;
+        return std::strcmp(buf_, rhs.c_str()) == 0 ? 1u : 0u;
     }
 
 private:

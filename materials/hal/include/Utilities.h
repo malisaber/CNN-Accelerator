@@ -6,7 +6,7 @@
 
 //#include "EventCallBacker.h"
 //extern EventCallBacker_I* ECB;
-extern unsigned int DMA_ZDBT_info[16];
+extern volatile unsigned int DMA_ZDBT_info[16];
 
 
 #define		PLANE_0		0
