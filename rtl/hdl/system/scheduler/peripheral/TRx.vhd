@@ -1,4 +1,3 @@
-
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 USE work.my_pack_v2.ALL;
@@ -26,7 +25,9 @@ entity TRx is
 		
 		--	Tx line
 		Rx_Rx							:	IN	std_logic;
-		Tx_Tx							:	OUT	std_logic);
+		Tx_Tx							:	OUT	std_logic;
+		--	BUGFIX: forward TX's end-of-transmission pulse up to TRx_Box.
+		Tx_Done							:	OUT	std_logic);
 end TRx;
 
 architecture Behavioral of TRx is
@@ -62,7 +63,8 @@ architecture Behavioral of TRx is
 		Tx_Conf_Clk_Div					:	IN	std_logic_vector(3	DOWNTO	0);
 		Tx_Conf_Enable					:	IN	std_logic;
 		--	Tx line
-		Tx_Tx							:	OUT	std_logic);
+		Tx_Tx							:	OUT	std_logic;
+		Tx_Done							:	OUT	std_logic);
 	END	COMPONENT;
 	--------------------------------------------------------------------------
 	--------------------------------------------------------------------------
@@ -98,10 +100,8 @@ begin
 		Tx_Conf_Clk_Div					=>	TR_Conf_Clk_Div,
 		Tx_Conf_Enable					=>	Tx_Conf_Enable,
 		--	Tx line
-		Tx_Tx							=>	Tx_Tx);
+		Tx_Tx							=>	Tx_Tx,
+		Tx_Done							=>	Tx_Done);
 	--------------------------------------------------------------------------
 	--------------------------------------------------------------------------
 end Behavioral;
-
-
-

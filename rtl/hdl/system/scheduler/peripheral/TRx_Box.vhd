@@ -1,4 +1,3 @@
-
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 USE work.my_pack_v2.ALL;
@@ -113,7 +112,8 @@ architecture Behavioral of TRx_Box is
 		Rx_Conf_Enable					:	IN	std_logic;
 		--	Tx line
 		Rx_Rx							:	IN	std_logic;
-		Tx_Tx							:	OUT	std_logic);
+		Tx_Tx							:	OUT	std_logic;
+		Tx_Done							:	OUT	std_logic);
 	END	COMPONENT;
 	--------------------------------------------------------------------------
 	COMPONENT							FIFO_v2
@@ -150,6 +150,13 @@ architecture Behavioral of TRx_Box is
 	SIGNAL	TRx_Tx_Buff_Pop				:	std_logic;
 	SIGNAL	TRx_Tx_Buff_Dout			:	std_logic_vector(7	DOWNTO	0);
 	SIGNAL	TRx_Tx_Buff_Empty			:	std_logic;
+	--------------------------------------------------------------------------
+	--	BUGFIX: end-of-transmission pulse from TRx/TX, used for INT_Tx_Sent
+	--	(previously that interrupt was wired to TRx_Tx_Buff_Pop, which fires
+	--	when a byte is popped from the FIFO at the *start* of a transmission,
+	--	not when the byte has actually finished going out on Tx_Tx).
+	--------------------------------------------------------------------------
+	SIGNAL	TRx_Tx_Done					:	std_logic;
 	--------------------------------------------------------------------------
 	SIGNAL	TRx_Rx_Buff_Push			:	std_logic;
 	SIGNAL	TRx_Rx_Buff_Din				:	std_logic_vector(8	DOWNTO	0);
@@ -205,7 +212,8 @@ begin
 		Rx_Conf_Enable					=>	TRx_Enables(4),
 		--	Tx line
 		Rx_Rx							=>	Rx_Rx,
-		Tx_Tx							=>	Tx_Tx);
+		Tx_Tx							=>	Tx_Tx,
+		Tx_Done							=>	TRx_Tx_Done);
 	--------------------------------------------------------------------------
 	TX_Fifo								:	FIFO_v2
 	GENERIC	MAP(
@@ -252,13 +260,22 @@ begin
 	--------------------------------------------------------------------------
 	--		Interrupts
 	--------------------------------------------------------------------------
-	TBE_int_rst							<=	(NOT TRx_Enables(3))	OR	ANS_Tx_Buff_Empty	OR	rst;
-	RBF_int_rst							<=	(NOT TRx_Enables(2))	OR	ANS_Rx_Buff_Full	OR	rst;
-	TXD_int_rst							<=	(NOT TRx_Enables(1))	OR	ANS_Tx_Sent			OR	rst;
-	RXD_int_rst							<=	(NOT TRx_Enables(0))	OR	ANS_Rx_Received		OR	rst;
+	--	BUGFIX: OR in TRx_INT_Clear so a software "clear interrupts" write
+	--	(control-word bit 25) actually resets all four latches. TRx_INT_Clear
+	--	is now a one-cycle self-clearing pulse (see process below), so this
+	--	behaves as an edge-triggered "clear on write", not a permanent block.
+	--------------------------------------------------------------------------
+	TBE_int_rst							<=	(NOT TRx_Enables(3))	OR	ANS_Tx_Buff_Empty	OR	rst	OR	TRx_INT_Clear;
+	RBF_int_rst							<=	(NOT TRx_Enables(2))	OR	ANS_Rx_Buff_Full	OR	rst	OR	TRx_INT_Clear;
+	TXD_int_rst							<=	(NOT TRx_Enables(1))	OR	ANS_Tx_Sent			OR	rst	OR	TRx_INT_Clear;
+	RXD_int_rst							<=	(NOT TRx_Enables(0))	OR	ANS_Rx_Received		OR	rst	OR	TRx_INT_Clear;
 	TBE_int_set							<=	TRx_Enables(3)			AND	TRx_Tx_Buff_Empty;
 	RBF_int_set							<=	TRx_Enables(2)			AND	TRx_Rx_Buff_Full;
-	TXD_int_set							<=	TRx_Enables(1)			AND	TRx_Tx_Buff_Pop;
+	--	BUGFIX: was TRx_Tx_Buff_Pop (asserted at the *start* of a Tx, when
+	--	TXCU pops the FIFO). Use TRx_Tx_Done, which now reflects the actual
+	--	Tx_Cont_Trn_end pulse from TXDP -- i.e. "Tx Sent" fires when the
+	--	byte has really finished going out on the wire.
+	TXD_int_set							<=	TRx_Enables(1)			AND	TRx_Tx_Done;
 	RXD_int_set							<=	TRx_Enables(0)			AND	TRx_Rx_Buff_Push;
 	--------------------------------------------------------------------------
 	INT_Tx_Buff_Empty					<=	TBE_int;
@@ -319,11 +336,21 @@ begin
 			TRx_MM_Wen					<=	'0';
 			TRx_MM_Dout					<=	(OTHERS	=>	'0');
 			TRx_Rx_Buff_Pop				<=	'0';
+			--	BUGFIX: give TRx_INT_Clear a defined reset value.
+			TRx_INT_Clear				<=	'0';
 		ELSIF clk = '1' AND clk'EVENT THEN
 			TRx_MM_Wen					<=	'0';
 			TRx_MM_Dout					<=	TRx_Rx_Buff_Dout;
 			TRx_Rx_Buff_Pop				<=	TRx_MM_Ren;
+			--	BUGFIX: default TRx_INT_Clear low every cycle (same pattern
+			--	as TRx_MM_Wen above) so it becomes a single-cycle pulse
+			--	instead of a level that, once written '1', would latch
+			--	forever and permanently block all four interrupts.
+			TRx_INT_Clear				<=	'0';
 			add							:=	to_integer(SIGNED(X_check(MAIN_PORT_Address)));
+			--	BUGFIX: use the same formula as the read process below so
+			--	write and read decoding can never diverge if BASE_ADDRESS
+			--	is ever changed to a non-multiple-of-4 value.
 			Eadd						:=	(add - BASE_ADDRESS)/4;
 			IF MAIN_PORT_WEN = '1' AND add >= BASE_ADDRESS AND add < ENDx_ADDRESS THEN
 				CASE	Eadd			IS
@@ -345,7 +372,11 @@ begin
 	BEGIN
 		TRx_MM_Ren						<=	'0';
 		add								:=	to_integer(SIGNED(X_check(MAIN_PORT_Address)));
-		Eadd							:=	(add/4) - (BASE_ADDRESS/4);
+		--	BUGFIX: was (add/4) - (BASE_ADDRESS/4), which only matches the
+		--	write process's (add - BASE_ADDRESS)/4 when BASE_ADDRESS happens
+		--	to be a multiple of 4. Unified to the same formula as the write
+		--	process above.
+		Eadd							:=	(add - BASE_ADDRESS)/4;
 		IF MAIN_PORT_OEN = '1' AND add  >= BASE_ADDRESS AND add < ENDx_ADDRESS THEN
 			CASE	Eadd			IS
 					WHEN	0			=>	MAIN_PORT_Data_out	<=	TRx_MM_Dout(8)	&	"000"	&	X"00000"	&	TRx_MM_Dout(7 DOWNTO 0);
@@ -373,10 +404,3 @@ begin
 	--------------------------------------------------------------------------
 	--------------------------------------------------------------------------
 end Behavioral;
-
-
-
-	
-	
-	
-	

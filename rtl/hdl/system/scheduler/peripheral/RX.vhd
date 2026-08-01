@@ -1,4 +1,3 @@
-
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 USE work.my_pack_v2.ALL;
@@ -68,8 +67,33 @@ architecture Behavioral of RX is
 	SIGNAL	Rx_Cont_Res_end				:	std_logic;
 	SIGNAL	Rx_Cont_Stp_bit				:	std_logic;
 	--------------------------------------------------------------------------
+	--	BUGFIX: Rx_Rx is an asynchronous external input but was being fed
+	--	straight into combinational start-detect logic (RXCU) and into the
+	--	sampling logic (RXDP) with no synchronizer, risking metastability
+	--	in real hardware. Add a 2-flop synchronizer here and distribute the
+	--	synchronized signal to both sub-blocks instead of the raw pin.
+	--------------------------------------------------------------------------
+	SIGNAL	Rx_Rx_meta					:	std_logic;
+	SIGNAL	Rx_Rx_sync					:	std_logic;
+	--------------------------------------------------------------------------
 	--------------------------------------------------------------------------
 begin
+	--------------------------------------------------------------------------
+	--------------------------------------------------------------------------
+	--		SYNCHRONIZER  (BUGFIX)
+	--------------------------------------------------------------------------
+	PROCESS (clk, rst)
+	BEGIN
+		IF rst = '1' THEN
+			-- UART line idles high; default the synchronizer to '1' so a
+			-- reset never looks like the start of a frame.
+			Rx_Rx_meta					<=	'1';
+			Rx_Rx_sync					<=	'1';
+		ELSIF clk = '1' AND clk'EVENT THEN
+			Rx_Rx_meta					<=	Rx_Rx;
+			Rx_Rx_sync					<=	Rx_Rx_meta;
+		END IF;
+	END PROCESS;
 	--------------------------------------------------------------------------
 	--------------------------------------------------------------------------
 	--		INSTANCEs
@@ -84,7 +108,7 @@ begin
 		Rx_Conf_Top_Max					=>	Rx_Conf_Top_Max,
 		Rx_Conf_Clk_Div					=>	Rx_Conf_Clk_Div,
 		--	Tx line
-		Rx_Rx							=>	Rx_Rx,
+		Rx_Rx							=>	Rx_Rx_sync,
 		--	Tx Control Signals
 		Rx_Cont_All_ini					=>	Rx_Cont_All_ini,
 		Rx_Cont_Res_en					=>	Rx_Cont_Res_en,
@@ -99,7 +123,7 @@ begin
 		--	Tx Config
 		Rx_Conf_Enable					=>	Rx_Conf_Enable,
 		--	Tx line
-		Rx_Rx							=>	Rx_Rx,
+		Rx_Rx							=>	Rx_Rx_sync,
 		--	Tx Control Signals
 		Rx_Cont_All_ini					=>	Rx_Cont_All_ini,
 		Rx_Cont_Res_en					=>	Rx_Cont_Res_en,
@@ -107,6 +131,3 @@ begin
 	--------------------------------------------------------------------------
 	--------------------------------------------------------------------------
 end Behavioral;
-
-
-

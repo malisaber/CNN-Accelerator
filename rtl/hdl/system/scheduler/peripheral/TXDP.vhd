@@ -1,4 +1,3 @@
-
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 USE work.my_pack_v2.ALL;
@@ -159,7 +158,17 @@ begin
 	--------------------------------------------------------------------------
 	Tx_Cont_Ini_edg						<=	(NOT Tx_Cont_All_ini)	AND Tx_Cont_All_ini_Regd;
 	--------------------------------------------------------------------------
-	Tx_Cont_Bit_Max						<=	"1001";
+	--	BUGFIX: was "1001" (=9). The shift register is loaded with
+	--	Data(7:0) & "01" and shifted right, filling '1' in from the top on
+	--	every shift. With Bit_Max=9, Tx_Cont_Trn_end asserted the instant the
+	--	8th data bit (D7) reached bit0 of the register, so the frame was:
+	--	[extra '1'][start '0'][D0..D7] with NO stop bit -- Tx_Tx just froze
+	--	at whatever D7 was (line could stay low forever if D7='0').
+	--	Bumping Bit_Max to 10 ("1010") keeps the counter running for one
+	--	more bit period after D7. Because all bits shifted in above D7 are
+	--	always '1' (hard-coded in the shift), that extra period reliably
+	--	outputs a proper stop bit ('1') before Tx_Cont_Trn_end fires.
+	Tx_Cont_Bit_Max						<=	"1010";
 	--------------------------------------------------------------------------
 	Tx_Cont_Div_inc						<=	Tx_Cont_Trn_en;
 	Tx_Cont_Top_inc						<=	Tx_Cont_Trn_en	AND Tx_Sign_Div_eq;
@@ -168,6 +177,3 @@ begin
 	--------------------------------------------------------------------------
 	--------------------------------------------------------------------------
 end Behavioral;
-
-
-

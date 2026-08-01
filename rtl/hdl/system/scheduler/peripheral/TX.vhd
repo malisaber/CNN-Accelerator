@@ -1,4 +1,3 @@
-
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 USE work.my_pack_v2.ALL;
@@ -20,7 +19,11 @@ entity TX is
 		Tx_Conf_Enable					:	IN	std_logic;
 		
 		--	Tx line
-		Tx_Tx							:	OUT	std_logic);
+		Tx_Tx							:	OUT	std_logic;
+		--	BUGFIX: expose end-of-transmission pulse so upstream logic (e.g.
+		--	TRx_Box's INT_Tx_Sent) can trigger on actual completion instead
+		--	of on Tx_Buff_Pop (which only marks the start of a transmission).
+		Tx_Done							:	OUT	std_logic);
 end TX;
 
 architecture Behavioral of TX is
@@ -109,7 +112,7 @@ begin
 		Tx_Cont_Trn_end					=>	Tx_Cont_Trn_end);
 	--------------------------------------------------------------------------
 	--------------------------------------------------------------------------
+	--	BUGFIX: surface the transmit-complete pulse at the TX top level.
+	Tx_Done								<=	Tx_Cont_Trn_end;
+	--------------------------------------------------------------------------
 end Behavioral;
-
-
-

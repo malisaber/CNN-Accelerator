@@ -736,24 +736,24 @@ void PE_INIT_UA_load_address 			(unsigned int plane_add, unsigned int pe_add, S_
 {
 	for (unsigned int i=0; i<9; i++)
 	{
-		*(plane_add + C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT)									=	wgt_add[i].base_add;
-		*(plane_add + C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR)								=	(1 << C_SUU_Address_Point_Base_Wen_pos) |
+		*((plane_add * C_PERIPHERAL_PLAN_INTERVAL) + C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT)	=	wgt_add[i].base_add;
+		*((plane_add * C_PERIPHERAL_PLAN_INTERVAL) + C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR)=	(1 << C_SUU_Address_Point_Base_Wen_pos) |
 																												(0 << C_SUU_Address_Point_Count_Wen_pos) |
 																												(0 << C_SUU_Address_Point_Interval_Wen_pos) |
 																												(0 << C_SUU_Address_Point_SA_UAb_pos) |
 																												(pe_add << C_SUU_Address_Point_Unit_Add_pos) |
 																												(i << C_SUU_Address_Point_Target_Add_pos);
 
-		*(plane_add + C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT)									=	wgt_add[i].count;
-		*(plane_add + C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR)								=	(0 << C_SUU_Address_Point_Base_Wen_pos) |
+		*((plane_add * C_PERIPHERAL_PLAN_INTERVAL) + C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT)	=	wgt_add[i].count;
+		*((plane_add * C_PERIPHERAL_PLAN_INTERVAL) + C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR)=	(0 << C_SUU_Address_Point_Base_Wen_pos) |
 																												(1 << C_SUU_Address_Point_Count_Wen_pos) |
 																												(0 << C_SUU_Address_Point_Interval_Wen_pos) |
 																												(0 << C_SUU_Address_Point_SA_UAb_pos) |
 																												(pe_add << C_SUU_Address_Point_Unit_Add_pos) |
 																												(i << C_SUU_Address_Point_Target_Add_pos);
 
-		*(plane_add + C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT)										=	wgt_add[i].interval;
-		*(plane_add + C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR) 							=	(0 << C_SUU_Address_Point_Base_Wen_pos) |
+		*((plane_add * C_PERIPHERAL_PLAN_INTERVAL) + C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT)	=	wgt_add[i].interval;
+		*((plane_add * C_PERIPHERAL_PLAN_INTERVAL) + C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR)=	(0 << C_SUU_Address_Point_Base_Wen_pos) |
 																												(0 << C_SUU_Address_Point_Count_Wen_pos) |
 																												(1 << C_SUU_Address_Point_Interval_Wen_pos) |
 																												(0 << C_SUU_Address_Point_SA_UAb_pos) |
