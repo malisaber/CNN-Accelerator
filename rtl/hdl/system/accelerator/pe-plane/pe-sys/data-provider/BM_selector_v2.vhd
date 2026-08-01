@@ -82,15 +82,15 @@ begin
 		
 		CASE Sel_banks IS
 			WHEN	"00"	=>	BM_Dout.Row3	<=	Bank_2_data;
-								Row_2_rdy		<=	Bank_stat(2);
+								Row_3_rdy		<=	Bank_stat(2);
 			WHEN	"01"	=>	BM_Dout.Row3	<=	Bank_3_data;
-								Row_2_rdy		<=	Bank_stat(3);
+								Row_3_rdy		<=	Bank_stat(3);
 			WHEN	"10"	=>	BM_Dout.Row3	<=	Bank_0_data;
-								Row_2_rdy		<=	Bank_stat(0);
+								Row_3_rdy		<=	Bank_stat(0);
 			WHEN	"11"	=>	BM_Dout.Row3	<=	Bank_1_data;
-								Row_2_rdy		<=	Bank_stat(1);
+								Row_3_rdy		<=	Bank_stat(1);
 			WHEN	OTHERS	=>	BM_Dout.Row3	<=	Bank_0_data;
-								Row_2_rdy		<=	Bank_stat(0);
+								Row_3_rdy		<=	Bank_stat(0);
 		END CASE;
 		
 		
