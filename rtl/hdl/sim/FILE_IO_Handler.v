@@ -58,7 +58,7 @@ module	FILE_IO_Handler
 			if(prev_file != this_file)
 			begin
 				if(wrote_on_this == 1'b1) 
-					$writememb	(file_name, mem);
+					$writememh	(file_name, mem);
 				$sformat	(file_name, "%s/DRAM_DATA_%1d.txt", `DRAM_DATA_DIR, this_file);
 				log_fid	=	$fopen("report/FILE_IO_HANDLER_LOG.txt", "a");
 				$fwrite		(log_fid, "FIOH %2d: Reading DRAM_DATA_%1d.txt    @%0t", handler_id, this_file, $time);
@@ -71,7 +71,7 @@ module	FILE_IO_Handler
 					$fclose		(err_fid);
 				end
 				$fwrite	(log_fid, "\n");
-				$readmemb	(file_name, mem);
+				$readmemh	(file_name, mem);
 				prev_file	=	this_file;
 				wrote_on_this = 1'b0;
 				$fclose		(chk_fid);

@@ -122,6 +122,22 @@ zero_loop:
 zero_loop_end:
 
 
+
+
+/**********************************************/
+/***************** MY EDITHIN *****************/
+/**********************************************/
+# for correctly initating variables 
+  la x28, __init_array_start
+  la x29, __init_array_end
+init_array_loop:
+  bge x28, x29, init_array_loop_end
+  lw  x5, 0(x28)      # load function pointer
+  jalr x1, x5, 0      # call it
+  addi x28, x28, 4
+  j   init_array_loop
+init_array_loop_end:
+
 main_entry:
   /* jump to main program entry point (argc = argv = 0) */
   addi x10, x0, 0

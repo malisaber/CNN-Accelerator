@@ -2,6 +2,7 @@
 
 ## High Priority
 
+- [ ] maxex in compiler
 - [ ] consistency in number of planes in CNN-Compiler and rtl
 - [ ] and also consistency in other parameters
 - [ ] and also consistency in memory mapped

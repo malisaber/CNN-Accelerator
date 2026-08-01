@@ -367,7 +367,7 @@ firmware: check-run-vars check-run-tools packages
 			-i $(BUILD_DIR)/text.txt \
 			-o $(MEM_INIT_DIR))
 	
-	@echo ">>> [5/5] Selecting CORE=$(CORE) in rtl/packages/MY_Pack_v2.vhd"
+	@echo ">>> [5/5] Selecting CORE=$(CORE) in rtl/hdl/packages/MY_Pack_v2.vhd"
 	$(call LOG,05-core-select,\
 		case "$(CORE)" in \
 			aftab)   NEWVAL=P_USE_AFTAB ;; \
@@ -375,7 +375,7 @@ firmware: check-run-vars check-run-tools packages
 		esac; \
 		sed -i.bak -E \
 			"s/(CONSTANT[[:space:]]+P_uProcessor_in_use[[:space:]]*:[[:space:]]*P_uProcessor_type[[:space:]]*:=[[:space:]]*)P_USE_[A-Z]+;/\1$${NEWVAL};/" \
-			rtl/packages/MY_Pack_v2.vhd; \
+			rtl/hdl/packages/MY_Pack_v2.vhd; \
 		grep -n "P_uProcessor_in_use" rtl/hdl/packages/MY_Pack_v2.vhd)
 	
 	@echo ">>> done: firmware in $(BUILD_DIR)/, memory-init files in $(MEM_INIT_DIR)/, logs in $(REPORT_DIR)/"

@@ -454,22 +454,22 @@ extern	"C"	{	void Disable_GINT();		}	//	Enable Disable The Interrupt
 
 struct	S_PE_cofig
 {
-	unsigned int	FSM_Src		=	FSM_CNN_1;
-	unsigned int 	E_Shift_cnt	=	0;
-	unsigned int	FH_Arith	=	FULL;
-	unsigned int	IFM_NS		=	IUNSIGN;
-	unsigned int	WFM_NS		=	WUNSIGN;
-	unsigned int 	E_Zpad_max	=	3;
-	unsigned int 	E_Kern_max	=	15;
-	unsigned int 	E_Colm_max	=	15;
-	unsigned int 	E_Chnl_max	=	15;
+	unsigned int	FSM_Src;
+	unsigned int 	E_Shift_cnt;
+	unsigned int	FH_Arith;
+	unsigned int	IFM_NS;
+	unsigned int	WFM_NS;
+	unsigned int 	E_Zpad_max;
+	unsigned int 	E_Kern_max;
+	unsigned int 	E_Colm_max;
+	unsigned int 	E_Chnl_max;
 };
 
 struct	S_Addressing_Info
 {
-	unsigned int base_add	=	0;
-	unsigned int count		=	0;
-	unsigned int interval	=	0;
+	unsigned int base_add;
+	unsigned int count;
+	unsigned int interval;
 };
 
 struct	S_CONF_STA_info
@@ -490,8 +490,8 @@ struct	S_CONF_STA_info
 
 struct	S_UPA_Inp_Addressing_Info
 {
-	unsigned int base_add	=	0;
-	unsigned int interval	=	0;
+	unsigned int base_add;
+	unsigned int interval;
 };
 
 struct	UART_Config

@@ -36,12 +36,23 @@
 //       before pipe1 in the same cycle (in-order commit).
 //
 //   X <8-hex PC>@<time> <2-hex cause>
-//       An exception/interrupt was taken this cycle. PC is the
-//       PC associated with the event (interrupted PC for
-//       interrupts, faulting PC for synchronous exceptions). cause
-//       uses the same encoding as `EXCEPTION_*` in biriscv_defs.v
-//       (e.g. 0x20 = interrupt taken, 0x18 = ECALL, 0x12 = illegal
-//       instruction, 0x30..0x33 = xRET, ...).
+//       A genuine exception/interrupt was TAKEN this cycle (cause
+//       < 6'h30, i.e. misaligned/illegal/ecall/page-fault/interrupt -
+//       see EXCEPTION_* in biriscv_defs.v). PC is the PC associated
+//       with the event (interrupted PC for interrupts, faulting PC
+//       for synchronous exceptions).
+//
+//       IMPORTANT: mret/sret/uret (EXCEPTION_ERET_* = 6'h30..6'h33)
+//       and fence/sfence/satp writes (EXCEPTION_FENCE = 6'h34) also
+//       drive csr_writeback_exception_o nonzero, but that's just how
+//       the CSR unit requests a pipeline flush for an instruction
+//       that already committed a perfectly normal 'I' record (an
+//       eret opcode, decodable on its own). They are deliberately
+//       NOT logged as 'X' here - doing so would tell the offline
+//       tool "a new trap was just taken" a second time for the same
+//       return instruction, which corrupts call-stack reconstruction
+//       (every instruction after the return gets mislabeled as still
+//       being inside the interrupt).
 //-----------------------------------------------------------------
 module biriscv_pc_tracer2
 (
@@ -80,7 +91,7 @@ begin
         if (pipe1_valid_i)
             $fwrite(track_fid, "I %8h@%0t %8h\n", pipe1_pc_i, $time, pipe1_opcode_i);
 
-        if (|exception_i)
+        if (|exception_i && (exception_i < 6'h30))
             $fwrite(track_fid, "X %8h@%0t %2h\n", exception_pc_i, $time, exception_i);
     end
 end
