@@ -10149,12 +10149,12 @@ add wave -noupdate -group Accelerator -group Acc_Plane_3 -group PEG_3_3_3 -group
 add wave -noupdate -group Accelerator -group Acc_Plane_3 -group PEG_3_3_3 -group SA_3_3_3 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(3)/Processing_Plane/ROW_GEN(4)/COL_GEN(4)/SA_unit/LMN_data_out
 add wave -noupdate -group Accelerator -group Acc_Plane_3 -group PEG_3_3_3 -group SA_3_3_3 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(3)/Processing_Plane/ROW_GEN(4)/COL_GEN(4)/SA_unit/LMN_data_wen
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {301285 ns} 0}
+WaveRestoreCursors {{Cursor 1} {61660 ns} 0}
 quietly wave cursor active 1
-configure wave -namecolwidth 697
+configure wave -namecolwidth 191
 configure wave -valuecolwidth 100
 configure wave -justifyvalue left
-configure wave -signalnamewidth 0
+configure wave -signalnamewidth 1
 configure wave -snapdistance 10
 configure wave -datasetprefix 0
 configure wave -rowmargin 4
@@ -10165,4 +10165,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {122863 ns} {281217 ns}
+WaveRestoreZoom {41673 ns} {167588 ns}

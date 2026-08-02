@@ -50,6 +50,7 @@ entity UA_datapath is
 		Chan_inc		:	IN	std_logic;
 		Phys_inc		:	IN	std_logic;
 		Base_Step_en	:	IN	std_logic;
+		Phys_max		:	IN	std_logic_vector(3						DOWNTO 0);
 		
 		BCI_add			:	IN	std_logic_vector(3						DOWNTO 0));
 end UA_datapath;
@@ -107,7 +108,7 @@ architecture Behavioral of UA_datapath is
 	------------------------------------------------------------------------
 	--	Signals
 	------------------------------------------------------------------------
-	SIGNAL	Phys_max	:	std_logic_vector(3					DOWNTO	0)		:=	"1000";
+	--	SIGNAL	Phys_max	:	std_logic_vector(3					DOWNTO	0)		:=	"1000";
 	------------------------------------------------------------------------
 	SIGNAL	Phys_vls	:	std_logic_vector(3					DOWNTO	0);
 	SIGNAL	Kern_val	:	std_logic_vector(P_kernel_size-1	DOWNTO	0);

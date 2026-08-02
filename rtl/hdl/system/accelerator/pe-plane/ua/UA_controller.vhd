@@ -53,6 +53,8 @@ entity UA_controller is
 		Chan_inc		:	OUT	std_logic;
 		Phys_inc		:	OUT	std_logic;
 		Base_Step_en	:	OUT	std_logic;
+		Phys_max		:	OUT	std_logic_vector(3						DOWNTO 0);
+
 		BCI_add			:	OUT	std_logic_vector(3						DOWNTO 0));
 end UA_controller;
 
@@ -112,6 +114,7 @@ begin
 		Chan_inc		<=	'0';
 		Phys_inc		<=	'0';
 		Base_Step_en	<=	'0';
+		Phys_max		<=	"0000";
 		BCI_add			<=	"0000";
 		status			<=	"00";
 		done			<=	'0';
@@ -143,35 +146,44 @@ begin
 			WHEN	UM_init		=>	init			<=	'1';
 									BCI_add			<=	"1111";
 									status			<=	"10";
-			WHEN	UM_Wgt		=>	NULL;
+									Phys_max		<=	"0011";
+			WHEN	UM_Wgt		=>	Phys_max		<=	"0011";
 			WHEN	UM_Chk		=>	BCI_add			<=	"1111";
 									status			<=	"10";
+									Phys_max		<=	"0011";
 			WHEN	UM_req		=>	LL_push			<=	'1';
 									BCI_add			<=	"1111";
 									status			<=	"10";
+									Phys_max		<=	"0011";
 			WHEN	UM_clct		=>	Colm_inc		<=	LL_data_rdy;
 									Chan_inc		<=	LL_data_rdy	AND	Colm_eq;
 									BCI_add			<=	"1111";
 									MB_wen			<=	LL_data_rdy;
-									Base_Step_en	<=	LL_data_rdy	AND	Colm_eq	AND	Chan_eq;
-									MB_set			<=	LL_data_rdy	AND	Colm_eq	AND	Chan_eq;
+									Base_Step_en	<=	UM_A_clct;
+									MB_set			<=	UM_A_clct;
 									status			<=	"10";
+									Phys_inc		<=	UM_A_clct;
+									Phys_max		<=	"0011";
 	------------------------------------------------------------------------
 			WHEN	UW_init		=>	init			<=	'1';
 									BCI_add			<=	Phys_val;
 									status			<=	"11";
+									Phys_max		<=	"1000";
 			WHEN	UW_req		=>	LL_push			<=	'1';
 									BCI_add			<=	Phys_val;
 									status			<=	"11";
+									Phys_max		<=	"1000";
 			WHEN	UW_clct		=>	Kern_inc		<=	LL_data_rdy;
 									Chan_inc		<=	LL_data_rdy	AND	Kern_eq;
 									BCI_add			<=	Phys_val;
 									WB_wen			<=	LL_data_rdy;
-									Base_Step_en	<=	LL_data_rdy	AND	Kern_eq	AND	Chan_eq;
+									Base_Step_en	<=	UW_A_clct;
 									status			<=	"11";
+									Phys_max		<=	"1000";
 			WHEN	UW_Phy		=>	BCI_add			<=	Phys_val;
 									status			<=	"11";
 									Phys_inc		<=	'1';
+									Phys_max		<=	"1000";
 	------------------------------------------------------------------------
 			END CASE;
 	END PROCESS;

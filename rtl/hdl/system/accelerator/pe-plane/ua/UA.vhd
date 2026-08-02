@@ -99,6 +99,7 @@ architecture Behavioral of UA is
 		Chan_inc		:	OUT	std_logic;
 		Phys_inc		:	OUT	std_logic;
 		Base_Step_en	:	OUT	std_logic;
+		Phys_max		:	OUT	std_logic_vector(3						DOWNTO 0);
 		BCI_add			:	OUT	std_logic_vector(3						DOWNTO 0));
 	END COMPONENT;
 	------------------------------------------------------------------------
@@ -137,6 +138,7 @@ architecture Behavioral of UA is
 		Chan_inc		:	IN	std_logic;
 		Phys_inc		:	IN	std_logic;
 		Base_Step_en	:	IN	std_logic;
+		Phys_max		:	IN	std_logic_vector(3						DOWNTO 0);
 		BCI_add			:	IN	std_logic_vector(3						DOWNTO 0));
 	END COMPONENT;
 	------------------------------------------------------------------------
@@ -154,6 +156,7 @@ architecture Behavioral of UA is
 	SIGNAL	Chan_inc	:	std_logic;
 	SIGNAL	Phys_inc	:	std_logic;
 	SIGNAL	Base_Step_en:	std_logic;
+	SIGNAL	Phys_max	:	std_logic_vector(3							DOWNTO 0);
 	SIGNAL	BCI_add		:	std_logic_vector(3							DOWNTO 0);
 	------------------------------------------------------------------------
 begin
@@ -190,6 +193,7 @@ begin
 		Chan_inc		=>	Chan_inc,
 		Phys_inc		=>	Phys_inc,
 		Base_Step_en	=>	Base_Step_en,
+		Phys_max		=>	Phys_max,
 		BCI_add			=>	BCI_add);
 	------------------------------------------------------------------------
 	DP					:	UA_datapath
@@ -220,6 +224,7 @@ begin
 		Chan_inc		=>	Chan_inc,
 		Phys_inc		=>	Phys_inc,
 		Base_Step_en	=>	Base_Step_en,
+		Phys_max		=>	Phys_max,
 		BCI_add			=>	BCI_add);
 	------------------------------------------------------------------------
 	MB_low_lvl_wen		<=	MB_wen;
