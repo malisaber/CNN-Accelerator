@@ -70,7 +70,7 @@ architecture Behavioral of UA_controller is
 	ATTRIBUTE fsm_encoding OF P_S : SIGNAL IS "one-hot";
 	--	"auto, compact, gray, johnson, one-hot, sequential, speed1, user" 
 	------------------------------------------------------------------------
-	SIGNAL	p_reset		:	std_logic; 
+	--SIGNAL	p_reset		:	std_logic; 
 	SIGNAL	p_edge		:	std_logic	:=	'1';
 	------------------------------------------------------------------------
 	SIGNAL	UM_A_clct	:	std_logic;

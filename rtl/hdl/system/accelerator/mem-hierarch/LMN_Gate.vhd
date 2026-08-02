@@ -58,8 +58,8 @@ architecture Behavioral of LMN_Gate is
 	SIGNAL	MReg_add	:	std_logic_vector(P_Phy_Add_size-1	DOWNTO 0);
 	SIGNAL	MReg_Cnt	:	std_logic_vector(P_Phy_Cnt_size-1	DOWNTO 0);
 	
-	SIGNAL	TLB_add_in	:	std_logic_vector(P_Phy_Add_size-1	DOWNTO 0);
-	SIGNAL	TLB_add_out	:	std_logic_vector(P_Phy_Add_size-1	DOWNTO 0);
+	--SIGNAL	TLB_add_in	:	std_logic_vector(P_Phy_Add_size-1	DOWNTO 0);
+	--SIGNAL	TLB_add_out	:	std_logic_vector(P_Phy_Add_size-1	DOWNTO 0);
 begin
 	--------------------------------------------------------------------------------------
 	--------------------------------------------------------------------------------------
@@ -83,16 +83,19 @@ begin
 	--------------------------------------------------------------------------------------
 	--------------------------------------------------------------------------------------
 	--------------------------------------------------------------------------------------
-	MReg_read	<=	SReg_read;
-	MReg_write	<=	SReg_write;
-	MReg_Cnt	<=	SReg_cnt;
 	PROCESS (clk, rst)
 	BEGIN
 		IF rst = '1' THEN
 			MReg_Add		<=	(OTHERS => '0');
+			MReg_read		<=	'0';
+			MReg_write		<=	'0';
+			MReg_Cnt		<=	(OTHERS => '0');
 		ELSIF clk = '1' AND clk'EVENT THEN
 			IF load_MS = '1' THEN
 				MReg_Add	<=	SReg_add;
+				MReg_read	<=	SReg_read;
+				MReg_write	<=	SReg_write;
+				MReg_Cnt	<=	SReg_cnt;
 			END IF;
 		END IF;
 	END PROCESS;
@@ -135,7 +138,7 @@ begin
 			WHEN	load	=>	load_SS		<=	'1';
 								load_MS		<=	'1';
 			--WHEN	tlb		=>	load_MS		<=	'1';
-			WHEN	ld_cmp	=>	SBUS_done	<=	'0';
+			WHEN	ld_cmp	=>	load_MS		<=	'1';
 			WHEN	acc		=>	MBUS_req	<=	'1';
 			WHEN	tra		=>	trans_data	<=	'1';
 								MBUS_req	<=	'1';

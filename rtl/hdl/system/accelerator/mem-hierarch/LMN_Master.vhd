@@ -47,10 +47,10 @@ architecture Behavioral of LMN_Master is
 	SIGNAL	REG_write	:	std_logic;
 	SIGNAL	REG_Add		:	std_logic_vector(P_Phy_Add_size-1	DOWNTO 0);
 	SIGNAL	REG_Cnt		:	std_logic_vector(P_Phy_Cnt_size-1	DOWNTO 0);
-	SIGNAL	REG_data_out:	std_logic_vector(P_word_size-1		DOWNTO 0);
-	SIGNAL	REG_data_rdy:	std_logic;
-	SIGNAL	REG_data_in	:	std_logic_vector(P_word_size-1 DOWNTO 0);
-	SIGNAL	REG_data_wen:	std_logic;
+	--SIGNAL	REG_data_out:	std_logic_vector(P_word_size-1		DOWNTO 0);
+	--SIGNAL	REG_data_rdy:	std_logic;
+	--SIGNAL	REG_data_in	:	std_logic_vector(P_word_size-1 DOWNTO 0);
+	--SIGNAL	REG_data_wen:	std_logic;
 	
 	SIGNAL	load_cmd	:	std_logic;
 	SIGNAL	load_Data	:	std_logic;

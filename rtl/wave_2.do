@@ -1,55 +1,360 @@
 onerror {resume}
 quietly WaveActivateNextPane {} 0
-add wave -noupdate /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/clk_w
-add wave -noupdate /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/rst_w
-add wave -noupdate /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/CU/P_S
-add wave -noupdate /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Update_IFM
-add wave -noupdate /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Update_WFM
-add wave -noupdate /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/LL_data_rdy
-add wave -noupdate /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/LL_data_in
-add wave -noupdate /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/CNT_UPA_PAUSE
-add wave -noupdate -expand /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/MB_status
-add wave -noupdate /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/LL_ack
-add wave -noupdate /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Colm_inc
-add wave -noupdate /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Kern_inc
-add wave -noupdate /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/init
-add wave -noupdate /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Phys_val
-add wave -noupdate /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Phys_inc
-add wave -noupdate /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Base_Step_en
-add wave -noupdate /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/BCI_add
-add wave -noupdate /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Phys_eq
-add wave -noupdate /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Chan_eq
-add wave -noupdate /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Colm_eq
-add wave -noupdate /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Kern_eq
-add wave -noupdate /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/MB_set
-add wave -noupdate /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/WB_wen
-add wave -noupdate /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Chan_inc
-add wave -noupdate /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/MB_wen
-add wave -noupdate /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/MB_set_flag
-add wave -noupdate /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/WB_low_lvl_sig
-add wave -noupdate /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/WB_low_lvl_wen
-add wave -noupdate /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/MB_low_lvl_sig
-add wave -noupdate /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/MB_low_lvl_wen
-add wave -noupdate /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/LL_data_wen
-add wave -noupdate /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/LL_cnt
-add wave -noupdate /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/LL_add
-add wave -noupdate /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/LL_write
-add wave -noupdate /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/LL_read
-add wave -noupdate /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/LL_push
-add wave -noupdate /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/done
-add wave -noupdate /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/status
-add wave -noupdate /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/LL_data_out
-add wave -noupdate /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/DP/Kern_val
-add wave -noupdate /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/DP/Colm_val
-add wave -noupdate /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/DP/Chan_val
-add wave -noupdate /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/DP/Phys_vls
+add wave -noupdate -group P0 -group Update_0 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/clk_w
+add wave -noupdate -group P0 -group Update_0 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/rst_w
+add wave -noupdate -group P0 -group Update_0 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Addresses
+add wave -noupdate -group P0 -group Update_0 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Target_add
+add wave -noupdate -group P0 -group Update_0 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Base_Wen
+add wave -noupdate -group P0 -group Update_0 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Count_Wen
+add wave -noupdate -group P0 -group Update_0 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/IntVal_Wen
+add wave -noupdate -group P0 -group Update_0 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/CU/P_S
+add wave -noupdate -group P0 -group Update_0 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Update_IFM
+add wave -noupdate -group P0 -group Update_0 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Update_WFM
+add wave -noupdate -group P0 -group Update_0 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/LL_data_rdy
+add wave -noupdate -group P0 -group Update_0 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/LL_data_in
+add wave -noupdate -group P0 -group Update_0 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/CNT_UPA_PAUSE
+add wave -noupdate -group P0 -group Update_0 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/MB_status
+add wave -noupdate -group P0 -group Update_0 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/LL_ack
+add wave -noupdate -group P0 -group Update_0 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Colm_inc
+add wave -noupdate -group P0 -group Update_0 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Kern_inc
+add wave -noupdate -group P0 -group Update_0 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/init
+add wave -noupdate -group P0 -group Update_0 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Phys_val
+add wave -noupdate -group P0 -group Update_0 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Phys_inc
+add wave -noupdate -group P0 -group Update_0 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Base_Step_en
+add wave -noupdate -group P0 -group Update_0 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/BCI_add
+add wave -noupdate -group P0 -group Update_0 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Phys_eq
+add wave -noupdate -group P0 -group Update_0 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Chan_eq
+add wave -noupdate -group P0 -group Update_0 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Colm_eq
+add wave -noupdate -group P0 -group Update_0 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Kern_eq
+add wave -noupdate -group P0 -group Update_0 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/MB_set
+add wave -noupdate -group P0 -group Update_0 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/WB_wen
+add wave -noupdate -group P0 -group Update_0 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Chan_inc
+add wave -noupdate -group P0 -group Update_0 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/MB_wen
+add wave -noupdate -group P0 -group Update_0 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/MB_set_flag
+add wave -noupdate -group P0 -group Update_0 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/WB_low_lvl_sig
+add wave -noupdate -group P0 -group Update_0 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/WB_low_lvl_wen
+add wave -noupdate -group P0 -group Update_0 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/MB_low_lvl_sig
+add wave -noupdate -group P0 -group Update_0 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/MB_low_lvl_wen
+add wave -noupdate -group P0 -group Update_0 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/LL_data_wen
+add wave -noupdate -group P0 -group Update_0 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/LL_cnt
+add wave -noupdate -group P0 -group Update_0 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/LL_add
+add wave -noupdate -group P0 -group Update_0 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/LL_write
+add wave -noupdate -group P0 -group Update_0 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/LL_read
+add wave -noupdate -group P0 -group Update_0 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/LL_push
+add wave -noupdate -group P0 -group Update_0 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/done
+add wave -noupdate -group P0 -group Update_0 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/status
+add wave -noupdate -group P0 -group Update_0 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/LL_data_out
+add wave -noupdate -group P0 -group Update_0 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/DP/Kern_val
+add wave -noupdate -group P0 -group Update_0 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/DP/Colm_val
+add wave -noupdate -group P0 -group Update_0 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/DP/Chan_val
+add wave -noupdate -group P0 -group Update_0 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/DP/Phys_vls
+add wave -noupdate -group P0 -group Master_0 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(0)/NAT_UPA_Master/clk
+add wave -noupdate -group P0 -group Master_0 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(0)/NAT_UPA_Master/rst
+add wave -noupdate -group P0 -group Master_0 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(0)/NAT_UPA_Master/NAT_data_wen
+add wave -noupdate -group P0 -group Master_0 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(0)/NAT_UPA_Master/BUS_grant
+add wave -noupdate -group P0 -group Master_0 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(0)/NAT_UPA_Master/BUS_done
+add wave -noupdate -group P0 -group Master_0 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(0)/NAT_UPA_Master/BUS_wait
+add wave -noupdate -group P0 -group Master_0 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(0)/NAT_UPA_Master/NAT_data_in
+add wave -noupdate -group P0 -group Master_0 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(0)/NAT_UPA_Master/NAT_Cnt
+add wave -noupdate -group P0 -group Master_0 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(0)/NAT_UPA_Master/NAT_Add
+add wave -noupdate -group P0 -group Master_0 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(0)/NAT_UPA_Master/NAT_write
+add wave -noupdate -group P0 -group Master_0 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(0)/NAT_UPA_Master/BUS_MD_in
+add wave -noupdate -group P0 -group Master_0 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(0)/NAT_UPA_Master/BUS_MD_in_rdy
+add wave -noupdate -group P0 -group Master_0 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(0)/NAT_UPA_Master/NAT_read
+add wave -noupdate -group P0 -group Master_0 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(0)/NAT_UPA_Master/NAT_push
+add wave -noupdate -group P0 -group Master_0 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(0)/NAT_UPA_Master/P_S
+add wave -noupdate -group P0 -group Master_0 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(0)/NAT_UPA_Master/load_Data
+add wave -noupdate -group P0 -group Master_0 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(0)/NAT_UPA_Master/load_cmd
+add wave -noupdate -group P0 -group Master_0 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(0)/NAT_UPA_Master/REG_data_wen
+add wave -noupdate -group P0 -group Master_0 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(0)/NAT_UPA_Master/REG_data_in
+add wave -noupdate -group P0 -group Master_0 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(0)/NAT_UPA_Master/REG_data_rdy
+add wave -noupdate -group P0 -group Master_0 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(0)/NAT_UPA_Master/REG_data_out
+add wave -noupdate -group P0 -group Master_0 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(0)/NAT_UPA_Master/REG_Cnt
+add wave -noupdate -group P0 -group Master_0 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(0)/NAT_UPA_Master/REG_Add
+add wave -noupdate -group P0 -group Master_0 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(0)/NAT_UPA_Master/REG_write
+add wave -noupdate -group P0 -group Master_0 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(0)/NAT_UPA_Master/REG_read
+add wave -noupdate -group P0 -group Master_0 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(0)/NAT_UPA_Master/N_S
+add wave -noupdate -group P0 -group Master_0 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(0)/NAT_UPA_Master/clar_CD
+add wave -noupdate -group P0 -group Master_0 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(0)/NAT_UPA_Master/BUS_req
+add wave -noupdate -group P0 -group Master_0 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(0)/NAT_UPA_Master/BUS_read
+add wave -noupdate -group P0 -group Master_0 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(0)/NAT_UPA_Master/NAT_data_rdy
+add wave -noupdate -group P0 -group Master_0 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(0)/NAT_UPA_Master/NAT_data_out
+add wave -noupdate -group P0 -group Master_0 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(0)/NAT_UPA_Master/BUS_write
+add wave -noupdate -group P0 -group Master_0 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(0)/NAT_UPA_Master/BUS_Add
+add wave -noupdate -group P0 -group Master_0 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(0)/NAT_UPA_Master/BUS_cnt
+add wave -noupdate -group P0 -group Master_0 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(0)/NAT_UPA_Master/BUS_MD_out
+add wave -noupdate -group P0 -group Master_0 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(0)/NAT_UPA_Master/NAT_ack
+add wave -noupdate -group P0 -group Master_0 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(0)/NAT_UPA_Master/BUS_MD_out_rdy
+add wave -noupdate -group P0 -group Master_0 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(0)/NAT_UPA_Master/NAT_wait
+add wave -noupdate -group P0 -group Master_0 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(0)/NAT_UPA_Master/NAT_ready
+add wave -noupdate -group P1 -group Update_1 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(1)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/clk_w
+add wave -noupdate -group P1 -group Update_1 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(1)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/rst_w
+add wave -noupdate -group P1 -group Update_1 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(1)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Addresses
+add wave -noupdate -group P1 -group Update_1 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(1)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Target_add
+add wave -noupdate -group P1 -group Update_1 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(1)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Base_Wen
+add wave -noupdate -group P1 -group Update_1 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(1)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Count_Wen
+add wave -noupdate -group P1 -group Update_1 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(1)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/IntVal_Wen
+add wave -noupdate -group P1 -group Update_1 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(1)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/CU/P_S
+add wave -noupdate -group P1 -group Update_1 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(1)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Update_IFM
+add wave -noupdate -group P1 -group Update_1 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(1)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Update_WFM
+add wave -noupdate -group P1 -group Update_1 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(1)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/LL_data_rdy
+add wave -noupdate -group P1 -group Update_1 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(1)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/LL_data_in
+add wave -noupdate -group P1 -group Update_1 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(1)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/CNT_UPA_PAUSE
+add wave -noupdate -group P1 -group Update_1 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(1)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/MB_status
+add wave -noupdate -group P1 -group Update_1 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(1)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/LL_ack
+add wave -noupdate -group P1 -group Update_1 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(1)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Colm_inc
+add wave -noupdate -group P1 -group Update_1 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(1)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Kern_inc
+add wave -noupdate -group P1 -group Update_1 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(1)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/init
+add wave -noupdate -group P1 -group Update_1 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(1)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Phys_val
+add wave -noupdate -group P1 -group Update_1 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(1)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Phys_inc
+add wave -noupdate -group P1 -group Update_1 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(1)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Base_Step_en
+add wave -noupdate -group P1 -group Update_1 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(1)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/BCI_add
+add wave -noupdate -group P1 -group Update_1 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(1)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Phys_eq
+add wave -noupdate -group P1 -group Update_1 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(1)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Chan_eq
+add wave -noupdate -group P1 -group Update_1 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(1)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Colm_eq
+add wave -noupdate -group P1 -group Update_1 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(1)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Kern_eq
+add wave -noupdate -group P1 -group Update_1 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(1)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/MB_set
+add wave -noupdate -group P1 -group Update_1 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(1)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/WB_wen
+add wave -noupdate -group P1 -group Update_1 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(1)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Chan_inc
+add wave -noupdate -group P1 -group Update_1 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(1)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/MB_wen
+add wave -noupdate -group P1 -group Update_1 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(1)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/MB_set_flag
+add wave -noupdate -group P1 -group Update_1 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(1)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/WB_low_lvl_sig
+add wave -noupdate -group P1 -group Update_1 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(1)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/WB_low_lvl_wen
+add wave -noupdate -group P1 -group Update_1 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(1)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/MB_low_lvl_sig
+add wave -noupdate -group P1 -group Update_1 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(1)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/MB_low_lvl_wen
+add wave -noupdate -group P1 -group Update_1 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(1)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/LL_data_wen
+add wave -noupdate -group P1 -group Update_1 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(1)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/LL_cnt
+add wave -noupdate -group P1 -group Update_1 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(1)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/LL_add
+add wave -noupdate -group P1 -group Update_1 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(1)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/LL_write
+add wave -noupdate -group P1 -group Update_1 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(1)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/LL_read
+add wave -noupdate -group P1 -group Update_1 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(1)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/LL_push
+add wave -noupdate -group P1 -group Update_1 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(1)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/done
+add wave -noupdate -group P1 -group Update_1 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(1)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/status
+add wave -noupdate -group P1 -group Update_1 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(1)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/LL_data_out
+add wave -noupdate -group P1 -group Update_1 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(1)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/DP/Kern_val
+add wave -noupdate -group P1 -group Update_1 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(1)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/DP/Colm_val
+add wave -noupdate -group P1 -group Update_1 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(1)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/DP/Chan_val
+add wave -noupdate -group P1 -group Update_1 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(1)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/DP/Phys_vls
+add wave -noupdate -group P1 -group Master_1 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(1)/NAT_UPA_Master/clk
+add wave -noupdate -group P1 -group Master_1 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(1)/NAT_UPA_Master/rst
+add wave -noupdate -group P1 -group Master_1 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(1)/NAT_UPA_Master/NAT_data_wen
+add wave -noupdate -group P1 -group Master_1 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(1)/NAT_UPA_Master/BUS_grant
+add wave -noupdate -group P1 -group Master_1 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(1)/NAT_UPA_Master/BUS_done
+add wave -noupdate -group P1 -group Master_1 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(1)/NAT_UPA_Master/BUS_wait
+add wave -noupdate -group P1 -group Master_1 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(1)/NAT_UPA_Master/NAT_data_in
+add wave -noupdate -group P1 -group Master_1 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(1)/NAT_UPA_Master/NAT_Cnt
+add wave -noupdate -group P1 -group Master_1 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(1)/NAT_UPA_Master/NAT_Add
+add wave -noupdate -group P1 -group Master_1 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(1)/NAT_UPA_Master/NAT_write
+add wave -noupdate -group P1 -group Master_1 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(1)/NAT_UPA_Master/BUS_MD_in
+add wave -noupdate -group P1 -group Master_1 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(1)/NAT_UPA_Master/BUS_MD_in_rdy
+add wave -noupdate -group P1 -group Master_1 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(1)/NAT_UPA_Master/NAT_read
+add wave -noupdate -group P1 -group Master_1 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(1)/NAT_UPA_Master/NAT_push
+add wave -noupdate -group P1 -group Master_1 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(1)/NAT_UPA_Master/P_S
+add wave -noupdate -group P1 -group Master_1 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(1)/NAT_UPA_Master/load_Data
+add wave -noupdate -group P1 -group Master_1 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(1)/NAT_UPA_Master/load_cmd
+add wave -noupdate -group P1 -group Master_1 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(1)/NAT_UPA_Master/REG_data_wen
+add wave -noupdate -group P1 -group Master_1 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(1)/NAT_UPA_Master/REG_data_in
+add wave -noupdate -group P1 -group Master_1 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(1)/NAT_UPA_Master/REG_data_rdy
+add wave -noupdate -group P1 -group Master_1 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(1)/NAT_UPA_Master/REG_data_out
+add wave -noupdate -group P1 -group Master_1 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(1)/NAT_UPA_Master/REG_Cnt
+add wave -noupdate -group P1 -group Master_1 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(1)/NAT_UPA_Master/REG_Add
+add wave -noupdate -group P1 -group Master_1 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(1)/NAT_UPA_Master/REG_write
+add wave -noupdate -group P1 -group Master_1 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(1)/NAT_UPA_Master/REG_read
+add wave -noupdate -group P1 -group Master_1 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(1)/NAT_UPA_Master/N_S
+add wave -noupdate -group P1 -group Master_1 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(1)/NAT_UPA_Master/clar_CD
+add wave -noupdate -group P1 -group Master_1 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(1)/NAT_UPA_Master/BUS_req
+add wave -noupdate -group P1 -group Master_1 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(1)/NAT_UPA_Master/BUS_read
+add wave -noupdate -group P1 -group Master_1 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(1)/NAT_UPA_Master/NAT_data_rdy
+add wave -noupdate -group P1 -group Master_1 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(1)/NAT_UPA_Master/NAT_data_out
+add wave -noupdate -group P1 -group Master_1 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(1)/NAT_UPA_Master/BUS_write
+add wave -noupdate -group P1 -group Master_1 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(1)/NAT_UPA_Master/BUS_Add
+add wave -noupdate -group P1 -group Master_1 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(1)/NAT_UPA_Master/BUS_cnt
+add wave -noupdate -group P1 -group Master_1 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(1)/NAT_UPA_Master/BUS_MD_out
+add wave -noupdate -group P1 -group Master_1 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(1)/NAT_UPA_Master/NAT_ack
+add wave -noupdate -group P1 -group Master_1 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(1)/NAT_UPA_Master/BUS_MD_out_rdy
+add wave -noupdate -group P1 -group Master_1 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(1)/NAT_UPA_Master/NAT_wait
+add wave -noupdate -group P1 -group Master_1 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(1)/NAT_UPA_Master/NAT_ready
+add wave -noupdate -group P2 -group Update_2 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(2)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/clk_w
+add wave -noupdate -group P2 -group Update_2 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(2)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/rst_w
+add wave -noupdate -group P2 -group Update_2 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(2)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Addresses
+add wave -noupdate -group P2 -group Update_2 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(2)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Target_add
+add wave -noupdate -group P2 -group Update_2 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(2)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Base_Wen
+add wave -noupdate -group P2 -group Update_2 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(2)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Count_Wen
+add wave -noupdate -group P2 -group Update_2 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(2)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/IntVal_Wen
+add wave -noupdate -group P2 -group Update_2 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(2)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/CU/P_S
+add wave -noupdate -group P2 -group Update_2 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(2)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Update_IFM
+add wave -noupdate -group P2 -group Update_2 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(2)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Update_WFM
+add wave -noupdate -group P2 -group Update_2 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(2)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/LL_data_rdy
+add wave -noupdate -group P2 -group Update_2 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(2)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/LL_data_in
+add wave -noupdate -group P2 -group Update_2 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(2)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/CNT_UPA_PAUSE
+add wave -noupdate -group P2 -group Update_2 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(2)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/MB_status
+add wave -noupdate -group P2 -group Update_2 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(2)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/LL_ack
+add wave -noupdate -group P2 -group Update_2 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(2)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Colm_inc
+add wave -noupdate -group P2 -group Update_2 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(2)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Kern_inc
+add wave -noupdate -group P2 -group Update_2 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(2)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/init
+add wave -noupdate -group P2 -group Update_2 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(2)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Phys_val
+add wave -noupdate -group P2 -group Update_2 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(2)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Phys_inc
+add wave -noupdate -group P2 -group Update_2 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(2)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Base_Step_en
+add wave -noupdate -group P2 -group Update_2 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(2)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/BCI_add
+add wave -noupdate -group P2 -group Update_2 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(2)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Phys_eq
+add wave -noupdate -group P2 -group Update_2 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(2)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Chan_eq
+add wave -noupdate -group P2 -group Update_2 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(2)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Colm_eq
+add wave -noupdate -group P2 -group Update_2 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(2)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Kern_eq
+add wave -noupdate -group P2 -group Update_2 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(2)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/MB_set
+add wave -noupdate -group P2 -group Update_2 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(2)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/WB_wen
+add wave -noupdate -group P2 -group Update_2 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(2)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Chan_inc
+add wave -noupdate -group P2 -group Update_2 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(2)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/MB_wen
+add wave -noupdate -group P2 -group Update_2 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(2)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/MB_set_flag
+add wave -noupdate -group P2 -group Update_2 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(2)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/WB_low_lvl_sig
+add wave -noupdate -group P2 -group Update_2 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(2)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/WB_low_lvl_wen
+add wave -noupdate -group P2 -group Update_2 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(2)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/MB_low_lvl_sig
+add wave -noupdate -group P2 -group Update_2 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(2)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/MB_low_lvl_wen
+add wave -noupdate -group P2 -group Update_2 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(2)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/LL_data_wen
+add wave -noupdate -group P2 -group Update_2 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(2)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/LL_cnt
+add wave -noupdate -group P2 -group Update_2 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(2)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/LL_add
+add wave -noupdate -group P2 -group Update_2 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(2)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/LL_write
+add wave -noupdate -group P2 -group Update_2 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(2)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/LL_read
+add wave -noupdate -group P2 -group Update_2 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(2)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/LL_push
+add wave -noupdate -group P2 -group Update_2 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(2)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/done
+add wave -noupdate -group P2 -group Update_2 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(2)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/status
+add wave -noupdate -group P2 -group Update_2 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(2)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/LL_data_out
+add wave -noupdate -group P2 -group Update_2 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(2)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/DP/Kern_val
+add wave -noupdate -group P2 -group Update_2 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(2)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/DP/Colm_val
+add wave -noupdate -group P2 -group Update_2 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(2)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/DP/Chan_val
+add wave -noupdate -group P2 -group Update_2 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(2)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/DP/Phys_vls
+add wave -noupdate -group P2 -group Master_2 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(2)/NAT_UPA_Master/clk
+add wave -noupdate -group P2 -group Master_2 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(2)/NAT_UPA_Master/rst
+add wave -noupdate -group P2 -group Master_2 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(2)/NAT_UPA_Master/NAT_data_wen
+add wave -noupdate -group P2 -group Master_2 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(2)/NAT_UPA_Master/BUS_grant
+add wave -noupdate -group P2 -group Master_2 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(2)/NAT_UPA_Master/BUS_done
+add wave -noupdate -group P2 -group Master_2 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(2)/NAT_UPA_Master/BUS_wait
+add wave -noupdate -group P2 -group Master_2 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(2)/NAT_UPA_Master/NAT_data_in
+add wave -noupdate -group P2 -group Master_2 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(2)/NAT_UPA_Master/NAT_Cnt
+add wave -noupdate -group P2 -group Master_2 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(2)/NAT_UPA_Master/NAT_Add
+add wave -noupdate -group P2 -group Master_2 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(2)/NAT_UPA_Master/NAT_write
+add wave -noupdate -group P2 -group Master_2 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(2)/NAT_UPA_Master/BUS_MD_in
+add wave -noupdate -group P2 -group Master_2 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(2)/NAT_UPA_Master/BUS_MD_in_rdy
+add wave -noupdate -group P2 -group Master_2 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(2)/NAT_UPA_Master/NAT_read
+add wave -noupdate -group P2 -group Master_2 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(2)/NAT_UPA_Master/NAT_push
+add wave -noupdate -group P2 -group Master_2 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(2)/NAT_UPA_Master/P_S
+add wave -noupdate -group P2 -group Master_2 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(2)/NAT_UPA_Master/load_Data
+add wave -noupdate -group P2 -group Master_2 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(2)/NAT_UPA_Master/load_cmd
+add wave -noupdate -group P2 -group Master_2 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(2)/NAT_UPA_Master/REG_data_wen
+add wave -noupdate -group P2 -group Master_2 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(2)/NAT_UPA_Master/REG_data_in
+add wave -noupdate -group P2 -group Master_2 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(2)/NAT_UPA_Master/REG_data_rdy
+add wave -noupdate -group P2 -group Master_2 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(2)/NAT_UPA_Master/REG_data_out
+add wave -noupdate -group P2 -group Master_2 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(2)/NAT_UPA_Master/REG_Cnt
+add wave -noupdate -group P2 -group Master_2 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(2)/NAT_UPA_Master/REG_Add
+add wave -noupdate -group P2 -group Master_2 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(2)/NAT_UPA_Master/REG_write
+add wave -noupdate -group P2 -group Master_2 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(2)/NAT_UPA_Master/REG_read
+add wave -noupdate -group P2 -group Master_2 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(2)/NAT_UPA_Master/N_S
+add wave -noupdate -group P2 -group Master_2 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(2)/NAT_UPA_Master/clar_CD
+add wave -noupdate -group P2 -group Master_2 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(2)/NAT_UPA_Master/BUS_req
+add wave -noupdate -group P2 -group Master_2 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(2)/NAT_UPA_Master/BUS_read
+add wave -noupdate -group P2 -group Master_2 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(2)/NAT_UPA_Master/NAT_data_rdy
+add wave -noupdate -group P2 -group Master_2 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(2)/NAT_UPA_Master/NAT_data_out
+add wave -noupdate -group P2 -group Master_2 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(2)/NAT_UPA_Master/BUS_write
+add wave -noupdate -group P2 -group Master_2 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(2)/NAT_UPA_Master/BUS_Add
+add wave -noupdate -group P2 -group Master_2 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(2)/NAT_UPA_Master/BUS_cnt
+add wave -noupdate -group P2 -group Master_2 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(2)/NAT_UPA_Master/BUS_MD_out
+add wave -noupdate -group P2 -group Master_2 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(2)/NAT_UPA_Master/NAT_ack
+add wave -noupdate -group P2 -group Master_2 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(2)/NAT_UPA_Master/BUS_MD_out_rdy
+add wave -noupdate -group P2 -group Master_2 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(2)/NAT_UPA_Master/NAT_wait
+add wave -noupdate -group P2 -group Master_2 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(2)/NAT_UPA_Master/NAT_ready
+add wave -noupdate -group P3 -group Update_3 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(3)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/clk_w
+add wave -noupdate -group P3 -group Update_3 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(3)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/rst_w
+add wave -noupdate -group P3 -group Update_3 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(3)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Addresses
+add wave -noupdate -group P3 -group Update_3 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(3)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Target_add
+add wave -noupdate -group P3 -group Update_3 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(3)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Base_Wen
+add wave -noupdate -group P3 -group Update_3 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(3)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Count_Wen
+add wave -noupdate -group P3 -group Update_3 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(3)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/IntVal_Wen
+add wave -noupdate -group P3 -group Update_3 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(3)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/CU/P_S
+add wave -noupdate -group P3 -group Update_3 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(3)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Update_IFM
+add wave -noupdate -group P3 -group Update_3 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(3)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Update_WFM
+add wave -noupdate -group P3 -group Update_3 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(3)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/LL_data_rdy
+add wave -noupdate -group P3 -group Update_3 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(3)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/LL_data_in
+add wave -noupdate -group P3 -group Update_3 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(3)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/CNT_UPA_PAUSE
+add wave -noupdate -group P3 -group Update_3 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(3)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/MB_status
+add wave -noupdate -group P3 -group Update_3 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(3)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/LL_ack
+add wave -noupdate -group P3 -group Update_3 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(3)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Colm_inc
+add wave -noupdate -group P3 -group Update_3 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(3)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Kern_inc
+add wave -noupdate -group P3 -group Update_3 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(3)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/init
+add wave -noupdate -group P3 -group Update_3 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(3)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Phys_val
+add wave -noupdate -group P3 -group Update_3 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(3)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Phys_inc
+add wave -noupdate -group P3 -group Update_3 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(3)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Base_Step_en
+add wave -noupdate -group P3 -group Update_3 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(3)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/BCI_add
+add wave -noupdate -group P3 -group Update_3 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(3)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Phys_eq
+add wave -noupdate -group P3 -group Update_3 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(3)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Chan_eq
+add wave -noupdate -group P3 -group Update_3 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(3)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Colm_eq
+add wave -noupdate -group P3 -group Update_3 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(3)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Kern_eq
+add wave -noupdate -group P3 -group Update_3 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(3)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/MB_set
+add wave -noupdate -group P3 -group Update_3 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(3)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/WB_wen
+add wave -noupdate -group P3 -group Update_3 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(3)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/Chan_inc
+add wave -noupdate -group P3 -group Update_3 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(3)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/MB_wen
+add wave -noupdate -group P3 -group Update_3 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(3)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/MB_set_flag
+add wave -noupdate -group P3 -group Update_3 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(3)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/WB_low_lvl_sig
+add wave -noupdate -group P3 -group Update_3 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(3)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/WB_low_lvl_wen
+add wave -noupdate -group P3 -group Update_3 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(3)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/MB_low_lvl_sig
+add wave -noupdate -group P3 -group Update_3 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(3)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/MB_low_lvl_wen
+add wave -noupdate -group P3 -group Update_3 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(3)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/LL_data_wen
+add wave -noupdate -group P3 -group Update_3 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(3)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/LL_cnt
+add wave -noupdate -group P3 -group Update_3 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(3)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/LL_add
+add wave -noupdate -group P3 -group Update_3 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(3)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/LL_write
+add wave -noupdate -group P3 -group Update_3 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(3)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/LL_read
+add wave -noupdate -group P3 -group Update_3 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(3)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/LL_push
+add wave -noupdate -group P3 -group Update_3 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(3)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/done
+add wave -noupdate -group P3 -group Update_3 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(3)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/status
+add wave -noupdate -group P3 -group Update_3 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(3)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/LL_data_out
+add wave -noupdate -group P3 -group Update_3 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(3)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/DP/Kern_val
+add wave -noupdate -group P3 -group Update_3 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(3)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/DP/Colm_val
+add wave -noupdate -group P3 -group Update_3 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(3)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/DP/Chan_val
+add wave -noupdate -group P3 -group Update_3 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(3)/Processing_Plane/ROW_GEN(1)/COL_GEN(1)/UA_unit/DP/Phys_vls
+add wave -noupdate -group P3 -group Master_3 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(3)/NAT_UPA_Master/clk
+add wave -noupdate -group P3 -group Master_3 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(3)/NAT_UPA_Master/rst
+add wave -noupdate -group P3 -group Master_3 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(3)/NAT_UPA_Master/NAT_data_wen
+add wave -noupdate -group P3 -group Master_3 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(3)/NAT_UPA_Master/BUS_grant
+add wave -noupdate -group P3 -group Master_3 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(3)/NAT_UPA_Master/BUS_done
+add wave -noupdate -group P3 -group Master_3 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(3)/NAT_UPA_Master/BUS_wait
+add wave -noupdate -group P3 -group Master_3 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(3)/NAT_UPA_Master/NAT_data_in
+add wave -noupdate -group P3 -group Master_3 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(3)/NAT_UPA_Master/NAT_Cnt
+add wave -noupdate -group P3 -group Master_3 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(3)/NAT_UPA_Master/NAT_Add
+add wave -noupdate -group P3 -group Master_3 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(3)/NAT_UPA_Master/NAT_write
+add wave -noupdate -group P3 -group Master_3 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(3)/NAT_UPA_Master/BUS_MD_in
+add wave -noupdate -group P3 -group Master_3 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(3)/NAT_UPA_Master/BUS_MD_in_rdy
+add wave -noupdate -group P3 -group Master_3 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(3)/NAT_UPA_Master/NAT_read
+add wave -noupdate -group P3 -group Master_3 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(3)/NAT_UPA_Master/NAT_push
+add wave -noupdate -group P3 -group Master_3 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(3)/NAT_UPA_Master/P_S
+add wave -noupdate -group P3 -group Master_3 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(3)/NAT_UPA_Master/load_Data
+add wave -noupdate -group P3 -group Master_3 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(3)/NAT_UPA_Master/load_cmd
+add wave -noupdate -group P3 -group Master_3 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(3)/NAT_UPA_Master/REG_data_wen
+add wave -noupdate -group P3 -group Master_3 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(3)/NAT_UPA_Master/REG_data_in
+add wave -noupdate -group P3 -group Master_3 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(3)/NAT_UPA_Master/REG_data_rdy
+add wave -noupdate -group P3 -group Master_3 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(3)/NAT_UPA_Master/REG_data_out
+add wave -noupdate -group P3 -group Master_3 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(3)/NAT_UPA_Master/REG_Cnt
+add wave -noupdate -group P3 -group Master_3 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(3)/NAT_UPA_Master/REG_Add
+add wave -noupdate -group P3 -group Master_3 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(3)/NAT_UPA_Master/REG_write
+add wave -noupdate -group P3 -group Master_3 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(3)/NAT_UPA_Master/REG_read
+add wave -noupdate -group P3 -group Master_3 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(3)/NAT_UPA_Master/N_S
+add wave -noupdate -group P3 -group Master_3 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(3)/NAT_UPA_Master/clar_CD
+add wave -noupdate -group P3 -group Master_3 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(3)/NAT_UPA_Master/BUS_req
+add wave -noupdate -group P3 -group Master_3 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(3)/NAT_UPA_Master/BUS_read
+add wave -noupdate -group P3 -group Master_3 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(3)/NAT_UPA_Master/NAT_data_rdy
+add wave -noupdate -group P3 -group Master_3 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(3)/NAT_UPA_Master/NAT_data_out
+add wave -noupdate -group P3 -group Master_3 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(3)/NAT_UPA_Master/BUS_write
+add wave -noupdate -group P3 -group Master_3 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(3)/NAT_UPA_Master/BUS_Add
+add wave -noupdate -group P3 -group Master_3 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(3)/NAT_UPA_Master/BUS_cnt
+add wave -noupdate -group P3 -group Master_3 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(3)/NAT_UPA_Master/BUS_MD_out
+add wave -noupdate -group P3 -group Master_3 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(3)/NAT_UPA_Master/NAT_ack
+add wave -noupdate -group P3 -group Master_3 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(3)/NAT_UPA_Master/BUS_MD_out_rdy
+add wave -noupdate -group P3 -group Master_3 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(3)/NAT_UPA_Master/NAT_wait
+add wave -noupdate -group P3 -group Master_3 /sim_system/UUT/Accelerator_Unit/LMN_ROW_GEN(0)/LMN_COL_GEN(0)/Local_Memory_Node/NATIVE_UPA_PLANE_GEN(3)/NAT_UPA_Master/NAT_ready
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {167365 ns} 0}
+WaveRestoreCursors {{Cursor 1} {13302 ns} 0}
 quietly wave cursor active 1
-configure wave -namecolwidth 774
+configure wave -namecolwidth 214
 configure wave -valuecolwidth 100
 configure wave -justifyvalue left
-configure wave -signalnamewidth 0
+configure wave -signalnamewidth 1
 configure wave -snapdistance 10
 configure wave -datasetprefix 0
 configure wave -rowmargin 4
@@ -60,4 +365,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {0 ns} {131246 ns}
+WaveRestoreZoom {8449 ns} {17715 ns}
