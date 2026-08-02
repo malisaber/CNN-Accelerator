@@ -87,7 +87,7 @@ void MPDR_reset_all						();
 
 void MPDR_wait_for_done					(unsigned int MPDR_add);
 
-void MPDR_Initiate						(unsigned int MPDR_add, S_Addressing_Info R1C1, S_Addressing_Info R1C2, S_Addressing_Info R2C1, S_Addressing_Info R2C2, S_Addressing_Info out);
+void MPDR_Initiate						(unsigned int MPDR_add, S_Addressing_Info& R1C1, S_Addressing_Info& R1C2, S_Addressing_Info& R2C1, S_Addressing_Info& R2C2, S_Addressing_Info& out);
 
 void MPDR_Start							(unsigned int MPDR_add, unsigned int Max_Colm, unsigned int Max_Chan, unsigned int keep);
 
@@ -261,13 +261,13 @@ void MPDR_EC_CNTR_get_value				(unsigned int EC_add, unsigned int& value, unsign
 //	void CONT_REG_DRAM_disconnect();
 //};
 
-void CONT_REG_ACC_Plane_normal	(unsigned int plane);
+void CONT_REG_ACC_Plane_normal			(unsigned int plane);
 
-void CONT_REG_ACC_Plane_reset	(unsigned int plane);
+void CONT_REG_ACC_Plane_reset			(unsigned int plane);
 
-void CONT_REG_DRAM_connect		();
+void CONT_REG_DRAM_connect				();
 
-void CONT_REG_DRAM_disconnect	();
+void CONT_REG_DRAM_disconnect			();
 
 
 
@@ -551,9 +551,9 @@ void INTH_disable_PSU_done				(unsigned int plane, unsigned int pe_add);
 
 void INTH_disable_PSU_done_group		(unsigned int plane, unsigned int pe_group);
 
-void INTH_get_intr_address		(unsigned int& next_intr_address, unsigned int& this_intr_address, unsigned int& next_intr_code, unsigned int& this_intr_code);
+void INTH_get_intr_address				(unsigned int& next_intr_address, unsigned int& this_intr_address, unsigned int& next_intr_code, unsigned int& this_intr_code);
 
-void INTH_get_intr_address		(unsigned int& this_intr_address, unsigned int& this_intr_code);
+void INTH_get_intr_address				(unsigned int& this_intr_address, unsigned int& this_intr_code);
 
 
 
@@ -594,7 +594,7 @@ void INTH_get_intr_address		(unsigned int& this_intr_address, unsigned int& this
 
 void CONFH_reset_all					(unsigned int plane_add);
 
-void CONFH_set_conf						(unsigned int plane_add, unsigned int pe_add, S_PE_cofig cnf);
+void CONFH_set_conf						(unsigned int plane_add, unsigned int pe_add, S_PE_cofig& cnf);
 
 void CONFH_refresh						(unsigned int plane_add);
 
@@ -726,9 +726,9 @@ void PE_INIT_reset_all					(unsigned int plane_add);
 
 void PE_INIT_SA_load_bias_data			(unsigned int plane_add, unsigned int pe_add, unsigned int biases[16], unsigned int count);
 
-void PE_INIT_SA_load_address 			(unsigned int plane_add, unsigned int pe_add, S_Addressing_Info load_add,   S_Addressing_Info store_add);
+void PE_INIT_SA_load_address 			(unsigned int plane_add, unsigned int pe_add, S_Addressing_Info& load_add,   S_Addressing_Info& store_add);
 
-void PE_INIT_UA_load_address 			(unsigned int plane_add, unsigned int pe_add, S_Addressing_Info wgt_add[9], S_Addressing_Info inp_add);
+void PE_INIT_UA_load_address 			(unsigned int plane_add, unsigned int pe_add, const S_Addressing_Info wgt_add[9], const S_Addressing_Info& inp_add);
 
 void PE_INIT_SA_load_address 			(unsigned int plane_add,				unsigned int pe_add, 
 										unsigned int load_base_add,				unsigned int load_Count,	unsigned int load_Ival,   
@@ -804,7 +804,7 @@ void PE_CONT_STA_pause					(unsigned int plane_add, unsigned int pe_add);
 
 void PE_CONT_STA_resume					(unsigned int plane_add, unsigned int pe_add);
 
-void PE_CONT_STA_load_config			(unsigned int plane_add, unsigned int pe_add, S_CONF_STA_info info);
+void PE_CONT_STA_load_config			(unsigned int plane_add, unsigned int pe_add, S_CONF_STA_info& info);
 
 void PE_CONT_STA_ACK					(unsigned int plane_add, unsigned int pe_add);
 
@@ -822,7 +822,7 @@ void PE_CONT_UPA_stop_updating_WFM		(unsigned int plane_add, unsigned int pe_add
 
 void PE_CONT_UPA_start_updating			(unsigned int plane_add, unsigned int pe_add);
 
-void PE_CONT_Configure_Update_Start		(unsigned int plane_add, unsigned int pe_add, S_CONF_STA_info info);
+void PE_CONT_Configure_Update_Start		(unsigned int plane_add, unsigned int pe_add, S_CONF_STA_info& info);
 
 
 

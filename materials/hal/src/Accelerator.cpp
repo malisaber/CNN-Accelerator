@@ -58,7 +58,7 @@ void MPDR_wait_for_done					(unsigned int MPDR_add)
 	}
 }
 
-void MPDR_Initiate						(unsigned int MPDR_add, S_Addressing_Info R1C1, S_Addressing_Info R1C2, S_Addressing_Info R2C1, S_Addressing_Info R2C2, S_Addressing_Info out)
+void MPDR_Initiate						(unsigned int MPDR_add, S_Addressing_Info& R1C1, S_Addressing_Info& R1C2, S_Addressing_Info& R2C1, S_Addressing_Info& R2C2, S_Addressing_Info& out)
 {
 	unsigned int val;
 
@@ -636,7 +636,7 @@ void CONFH_reset_all					(unsigned int plane_add)
 		*(C_PERIPHERAL_PLANE_0_REG_CONFIG_HOLDER_PE_1_1 + (plane_add * C_PERIPHERAL_PLAN_INTERVAL) + i) = 0;
 }
 
-void CONFH_set_conf						(unsigned int plane_add, unsigned int pe_add, S_PE_cofig cnf)
+void CONFH_set_conf						(unsigned int plane_add, unsigned int pe_add, S_PE_cofig& cnf)
 {
 	unsigned int val = 0;
 	val	|=	(cnf.E_Chnl_max		<<	C_Channel_MAX_pos		);
@@ -681,7 +681,7 @@ void PE_INIT_SA_load_bias_data			(unsigned int plane_add, unsigned int pe_add, u
 	}
 }
 
-void PE_INIT_SA_load_address 			(unsigned int plane_add, unsigned int pe_add, S_Addressing_Info load_add,	S_Addressing_Info store_add)
+void PE_INIT_SA_load_address 			(unsigned int plane_add, unsigned int pe_add, S_Addressing_Info& load_add,	S_Addressing_Info& store_add)
 {
 	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT		+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=	load_add.base_add;
 	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR	+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=	(1 << C_SUU_Address_Point_Base_Wen_pos) |
@@ -732,7 +732,7 @@ void PE_INIT_SA_load_address 			(unsigned int plane_add, unsigned int pe_add, S_
 																												(1 << C_SUU_Address_Point_Target_Add_pos);
 }
 
-void PE_INIT_UA_load_address 			(unsigned int plane_add, unsigned int pe_add, S_Addressing_Info wgt_add[9], S_Addressing_Info inp_add)
+void PE_INIT_UA_load_address 			(unsigned int plane_add, unsigned int pe_add, const S_Addressing_Info wgt_add[9], const S_Addressing_Info& inp_add)
 {
 	for (unsigned int i=0; i<9; i++)
 	{
@@ -1019,7 +1019,7 @@ void PE_CONT_STA_resume					(unsigned int plane_add, unsigned int pe_add)
 	*(C_PERIPHERAL_PLANE_0_REG_PEs_CONTROL_PE_1_1 + (plane_add * C_PERIPHERAL_PLAN_INTERVAL) + pe_add) = tmp;
 }
 
-void PE_CONT_STA_load_config			(unsigned int plane_add, unsigned int pe_add, S_CONF_STA_info info)
+void PE_CONT_STA_load_config			(unsigned int plane_add, unsigned int pe_add, S_CONF_STA_info& info)
 {
 	unsigned int tmp = *(C_PERIPHERAL_PLANE_0_REG_PEs_CONTROL_PE_1_1 + (plane_add * C_PERIPHERAL_PLAN_INTERVAL) + pe_add);
 	tmp &= ~(	(1 << C_Update_Store_Base_Address_pos) | 
@@ -1105,7 +1105,7 @@ void PE_CONT_UPA_start_updating			(unsigned int plane_add, unsigned int pe_add)
 	*(C_PERIPHERAL_PLANE_0_REG_PEs_CONTROL_PE_1_1 + (plane_add * C_PERIPHERAL_PLAN_INTERVAL) + pe_add) = tmp;
 }
 
-void PE_CONT_Configure_Update_Start		(unsigned int plane_add, unsigned int pe_add, S_CONF_STA_info info)
+void PE_CONT_Configure_Update_Start		(unsigned int plane_add, unsigned int pe_add, S_CONF_STA_info& info)
 {
 	unsigned int lod;
 	unsigned int tmp;

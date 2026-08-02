@@ -506,7 +506,7 @@ struct	UART_Config
 	unsigned int TOP;
 };
 
-unsigned int UART_Cont_Word_gen(UART_Config conf);
+unsigned int UART_Cont_Word_gen(UART_Config& conf);
 
 
 

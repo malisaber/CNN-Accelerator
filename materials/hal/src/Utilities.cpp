@@ -47,7 +47,7 @@ void Bline_Initiate_STA_ECs(	const unsigned int	Capacity,
 
 void Bline_Initiate_PE_Start(	const unsigned int	Capacity,					
 								const unsigned int	*Control_word,
-								const S_CONF_STA_info STA_info)
+								const S_CONF_STA_info& STA_info)
 {
 	for (unsigned int idx = 0; idx < Capacity; idx++)
 	{

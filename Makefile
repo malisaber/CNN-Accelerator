@@ -73,7 +73,7 @@ CROSS ?= riscv32-unknown-elf
         firmware check-run-vars check-run-tools \
         clean clean-run distclean \
 		legacy-project legacy-simulate \
-		call-stack
+		call-stack compile-again \
 
 # All top-level targets are independent of each other -- "all" only
 # builds submodules + packages, it does NOT touch rtl/. Use "make rtl"
@@ -280,7 +280,7 @@ DRAM_INPUTS  ?=
 DRAM_WEIGHTS ?=
 HAL_DIR      ?= materials/hal
 BOOT_DIR     ?= materials/boot
-CORE         ?= aftab
+CORE         ?= biriscv
 comma        := ,
 
 DDG_DIR       := DDGS
@@ -381,6 +381,38 @@ firmware: check-run-vars check-run-tools packages
 	@echo ">>> done: firmware in $(BUILD_DIR)/, memory-init files in $(MEM_INIT_DIR)/, logs in $(REPORT_DIR)/"
 
 
+compile-again:
+	@echo ">>> [3/5] Cross-compiling $(SOFTWARE_DIR)/ for CORE=$(CORE) ($(CROSS)-gcc -> $(BUILD_DIR)/)"
+	$(call LOG,03-riscv-compile,\
+		$(CROSS)-gcc \
+			-mabi=ilp32 \
+			-O2 \
+			-march=rv32im_zicsr_zifencei \
+			-Wa$(comma)-march=rv32im_zicsr_zifencei \
+			-Wextra \
+			-Wall \
+			-Wno-unused-parameter \
+			-Wno-unused-variable \
+			-Wno-unused-function \
+			-fdata-sections \
+			-ffunction-sections \
+			-fdiagnostics-color=always \
+			-I$(SOFTWARE_DIR)/include \
+			-T $(BOOT_DIR)/$(CORE)/link.riscv.ld \
+			-Wl$(comma)-L$(comma)$(BOOT_DIR)/$(CORE)/ \
+			-nostartfiles \
+			-Wl$(comma)--gc-sections \
+			-lm $(SOFTWARE_DIR)/src/*.cpp $(BOOT_DIR)/$(CORE)/crt0.boot_M.S \
+			-o $(BUILD_DIR)/main.elf )
+	$(call LOG,03-riscv-compile-text, $(CROSS)-objdump -s -l --inlines $(BUILD_DIR)/main.elf > $(BUILD_DIR)/text.txt)
+	$(call LOG,03-riscv-compile-text, $(CROSS)-objdump -d -l --inlines $(BUILD_DIR)/main.elf > $(BUILD_DIR)/code.txt)
+	
+	@echo ">>> [4/5] Text-Converter ($(BUILD_DIR)/text.txt -> $(MEM_INIT_DIR)/)"
+	$(call LOG,04-text-converter,\
+		packages/CNN-Text-Converter/build/Text-Converter \
+			-i $(BUILD_DIR)/text.txt \
+			-o $(MEM_INIT_DIR))
+	@echo ">>> done: firmware in $(BUILD_DIR)/, memory-init files in $(MEM_INIT_DIR)/, logs in $(REPORT_DIR)/"
 
 
 # Simulation 

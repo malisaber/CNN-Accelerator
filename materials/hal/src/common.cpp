@@ -3,7 +3,7 @@
 
 
 
-unsigned int UART_Cont_Word_gen(UART_Config conf)
+unsigned int UART_Cont_Word_gen(UART_Config& conf)
 {
 	unsigned int word = 0;
 	word |= conf.Tx_enable					<< C_TRx_Unit_Tx_Enable_pos;
