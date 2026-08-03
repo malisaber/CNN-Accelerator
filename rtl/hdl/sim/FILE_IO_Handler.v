@@ -81,7 +81,7 @@ module	FILE_IO_Handler
 					if (MEM_READ_OP == 1'b1)
 					begin
 						$fwrite	(log_fid, "\tIT DOES NOT EXIST\t\t\t XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-						$fwrite	(err_fid, "FIOH %3d, @%12t: ERROR Reading DRAM_DATA_%1d.txt    @%0t\n", handler_id, $time, this_file);
+						$fwrite	(err_fid, "FIOH %3d, @%12t: ERROR Reading DRAM_DATA_%1d.txt \n", handler_id, $time, this_file);
 					end
 					if (MEM_WRITE_OP == 1'b1)
 						$fwrite	(log_fid, "\tEmpty File.");

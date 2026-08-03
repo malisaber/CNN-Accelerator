@@ -48,7 +48,7 @@ entity Interrupt_handler is				--	217	Interrupt Source
 end Interrupt_handler;
 
 architecture Behavioral of Interrupt_handler IS
---------------------------------------------------------------------------
+	--------------------------------------------------------------------------
 	--		CONSTANTs
 	--------------------------------------------------------------------------
 	CONSTANT	NUMB_ints				:	INTEGER	:=	8;
@@ -724,4 +724,4 @@ begin
 end Behavioral;
 
 
-
+

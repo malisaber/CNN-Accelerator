@@ -90,8 +90,8 @@ architecture Behavioral of Singular_Event_Box IS
 	--------------------------------------------------------------------------
 	--		TYPEs
 	--------------------------------------------------------------------------
-	TYPE	PSU_Done_Control_Type		IS	ARRAY (3 DOWNTO 0, 3 DOWNTO 0)		OF	std_logic_vector(16	DOWNTO	0);
-	TYPE	PSU_Done_Current_Type		IS	ARRAY (3 DOWNTO 0, 3 DOWNTO 0)		OF	std_logic_vector(31	DOWNTO	0);
+	TYPE	PSU_Done_Control_Type		IS	ARRAY (15 DOWNTO 0)					OF	std_logic_vector(16	DOWNTO	0);
+	TYPE	PSU_Done_Current_Type		IS	ARRAY (15 DOWNTO 0)					OF	std_logic_vector(31	DOWNTO	0);
 	--------------------------------------------------------------------------
 	--------------------------------------------------------------------------
 	--		SINGALs
@@ -104,25 +104,21 @@ begin
 	--------------------------------------------------------------------------
 	PROCESS(clk, rst)
 		VARIABLE	add					:	INTEGER;
-		VARIABLE	r_add				:	INTEGER;
-		VARIABLE	c_add				:	INTEGER;
+		VARIABLE	Eadd				:	INTEGER;
 	BEGIN
 		IF rst = '1' THEN
-			PEs_Done_Control			<=	(OTHERS	=>	(OTHERS	=>	(OTHERS	=>	'0')));
+			PEs_Done_Control			<=	(OTHERS	=>	(OTHERS	=>	'0'));
 		ELSIF clk = '1' AND clk'EVENT THEN
-			FOR r IN 3 DOWNTO 0 LOOP
-				FOR c IN 3 DOWNTO 0 LOOP
-					PEs_Done_Control(r,c)(16)	<=	'0';
-					PEs_Done_Control(r,c)(13)	<=	'0';
-				END LOOP;
+			FOR i IN 15 DOWNTO 0 LOOP
+				PEs_Done_Control(i)(15)	<=	'0';
+				PEs_Done_Control(i)(12)	<=	'0';
 			END LOOP;
 			add							:=	to_integer(SIGNED(X_check(MAIN_PORT_Address)));
-			r_add						:=	my_to_uint(MAIN_PORT_Address(5	DOWNTO	4));
-			c_add						:=	my_to_uint(MAIN_PORT_Address(3	DOWNTO	2));
+			Eadd						:=	(add/4) - (BASE_ADDRESS/4);
 			IF MAIN_PORT_WEN = '1' AND add >= BASE_ADDRESS AND add < ENDx_ADDRESS THEN
 				--	PEs Done
-				PEs_Done_Control(r_add,c_add)(16	DOWNTO	11)	<=	MAIN_PORT_Data_in(31	DOWNTO	26);
-				PEs_Done_Control(r_add,c_add)(10	DOWNTO	0)	<=	MAIN_PORT_Data_in(21	DOWNTO	11);
+				PEs_Done_Control(Eadd)(16	DOWNTO	11)	<=	MAIN_PORT_Data_in(31	DOWNTO	26);
+				PEs_Done_Control(Eadd)(10	DOWNTO	0)	<=	MAIN_PORT_Data_in(21	DOWNTO	11);
 			END IF;
 		END IF;
 		--WAIT ON clk, rst;
@@ -130,16 +126,12 @@ begin
 	--------------------------------------------------------------------------
 	PROCESS(MAIN_PORT_Address, MAIN_PORT_OEN, PEs_Done_Current)
 		VARIABLE	add					:	INTEGER;
-		VARIABLE	r_add				:	INTEGER;
-		VARIABLE	c_add				:	INTEGER;
-		--VARIABLE	M_add				:	INTEGER;
-		--VARIABLE	G_add				:	INTEGER;
+		VARIABLE	Eadd				:	INTEGER;
 	BEGIN
 		add								:=	to_integer(SIGNED(X_check(MAIN_PORT_Address)));
-		r_add							:=	my_to_uint(MAIN_PORT_Address(5	DOWNTO	4));
-		c_add							:=	my_to_uint(MAIN_PORT_Address(3	DOWNTO	2));
+		Eadd							:=	(add/4) - (BASE_ADDRESS/4);
 		IF MAIN_PORT_OEN = '1' AND add	>= BASE_ADDRESS AND add < ENDx_ADDRESS THEN
-			MAIN_PORT_Data_out			<=	PEs_Done_Current(r_add,c_add);
+			MAIN_PORT_Data_out			<=	PEs_Done_Current(Eadd);
 		ELSE
 			MAIN_PORT_Data_out			<=	(OTHERS	=>	'Z');
 		END IF;
@@ -166,8 +158,8 @@ begin
 			PORT	MAP(
 				clk						=>	clk,
 				rst						=>	rst,
-				Cnt_Word				=>	PEs_Done_Control	(r,c),
-				Cur_Word				=>	PEs_Done_Current	(r,c),
+				Cnt_Word				=>	PEs_Done_Control	(4*r+c),
+				Cur_Word				=>	PEs_Done_Current	(4*r+c),
 				EVNT					=>	CMD_EVNT_Ready		(r,c),
 				INTR					=>	INT_EVNT_Done		(4*r+c),
 				ANSD					=>	ANS_EVNT_Done		(4*r+c));

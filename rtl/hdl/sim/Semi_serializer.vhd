@@ -66,8 +66,8 @@ architecture Behavioral of Semi_serializer is
 	PORT(
 		clk								:	IN	std_logic;
 		cs								:	IN	std_logic;
-		MEM_READ_OP						:	OUT	std_logic;
-		MEM_WRITE_OP					:	OUT	std_logic;
+		MEM_READ_OP						:	IN	std_logic;
+		MEM_WRITE_OP					:	IN	std_logic;
 		MEM_Add							:	IN	std_logic_vector(P_Phy_Add_size-1	DOWNTO 0);
 		MEM_wen							:	IN	std_logic;
 		MEM_Din							:	IN	std_logic_vector(P_word_size-1		DOWNTO 0);

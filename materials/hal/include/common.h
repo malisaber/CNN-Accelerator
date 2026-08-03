@@ -486,27 +486,25 @@ struct	S_CONF_STA_info
 	unsigned int Automatic;
 };
 
-
-
 struct	S_UPA_Inp_Addressing_Info
 {
 	unsigned int base_add;
 	unsigned int interval;
 };
 
-struct	UART_Config
-{
-	unsigned int Tx_enable;
-	unsigned int Rx_enable;
-	unsigned int TBE_intr_enable;
-	unsigned int RBF_intr_enable;
-	unsigned int Tx_done_intr_enable;
-	unsigned int Rx_done_intr_enable;
-	unsigned int Clk_Div;
-	unsigned int TOP;
-};
-
-unsigned int UART_Cont_Word_gen(UART_Config& conf);
+//struct	UART_Config
+//{
+//	unsigned int Tx_enable;
+//	unsigned int Rx_enable;
+//	unsigned int TBE_intr_enable;
+//	unsigned int RBF_intr_enable;
+//	unsigned int Tx_done_intr_enable;
+//	unsigned int Rx_done_intr_enable;
+//	unsigned int Clk_Div;
+//	unsigned int TOP;
+//};
+//
+//unsigned int UART_Cont_Word_gen(const UART_Config& conf);
 
 
 

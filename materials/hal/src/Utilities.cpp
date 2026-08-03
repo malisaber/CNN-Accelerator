@@ -40,7 +40,7 @@ void Bline_Initiate_STA_ECs(	const unsigned int	Capacity,
 		unsigned int cnt = (Control_word[idx] >>	16)	& 0xFFFF;
 		unsigned int pln = (Control_word[idx] >>	4)	& 0xF;
 		unsigned int vlt = (Control_word[idx] >>	0)	& 0xF;
-		PSU_EC_CNTR_start_with_config(pln, STA, vlt, cnt, 1, 1, 1);
+		PSU_EC_CNTR_start_with_config(pln, STA, vlt, cnt, 1, 0, 1);
 	}
 }
 

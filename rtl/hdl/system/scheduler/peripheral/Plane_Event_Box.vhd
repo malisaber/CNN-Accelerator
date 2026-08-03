@@ -98,10 +98,10 @@ architecture Behavioral of Plane_Event_Box IS
 	--------------------------------------------------------------------------
 	--		TYPEs
 	--------------------------------------------------------------------------
-	TYPE	PSU_Done_Control_Type		IS	ARRAY (3 DOWNTO 0, 3 DOWNTO 0)											OF	std_logic_vector(16	DOWNTO	0);
-	TYPE	PSU_Done_Current_Type		IS	ARRAY (3 DOWNTO 0, 3 DOWNTO 0)											OF	std_logic_vector(31	DOWNTO	0);
-	TYPE	PSU_Done_Sources_Type		IS	ARRAY (3 DOWNTO 0, 3 DOWNTO 0)											OF	std_logic_vector(1	DOWNTO	0);
-	TYPE	PSU_EVENT_Type				IS	ARRAY (3 DOWNTO 0, 3 DOWNTO 0)											OF	std_logic;
+	TYPE	PSU_Done_Control_Type		IS	ARRAY (15 DOWNTO 0)					OF	std_logic_vector(16	DOWNTO	0);
+	TYPE	PSU_Done_Current_Type		IS	ARRAY (15 DOWNTO 0)					OF	std_logic_vector(31	DOWNTO	0);
+	TYPE	PSU_Done_Sources_Type		IS	ARRAY (15 DOWNTO 0)					OF	std_logic_vector(1	DOWNTO	0);
+	TYPE	PSU_EVENT_Type				IS	ARRAY (3 DOWNTO 0, 3 DOWNTO 0)		OF	std_logic;
 	--------------------------------------------------------------------------
 	--------------------------------------------------------------------------
 	--		SINGALs
@@ -116,27 +116,23 @@ begin
 	--------------------------------------------------------------------------
 	PROCESS(clk, rst)
 		VARIABLE	add					:	INTEGER;
-		VARIABLE	r_add				:	INTEGER;
-		VARIABLE	c_add				:	INTEGER;
+		VARIABLE	Eadd				:	INTEGER;
 	BEGIN
 		IF rst = '1' THEN
-			PEs_Done_Control			<=	(OTHERS	=>	(OTHERS	=>	(OTHERS	=>	'0')));
-			PEs_Done_Sources			<=	(OTHERS	=>	(OTHERS	=>	(OTHERS	=>	'0')));
+			PEs_Done_Control			<=	(OTHERS	=>	(OTHERS	=>	'0'));
+			PEs_Done_Sources			<=	(OTHERS	=>	(OTHERS	=>	'0'));
 		ELSIF clk = '1' AND clk'EVENT THEN
-			FOR r IN 3 DOWNTO 0 LOOP
-				FOR c IN 3 DOWNTO 0 LOOP
-					PEs_Done_Control(r,c)(16)	<=	'0';
-					PEs_Done_Control(r,c)(13)	<=	'0';
-				END LOOP;
+			FOR i IN 15 DOWNTO 0 LOOP
+				PEs_Done_Control(i)(15)	<=	'0';
+				PEs_Done_Control(i)(12)	<=	'0';
 			END LOOP;
 			add							:=	to_integer(SIGNED(X_check(MAIN_PORT_Address)));
-			r_add						:=	my_to_uint(MAIN_PORT_Address(5	DOWNTO	4));
-			c_add						:=	my_to_uint(MAIN_PORT_Address(3	DOWNTO	2));
+			Eadd						:=	(add/4) - (BASE_ADDRESS/4);
 			IF MAIN_PORT_WEN = '1' AND add >= BASE_ADDRESS AND add < ENDx_ADDRESS THEN
 				--	PEs Done
-				PEs_Done_Control(r_add,c_add)(16	DOWNTO	11)	<=	MAIN_PORT_Data_in(31	DOWNTO	26);
-				PEs_Done_Sources(r_add,c_add)					<=	MAIN_PORT_Data_in(23	DOWNTO	22);
-				PEs_Done_Control(r_add,c_add)(10	DOWNTO	0)	<=	MAIN_PORT_Data_in(21	DOWNTO	11);
+				PEs_Done_Control(Eadd)(16	DOWNTO	11)	<=	MAIN_PORT_Data_in(31	DOWNTO	26);
+				PEs_Done_Sources(Eadd)					<=	MAIN_PORT_Data_in(23	DOWNTO	22);
+				PEs_Done_Control(Eadd)(10	DOWNTO	0)	<=	MAIN_PORT_Data_in(21	DOWNTO	11);
 			END IF;
 		END IF;
 		--WAIT ON clk, rst;
@@ -144,16 +140,12 @@ begin
 	--------------------------------------------------------------------------
 	PROCESS(MAIN_PORT_Address, MAIN_PORT_OEN, PEs_Done_Current, PEs_Done_Sources)
 		VARIABLE	add					:	INTEGER;
-		VARIABLE	r_add				:	INTEGER;
-		VARIABLE	c_add				:	INTEGER;
-		--VARIABLE	M_add				:	INTEGER;
-		--VARIABLE	G_add				:	INTEGER;
+		VARIABLE	Eadd				:	INTEGER;
 	BEGIN
 		add								:=	to_integer(SIGNED(X_check(MAIN_PORT_Address)));
-		r_add							:=	my_to_uint(MAIN_PORT_Address(5	DOWNTO	4));
-		c_add							:=	my_to_uint(MAIN_PORT_Address(3	DOWNTO	2));
+		Eadd							:=	(add/4) - (BASE_ADDRESS/4);
 		IF MAIN_PORT_OEN = '1' AND add	>= BASE_ADDRESS AND add < ENDx_ADDRESS THEN
-			MAIN_PORT_Data_out			<=	PEs_Done_Current(r_add,c_add) OR (X"00" & PEs_Done_Sources(r_add,c_add) & "00" & X"00000");
+			MAIN_PORT_Data_out			<=	PEs_Done_Current(Eadd) OR (X"00" & PEs_Done_Sources(Eadd) & "00" & X"00000");
 		ELSE
 			MAIN_PORT_Data_out			<=	(OTHERS	=>	'Z');
 		END IF;
@@ -176,15 +168,15 @@ begin
 	--------------------------------------------------------------------------
 	Done_Events_row_gen					:	FOR r	IN	0	TO	3	GENERATE
 		Done_Events_col_gen				:	FOR c	IN	0	TO	3	GENERATE
-			PEs_EVENT	(r,c)			<=	CMD_PEs_done(r+1,c+1)	WHEN	PEs_Done_Sources(r,c) = "00"	ELSE
-											CMD_STA_done(r+1,c+1)	WHEN	PEs_Done_Sources(r,c) = "01"	ELSE
-											CMD_UPA_done(r+1,c+1)	WHEN	PEs_Done_Sources(r,c) = "01"	ELSE	'0';
+			PEs_EVENT	(r,c)			<=	CMD_PEs_done(r+1,c+1)	WHEN	PEs_Done_Sources(4*r+c) = "00"	ELSE
+											CMD_STA_done(r+1,c+1)	WHEN	PEs_Done_Sources(4*r+c) = "01"	ELSE
+											CMD_UPA_done(r+1,c+1)	WHEN	PEs_Done_Sources(4*r+c) = "01"	ELSE	'0';
 			Done_Event_cntr				:	Event_cntr
 			PORT	MAP(
 				clk						=>	clk,
 				rst						=>	rst,
-				Cnt_Word				=>	PEs_Done_Control	(r,c),
-				Cur_Word				=>	PEs_Done_Current	(r,c),
+				Cnt_Word				=>	PEs_Done_Control	(4*r+c),
+				Cur_Word				=>	PEs_Done_Current	(4*r+c),
 				EVNT					=>	PEs_EVENT			(r,c),
 				INTR					=>	INT_EVNT_Done		(r+1,c+1),
 				ANSD					=>	ANS_EVNT_Done		(r+1,c+1));

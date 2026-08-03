@@ -2,6 +2,7 @@
 
 ## High Priority
 
+- [ ] Rows overrun in code
 - [ ] maxex in compiler
 - [ ] consistency in number of planes in CNN-Compiler and rtl
 - [ ] and also consistency in other parameters

@@ -58,7 +58,7 @@ void MPDR_wait_for_done					(unsigned int MPDR_add)
 	}
 }
 
-void MPDR_Initiate						(unsigned int MPDR_add, S_Addressing_Info& R1C1, S_Addressing_Info& R1C2, S_Addressing_Info& R2C1, S_Addressing_Info& R2C2, S_Addressing_Info& out)
+void MPDR_Initiate						(unsigned int MPDR_add, const S_Addressing_Info& R1C1, const S_Addressing_Info& R1C2, const S_Addressing_Info& R2C1, const S_Addressing_Info& R2C2, const S_Addressing_Info& out)
 {
 	unsigned int val;
 
@@ -249,7 +249,7 @@ void DMA_EC_reset						(unsigned int EC_add)
 	*(C_PERIPHERAL_REG_EVENT_COUNTER_DMA_0_DONE+EC_add) = 0;
 }
 
-void DMA_EC_CNTR_config					(unsigned int EC_add, unsigned int max, unsigned int sense_level, unsigned int repeat, unsigned int intr_en)
+void DMA_EC_CNTR_config					(unsigned int EC_add, unsigned int max, unsigned int sense_level, unsigned int stuck, unsigned int intr_en)
 {
 	//	sense level:
 	//			0	->	faling Edge
@@ -259,7 +259,7 @@ void DMA_EC_CNTR_config					(unsigned int EC_add, unsigned int max, unsigned int
 	tmp |= (sense_level << C_Event_Sensitity_pos);
 	tmp |= (1 << C_Event_Int_Clear_pos);
 	tmp |= (intr_en << C_Event_Int_Enabel_pos);
-	tmp |= (repeat << C_Event_Stuck_at_Top_pos);
+	tmp |= (stuck << C_Event_Stuck_at_Top_pos);
 	tmp |= (1 << C_Event_Init_pos);
 	*(C_PERIPHERAL_REG_EVENT_COUNTER_DMA_0_DONE + EC_add) = tmp;
 }
@@ -332,7 +332,7 @@ void MPDR_EC_reset_all					(unsigned int EC_add)
 	*(C_PERIPHERAL_REG_EVENT_COUNTER_MPDR_0_DONE+EC_add) = 0;
 }
 
-void MPDR_EC_CNTR_config				(unsigned int EC_add, unsigned int max, unsigned int sense_level, unsigned int repeat, unsigned int intr_en)
+void MPDR_EC_CNTR_config				(unsigned int EC_add, unsigned int max, unsigned int sense_level, unsigned int stuck, unsigned int intr_en)
 {
 	//	sense level:
 	//			0	->	faling Edge
@@ -342,7 +342,7 @@ void MPDR_EC_CNTR_config				(unsigned int EC_add, unsigned int max, unsigned int
 	tmp |= (sense_level << C_Event_Sensitity_pos);
 	tmp |= (1 << C_Event_Int_Clear_pos);
 	tmp |= (intr_en << C_Event_Int_Enabel_pos);
-	tmp |= (repeat << C_Event_Stuck_at_Top_pos);
+	tmp |= (stuck << C_Event_Stuck_at_Top_pos);
 	tmp |= (1 << C_Event_Init_pos);
 	*(C_PERIPHERAL_REG_EVENT_COUNTER_MPDR_0_DONE + EC_add) = tmp;
 }
@@ -636,7 +636,7 @@ void CONFH_reset_all					(unsigned int plane_add)
 		*(C_PERIPHERAL_PLANE_0_REG_CONFIG_HOLDER_PE_1_1 + (plane_add * C_PERIPHERAL_PLAN_INTERVAL) + i) = 0;
 }
 
-void CONFH_set_conf						(unsigned int plane_add, unsigned int pe_add, S_PE_cofig& cnf)
+void CONFH_set_conf						(unsigned int plane_add, unsigned int pe_add, const S_PE_cofig& cnf)
 {
 	unsigned int val = 0;
 	val	|=	(cnf.E_Chnl_max		<<	C_Channel_MAX_pos		);
@@ -681,7 +681,7 @@ void PE_INIT_SA_load_bias_data			(unsigned int plane_add, unsigned int pe_add, u
 	}
 }
 
-void PE_INIT_SA_load_address 			(unsigned int plane_add, unsigned int pe_add, S_Addressing_Info& load_add,	S_Addressing_Info& store_add)
+void PE_INIT_SA_load_address 			(unsigned int plane_add, unsigned int pe_add, const S_Addressing_Info& load_add, const S_Addressing_Info& store_add)
 {
 	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT		+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=	load_add.base_add;
 	*(C_PERIPHERAL_PLANE_0_REG_SAU_INITIATE_ADDRESS_POINT_CNTR	+ (plane_add * C_PERIPHERAL_PLAN_INTERVAL))	=	(1 << C_SUU_Address_Point_Base_Wen_pos) |
@@ -1019,7 +1019,7 @@ void PE_CONT_STA_resume					(unsigned int plane_add, unsigned int pe_add)
 	*(C_PERIPHERAL_PLANE_0_REG_PEs_CONTROL_PE_1_1 + (plane_add * C_PERIPHERAL_PLAN_INTERVAL) + pe_add) = tmp;
 }
 
-void PE_CONT_STA_load_config			(unsigned int plane_add, unsigned int pe_add, S_CONF_STA_info& info)
+void PE_CONT_STA_load_config			(unsigned int plane_add, unsigned int pe_add, const S_CONF_STA_info& info)
 {
 	unsigned int tmp = *(C_PERIPHERAL_PLANE_0_REG_PEs_CONTROL_PE_1_1 + (plane_add * C_PERIPHERAL_PLAN_INTERVAL) + pe_add);
 	tmp &= ~(	(1 << C_Update_Store_Base_Address_pos) | 
@@ -1105,7 +1105,7 @@ void PE_CONT_UPA_start_updating			(unsigned int plane_add, unsigned int pe_add)
 	*(C_PERIPHERAL_PLANE_0_REG_PEs_CONTROL_PE_1_1 + (plane_add * C_PERIPHERAL_PLAN_INTERVAL) + pe_add) = tmp;
 }
 
-void PE_CONT_Configure_Update_Start		(unsigned int plane_add, unsigned int pe_add, S_CONF_STA_info& info)
+void PE_CONT_Configure_Update_Start		(unsigned int plane_add, unsigned int pe_add, const S_CONF_STA_info& info)
 {
 	unsigned int lod;
 	unsigned int tmp;
@@ -1151,31 +1151,39 @@ void PSU_EC_reset						(unsigned int plane_add, unsigned int SEC_add)
 	*(C_PERIPHERAL_PLANE_0_REG_EVENT_COUNTER_PSU_1_1_DONE + (plane_add * C_PERIPHERAL_PLAN_INTERVAL) + SEC_add) = 0;
 }
 
-void PSU_EC_CNTR_start_with_config		(unsigned int plane_add, unsigned int targ, unsigned int SEC_add, unsigned int max, unsigned int sens_level, unsigned int repeat, unsigned int intr_en)
+void PSU_EC_CNTR_start_with_config		(unsigned int plane_add, unsigned int targ, unsigned int SEC_add, unsigned int max, unsigned int sens_level, unsigned int stuck, unsigned int intr_en)
 {
+	//--	Control
+	//--	O	|	31	|	30	 |	29	 |	28	 |	27	 |	26	|	25	|	24	 |	23		22	|	21	 	20	 	19		18		17		16	 |
+	//--	N	|Enable |= init =| Stuck | INT E | INT C | SENS | INT V | Evnt V |===== Src ====|=========== MAX(10:5) ==========================|
+	//--	T	
+	//--	R	
+	//--	O	|	15		14		13		12		11	|	10		9		8		7		6		5		4		3		2		1		0	 |
+	//--	L	|=============== MAX(4:0) ==============|========================================= VAL ==========================================|
+	//--
 	unsigned int tmp = 0;
-	tmp |= ((max & 0xFFF) << C_Event_Max_pos);
-	tmp |= (sens_level << C_Event_Sensitity_pos);
-	tmp |= (1 << C_Event_Int_Clear_pos);
-	tmp |= (intr_en << C_Event_Int_Enabel_pos);
-	tmp |= (repeat << C_Event_Stuck_at_Top_pos);
-	tmp |= (1 << C_Event_Init_pos);
-	tmp |= (targ << C_Event_Event_Source_pos);
+	tmp |= ((max & 0xFFF) << C_Event_Max_pos);			// 11
+	tmp |= ((targ & 0x3) << C_Event_Event_Source_pos);	// 22
+	tmp |= (sens_level << C_Event_Sensitity_pos);		// 26
+	tmp |= (1 << C_Event_Int_Clear_pos);				// 27
+	tmp |= (intr_en << C_Event_Int_Enabel_pos);			// 28
+	tmp |= (stuck << C_Event_Stuck_at_Top_pos);			// 29
+	tmp |= (1 << C_Event_Init_pos);						// 30
 	*(C_PERIPHERAL_PLANE_0_REG_EVENT_COUNTER_PSU_1_1_DONE + (plane_add * C_PERIPHERAL_PLAN_INTERVAL) + SEC_add) = tmp;
-	tmp |= (1 << C_Event_Enable_pos);
+	tmp |= (1 << C_Event_Enable_pos);					//31
 	*(C_PERIPHERAL_PLANE_0_REG_EVENT_COUNTER_PSU_1_1_DONE + (plane_add * C_PERIPHERAL_PLAN_INTERVAL) + SEC_add) = tmp;
 }
 
-void PSU_EC_CNTR_config					(unsigned int plane_add, unsigned int targ, unsigned int SEC_add, unsigned int max, unsigned int sens_level, unsigned int repeat, unsigned int intr_en)
+void PSU_EC_CNTR_config					(unsigned int plane_add, unsigned int targ, unsigned int SEC_add, unsigned int max, unsigned int sens_level, unsigned int stuck, unsigned int intr_en)
 {
 	unsigned int tmp = 0;
 	tmp |= ((max & 0xFFF) << C_Event_Max_pos);
+	tmp |= ((targ & 0x3) << C_Event_Event_Source_pos);
 	tmp |= (sens_level << C_Event_Sensitity_pos);
 	tmp |= (1 << C_Event_Int_Clear_pos);
 	tmp |= (intr_en << C_Event_Int_Enabel_pos);
-	tmp |= (repeat << C_Event_Stuck_at_Top_pos);
+	tmp |= (stuck << C_Event_Stuck_at_Top_pos);
 	tmp |= (1 << C_Event_Init_pos);
-	tmp |= (targ << C_Event_Event_Source_pos);
 	*(C_PERIPHERAL_PLANE_0_REG_EVENT_COUNTER_PSU_1_1_DONE + (plane_add * C_PERIPHERAL_PLAN_INTERVAL) + SEC_add) = tmp;
 }
 

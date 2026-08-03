@@ -28,16 +28,16 @@ package MEM_MAPS	IS
 	CONSTANT	SING_DMEV_BASE_ADDRESS			:	INTEGER	:=		my_to_uint(X"FFFF0060");	--	Base Address of DMA's Event Counter		(16		Words)
 	CONSTANT	SING_MPEV_BASE_ADDRESS			:	INTEGER	:=		my_to_uint(X"FFFF00A0");	--	Base Address of MPDR's Event Counter	(16		Words)
 	CONSTANT	SING_COST_BASE_ADDRESS			:	INTEGER	:=		my_to_uint(X"FFFF00E0");	--	Base Address of Control & Statue Box	( 4		Words)
-	CONSTANT	SING_TRxU_BASE_ADDRESS			:	INTEGER	:=		my_to_uint(X"FFFF00F0");	--	Base Address of Interrupt handler		( 4		Words)
+	CONSTANT	SING_TRxU_BASE_ADDRESS			:	INTEGER	:=		my_to_uint(X"FFFF00F0");	--	Base Address of TRX						( 4		Words)
 	CONSTANT	SING_INTH_BASE_ADDRESS			:	INTEGER	:=		my_to_uint(X"FFFF0100");	--	Base Address of Interrupt handler		( 8		Words)
-	CONSTANT	SING_PLNR_BASE_ADDRESS			:	INTEGER	:=		my_to_uint(X"FFFF0200");	--	Base Address of Plannar Event
+	CONSTANT	SING_PLNR_BASE_ADDRESS			:	INTEGER	:=		my_to_uint(X"FFFF0200");	--	Base Address of Planes
 	
 	------	Plannar Offset
 	CONSTANT	PLAN_PLAN_OFFSET_ADDRESS		:	INTEGER	:=		my_to_uint(X"100");			-- Offset of Each Plane						(64		Words)
 	CONSTANT	PLAN_CONF_OFFSET_ADDRESS		:	INTEGER	:=		my_to_uint(X"000");			-- Offset of Config holder					(16		Words)
 	CONSTANT	PLAN_INIT_OFFSET_ADDRESS		:	INTEGER	:=		my_to_uint(X"040");			-- Offset of initiator						( 4		Words)
 	CONSTANT	PLAN_PECO_OFFSET_ADDRESS		:	INTEGER	:=		my_to_uint(X"050");			-- Offset of PE Control 					(16		Words)
-	CONSTANT	PLAN_EVNT_OFFSET_ADDRESS		:	INTEGER	:=		my_to_uint(X"090");			-- Offset of PE Control 					(16		Words)
+	CONSTANT	PLAN_EVNT_OFFSET_ADDRESS		:	INTEGER	:=		my_to_uint(X"090");			-- Offset of Event Counter					(16		Words)
 	CONSTANT	PLAN_ENDx_OFFSET_ADDRESS		:	INTEGER	:=		my_to_uint(X"0D0");			-- Next Address
 	
 end MEM_MAPS;
