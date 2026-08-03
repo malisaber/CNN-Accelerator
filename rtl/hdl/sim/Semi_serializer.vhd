@@ -51,6 +51,8 @@ architecture Behavioral of Semi_serializer is
 		BUS_SD_in						:	IN	std_logic_vector(P_word_size-1		DOWNTO 0);
 		BUS_SD_in_rdy					:	IN	std_logic;
 						
+		MEM_READ_OP						:	OUT	std_logic;
+		MEM_WRITE_OP					:	OUT	std_logic;
 		MEM_Add							:	OUT	std_logic_vector(P_Phy_Add_size-1	DOWNTO 0);
 		MEM_wen							:	OUT	std_logic;
 		MEM_Din							:	IN	std_logic_vector(P_word_size-1 DOWNTO 0);
@@ -64,6 +66,8 @@ architecture Behavioral of Semi_serializer is
 	PORT(
 		clk								:	IN	std_logic;
 		cs								:	IN	std_logic;
+		MEM_READ_OP						:	OUT	std_logic;
+		MEM_WRITE_OP					:	OUT	std_logic;
 		MEM_Add							:	IN	std_logic_vector(P_Phy_Add_size-1	DOWNTO 0);
 		MEM_wen							:	IN	std_logic;
 		MEM_Din							:	IN	std_logic_vector(P_word_size-1		DOWNTO 0);
@@ -73,6 +77,8 @@ architecture Behavioral of Semi_serializer is
 	--------------------------------------------------------------------------
 	--	SIGNALs
 	--------------------------------------------------------------------------
+	SIGNAL	MEM_READ_OP					:	std_logic;
+	SIGNAL	MEM_WRITE_OP				:	std_logic;
 	SIGNAL	MEM_Add						:	std_logic_vector(P_Phy_Add_size-1		DOWNTO 0);
 	SIGNAL	MEM_wen						:	std_logic;
 	SIGNAL	MEM_Din						:	std_logic_vector(P_word_size-1			DOWNTO 0);
@@ -102,6 +108,8 @@ begin
 		BUS_SD_in						=>	OGM_2VCU_MD_in,
 		BUS_SD_in_rdy					=>	OGM_2VCU_MD_in_rdy,
 		--	MEM
+		MEM_READ_OP						=>	MEM_READ_OP,
+		MEM_WRITE_OP					=>	MEM_WRITE_OP,
 		MEM_Add							=>	MEM_Add,
 		MEM_wen							=>	MEM_wen,
 		MEM_Din							=>	MEM_Dout,
@@ -114,6 +122,8 @@ begin
 	PORT	MAP(
 		clk								=>	clk,
 		cs								=>	OGM_2VCU_req,
+		MEM_READ_OP						=>	MEM_READ_OP,
+		MEM_WRITE_OP					=>	MEM_WRITE_OP,
 		MEM_Add							=>	MEM_Add,
 		MEM_wen							=>	MEM_wen,
 		MEM_Din							=>	MEM_Din,

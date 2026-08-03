@@ -9,6 +9,8 @@ module	FILE_IO_Handler
 	//	List	of	input	ports
 	input					clk,
 	input					cs,
+	input					MEM_READ_OP,
+	input					MEM_WRITE_OP,
 	input			[31:0]	MEM_Add,
 	input					MEM_wen,
 	input			[15:0]	MEM_Din,
@@ -23,6 +25,7 @@ module	FILE_IO_Handler
 	integer				chk_fid;
 	integer				err_fid;
 	reg					wrote_on_this = 1'b0;
+	integer				i;
 	
 	assign	this_file	= MEM_Add[31: per_file_width];
 	
@@ -59,19 +62,39 @@ module	FILE_IO_Handler
 			begin
 				if(wrote_on_this == 1'b1) 
 					$writememh	(file_name, mem);
+				
 				$sformat	(file_name, "%s/DRAM_DATA_%1d.txt", `DRAM_DATA_DIR, this_file);
 				log_fid	=	$fopen("report/FILE_IO_HANDLER_LOG.txt", "a");
-				$fwrite		(log_fid, "FIOH %2d: Reading DRAM_DATA_%1d.txt    @%0t", handler_id, this_file, $time);
 				chk_fid	=	$fopen(file_name, "r");
+
+				if (MEM_READ_OP == 1'b1)
+					$fwrite	(log_fid, "FIOH %3d, @%12t: (R) Reading DRAM_DATA_%1d.txt    ", handler_id, $time, this_file);
+				else if (MEM_WRITE_OP == 1'b1)
+					$fwrite	(log_fid, "FIOH %3d, @%12t: (W) Reading DRAM_DATA_%1d.txt    ", handler_id, $time, this_file);
+				else
+					$fwrite	(log_fid, "FIOH %3d, @%12t: (X) Reading DRAM_DATA_%1d.txt    ", handler_id, $time, this_file);
+				
+				
 				if			(chk_fid == 0)
 				begin
 					err_fid	= $fopen("report/ERROR_LOG.txt", "a");
-					$fwrite	(log_fid, "\tIT DOES NOT EXIST\t\t\t XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-					$fwrite	(err_fid, "FIOH %2d: ERROR Reading DRAM_DATA_%1d.txt    @%0t\n", handler_id, this_file, $time);
+					if (MEM_READ_OP == 1'b1)
+					begin
+						$fwrite	(log_fid, "\tIT DOES NOT EXIST\t\t\t XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+						$fwrite	(err_fid, "FIOH %3d, @%12t: ERROR Reading DRAM_DATA_%1d.txt    @%0t\n", handler_id, $time, this_file);
+					end
+					if (MEM_WRITE_OP == 1'b1)
+						$fwrite	(log_fid, "\tEmpty File.");
 					$fclose		(err_fid);
 				end
 				$fwrite	(log_fid, "\n");
-				$readmemh	(file_name, mem);
+
+				if			(chk_fid == 0)
+					for (i=0; i<2**per_file_width-1; i=i+1)
+						mem	[i] = 16'hDEAD;
+				else
+					$readmemh(file_name, mem);
+				
 				prev_file	=	this_file;
 				wrote_on_this = 1'b0;
 				$fclose		(chk_fid);

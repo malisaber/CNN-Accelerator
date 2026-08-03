@@ -21,6 +21,8 @@ entity SEMI_Mem_IF is
 		BUS_SD_in						:	IN	std_logic_vector(P_word_size-1		DOWNTO 0);
 		BUS_SD_in_rdy					:	IN	std_logic;
 		
+		MEM_READ_OP						:	OUT	std_logic;
+		MEM_WRITE_OP					:	OUT	std_logic;
 		MEM_Add							:	OUT	std_logic_vector(P_Phy_Add_size-1	DOWNTO 0);
 		MEM_wen							:	OUT	std_logic;
 		MEM_Din							:	IN	std_logic_vector(P_word_size-1 DOWNTO 0);
@@ -119,6 +121,11 @@ begin
 	eq									<=	'1'	WHEN	UNSIGNED(cntr) = 1 ELSE '0'; 
 	MEM_Dout							<=	BUS_SD_in;
 	MEM_Add								<=	Addr;
+	--------------------------------------------------------------------------------------
+	--------------------------------------------------------------------------------------
+	--------------------------------------------------------------------------------------
+	MEM_READ_OP							<=	BUS_read;
+	MEM_WRITE_OP						<=	BUS_write;
 	--------------------------------------------------------------------------------------
 	--------------------------------------------------------------------------------------
 	--------------------------------------------------------------------------------------
