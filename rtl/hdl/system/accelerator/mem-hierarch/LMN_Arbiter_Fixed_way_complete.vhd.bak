@@ -4,23 +4,7 @@ USE IEEE.NUMERIC_STD.ALL;
 USE IEEE.math_real.ALL;
 USE work.my_pack_v2.ALL;
 
---------------------------------------------------------------------------------------
---	PIPELINED REDESIGN of LMN_Arbiter_Fixed_way_double_address
---
---	Same entity, generics and ports as the original -> drop-in replacement.
---	Instantiate Connector_i with Connector_double_mem_map_address_pipelined
---	(or the original - this file works with either).
---
---	Same change as LMN_Arbiter_Fixed_way_complete_pipelined.vhd: the final
---	OR-aggregation across `ways` connectors is now computed inside a clocked
---	process, so Master_grant/Slave_CS/Master_MSM/Slave_SSM/aswering/taken/
---	G_stop are registered outputs instead of driving straight off the
---	con_grant/con_cs/con_MSM/con_SSM/L_stop OR-trees combinationally. See the
---	header comment in LMN_Arbiter_Fixed_way_complete_pipelined.vhd for the
---	full rationale (handshake-based consumers, no combinational loop risk).
---------------------------------------------------------------------------------------
-
-entity LMN_Arbiter_Fixed_way_double_address is
+entity LMN_Arbiter_Fixed_way_complete is
 	GENERIC(
 		MASTER_CNT			:	INTEGER	:=	7;
 		SLAVE_CNT			:	INTEGER	:=	7;
@@ -29,26 +13,24 @@ entity LMN_Arbiter_Fixed_way_double_address is
 		Name				:	STRING	:=	"name");
 	PORT(
 		clk					:	IN	std_logic;
-		rst					:	IN	std_logic;
+		rst					:	IN	std_logic; 
 		--	Master Port
 		Master_Address		:	IN	Unc_1D_P_Addr_array	(MASTER_CNT-1	DOWNTO 0);
 		Master_req			:	IN	Unc_1D_array		(MASTER_CNT-1	DOWNTO 0);
 		Master_grant		:	OUT	Unc_1D_array		(MASTER_CNT-1	DOWNTO 0);
 		Master_MSM			:	OUT	Unc_2D_array		(MASTER_CNT-1	DOWNTO 0,	SM_size-1	DOWNTO 0);
 		--	Slave Port
-		Slave_min_add_1		:	IN	Unc_1D_P_Addr_array	(SLAVE_CNT-1	DOWNTO 0);
-		Slave_max_add_1		:	IN	Unc_1D_P_Addr_array	(SLAVE_CNT-1	DOWNTO 0);
-		Slave_min_add_2		:	IN	Unc_1D_P_Addr_array	(SLAVE_CNT-1	DOWNTO 0);
-		Slave_max_add_2		:	IN	Unc_1D_P_Addr_array	(SLAVE_CNT-1	DOWNTO 0);
+		Slave_min_add		:	IN	Unc_1D_P_Addr_array	(SLAVE_CNT-2	DOWNTO 0);
+		Slave_max_add		:	IN	Unc_1D_P_Addr_array	(SLAVE_CNT-2	DOWNTO 0);
 		Slave_CS			:	OUT	Unc_1D_array		(SLAVE_CNT-1	DOWNTO 0);
 		Slave_SSM			:	OUT	Unc_2D_array		(SLAVE_CNT-1	DOWNTO 0,	SM_size-1	DOWNTO 0));
-end LMN_Arbiter_Fixed_way_double_address;
+end LMN_Arbiter_Fixed_way_complete;
 
-architecture Pipelined of LMN_Arbiter_Fixed_way_double_address is
+architecture Behavioral of LMN_Arbiter_Fixed_way_complete is
 	--------------------------------------------------------------------------------------
 	--------------------------------------------------------------------------------------
 	--------------------------------------------------------------------------------------
-	COMPONENT	Connector_double_mem_map_address
+	COMPONENT	Connector_complete
 	GENERIC(
 		MASTER_CNT			:	INTEGER	:=	15;
 		SLAVE_CNT			:	INTEGER	:=	15;
@@ -57,24 +39,22 @@ architecture Pipelined of LMN_Arbiter_Fixed_way_double_address is
 	PORT(
 		clk					:	IN	std_logic;
 		rst					:	IN	std_logic;
-
-		stop_in				:	IN	std_logic;
-		stop_out			:	OUT	std_logic;
+		
+		stop_in				:	IN	std_logic; 
+		stop_out			:	OUT	std_logic; 
 		prev_bussy			:	IN	std_logic;
 		this_bussy			:	OUT	std_logic;
 		this_done			:	OUT	std_logic;
 		aswering			:	IN	std_logic_vector	(MASTER_CNT-1	DOWNTO 0);
 		taken				:	IN	std_logic_vector	(SLAVE_CNT-1	DOWNTO 0);
-
+		
 		Master_Address		:	IN	Unc_1D_P_Addr_array	(MASTER_CNT-1	DOWNTO 0);
 		Master_req			:	IN	Unc_1D_array		(MASTER_CNT-1	DOWNTO 0);
 		Master_grant		:	OUT	Unc_1D_array		(MASTER_CNT-1	DOWNTO 0);
 		Master_MSM			:	OUT	Unc_2D_array		(MASTER_CNT-1	DOWNTO 0,	SM_size-1	DOWNTO 0);
-
-		Slave_min_add_1		:	IN	Unc_1D_P_Addr_array	(SLAVE_CNT-1	DOWNTO 0);
-		Slave_max_add_1		:	IN	Unc_1D_P_Addr_array	(SLAVE_CNT-1	DOWNTO 0);
-		Slave_min_add_2		:	IN	Unc_1D_P_Addr_array	(SLAVE_CNT-1	DOWNTO 0);
-		Slave_max_add_2		:	IN	Unc_1D_P_Addr_array	(SLAVE_CNT-1	DOWNTO 0);
+		
+		Slave_min_add		:	IN	Unc_1D_P_Addr_array	(SLAVE_CNT-2	DOWNTO 0);
+		Slave_max_add		:	IN	Unc_1D_P_Addr_array	(SLAVE_CNT-2	DOWNTO 0);
 		Slave_CS			:	OUT	Unc_1D_array		(SLAVE_CNT-1	DOWNTO 0);
 		Slave_SSM			:	OUT	Unc_2D_array		(SLAVE_CNT-1	DOWNTO 0,	SM_size-1	DOWNTO 0));
 	END	COMPONENT;
@@ -93,11 +73,11 @@ architecture Pipelined of LMN_Arbiter_Fixed_way_double_address is
 	SIGNAL	con_MSM			:	MSMT;
 	SIGNAL	con_SSM			:	SSMT;
 	--------------------------------------------------------------------------------------
-	SIGNAL	G_stop			:	std_logic;
-	SIGNAL	L_stop			:	std_logic_vector(ways-1 DOWNTO 0);
-	SIGNAL	this_bussy		:	std_logic_vector(ways	DOWNTO 0);
-	SIGNAL	bussy			:	std_logic_vector(ways	DOWNTO 0);
-	SIGNAL	this_done		:	std_logic_vector(ways	DOWNTO 0);
+	SIGNAL	G_stop			:	std_logic; 
+	SIGNAL	L_stop			:	std_logic_vector(ways-1 DOWNTO 0); 
+	SIGNAL	this_bussy		:	std_logic_vector(ways	DOWNTO 0); 
+	SIGNAL	bussy			:	std_logic_vector(ways	DOWNTO 0); 
+	SIGNAL	this_done		:	std_logic_vector(ways	DOWNTO 0); 
 	SIGNAL	aswering		:	std_logic_vector(MASTER_CNT-1 DOWNTO 0);
 	SIGNAL	taken			:	std_logic_vector(SLAVE_CNT-1 DOWNTO 0);
 	SIGNAL	starter			:	std_logic;
@@ -109,7 +89,7 @@ begin
 	--------------------------------------------------------------------------------------
 	--------------------------------------------------------------------------------------
 	connector_gen			:	FOR i IN 0 TO ways-1 GENERATE
-		Connector_i			:	Connector_double_mem_map_address
+		Connector_i			:	Connector_complete
 		GENERIC	MAP(
 			MASTER_CNT		=>	MASTER_CNT,
 			SLAVE_CNT		=>	SLAVE_CNT,
@@ -118,7 +98,7 @@ begin
 		PORT	MAP(
 			clk				=>	clk,
 			rst				=>	rst,
-
+			
 			stop_in			=>	G_stop,
 			stop_out		=>	L_stop(i),
 			prev_bussy		=>	bussy(i),
@@ -126,16 +106,14 @@ begin
 			this_done		=>	this_done(i+1),
 			aswering		=>	aswering,
 			taken			=>	taken,
-
+			
 			Master_Address	=>	Master_Address,
 			Master_req		=>	Master_req,
 			Master_grant	=>	con_grant(i),
 			Master_MSM		=>	con_MSM(i),
-
-			Slave_min_add_1	=>	Slave_min_add_1,
-			Slave_max_add_1	=>	Slave_max_add_1,
-			Slave_min_add_2	=>	Slave_min_add_2,
-			Slave_max_add_2	=>	Slave_max_add_2,
+			
+			Slave_min_add	=>	Slave_min_add,
+			Slave_max_add	=>	Slave_max_add,
 			Slave_CS		=>	con_cs(i),
 			Slave_SSM		=>	con_SSM(i));
 	END GENERATE;
@@ -154,77 +132,68 @@ begin
 					bussy(i)	<=	'0';
 				END IF;
 			END IF;
+			--WAIT ON clk, rst;
 		END PROCESS;
 	END GENERATE;
-	starter		<=	'1'	WHEN	bussy(ways DOWNTO 1) = (ways DOWNTO 1 => '0') ELSE '0';
-	bussy(0)	<=	bussy(ways) OR starter;
+	starter			<=	'1'	WHEN	bussy(ways DOWNTO 1) = (ways DOWNTO 1 => '0') ELSE '0';
+	bussy(0)		<=	bussy(ways) OR starter;
+	this_bussy(0)	<=	'0';
 	--------------------------------------------------------------------------------------
 	--------------------------------------------------------------------------------------
 	--------------------------------------------------------------------------------------
-	--	STAGE (new): register the OR-aggregation across `ways` connectors
-	--	instead of driving Master_grant/Slave_CS/Master_MSM/Slave_SSM/
-	--	aswering/taken/G_stop combinationally.
-	--------------------------------------------------------------------------------------
-	PROCESS(clk, rst)
+	PROCESS(con_grant, con_cs, con_MSM, con_SSM, L_stop)
 		VARIABLE	tmp			:	std_logic;
 	BEGIN
-		IF rst = '1' THEN
-			Master_grant		<=	(OTHERS	=>	'0');
-			aswering			<=	(OTHERS	=>	'0');
-			Slave_CS			<=	(OTHERS	=>	'0');
-			taken				<=	(OTHERS	=>	'0');
-			Master_MSM			<=	(OTHERS	=>	(OTHERS	=>	'0'));
-			Slave_SSM			<=	(OTHERS	=>	(OTHERS	=>	'0'));
-			G_stop				<=	'0';
-		ELSIF clk = '1' AND clk'EVENT THEN
-		--------------------------------------------------------------------------------------
-			FOR 		i IN 0 TO MASTER_CNT-1	LOOP
-				tmp					:=	'0';
-				FOR 	j IN 0 TO ways-1		LOOP
-					tmp				:=	tmp OR con_grant(j)(i);
+	--------------------------------------------------------------------------------------
+		FOR 		i IN 0 TO MASTER_CNT-1	LOOP
+			tmp					:=	'0';
+			FOR 	j IN 0 TO ways-1		LOOP
+				tmp				:=	tmp OR con_grant(j)(i);
+			END LOOP;
+			Master_grant(i)		<=	tmp;
+			aswering(i)			<=	tmp;
+		END LOOP;
+	--------------------------------------------------------------------------------------
+		FOR 		i IN 0 TO SLAVE_CNT-1	LOOP
+			tmp					:=	'0';
+			FOR 	j IN 0 TO ways-1		LOOP
+				tmp				:=	tmp OR con_cs(j)(i);
+			END LOOP;
+			Slave_CS(i)			<=	tmp;
+			taken(i)			<=	tmp;
+		END LOOP;
+	--------------------------------------------------------------------------------------
+		FOR			i IN 0 TO MASTER_CNT-1	LOOP
+			FOR		j IN 0 TO SM_size-1		LOOP
+				tmp				:=	'0';
+				FOR	k IN 0 TO ways-1		LOOP
+					tmp			:=	tmp OR con_MSM(k)(i,j);
 				END LOOP;
-				Master_grant(i)		<=	tmp;
-				aswering(i)			<=	tmp;
+				Master_MSM(i,j)	<=	tmp;
 			END LOOP;
-		--------------------------------------------------------------------------------------
-			FOR 		i IN 0 TO SLAVE_CNT-1	LOOP
-				tmp					:=	'0';
-				FOR 	j IN 0 TO ways-1		LOOP
-					tmp				:=	tmp OR con_cs(j)(i);
+		END LOOP;
+	--------------------------------------------------------------------------------------
+		FOR			i IN 0 TO SLAVE_CNT-1	LOOP
+			FOR		j IN 0 TO SM_size-1		LOOP
+				tmp				:=	'0';
+				FOR	k IN 0 TO ways-1		LOOP
+					tmp			:=	tmp OR con_SSM(k)(i,j);
 				END LOOP;
-				Slave_CS(i)			<=	tmp;
-				taken(i)			<=	tmp;
+				Slave_SSM(i,j)	<=	tmp;
 			END LOOP;
-		--------------------------------------------------------------------------------------
-			FOR			i IN 0 TO MASTER_CNT-1	LOOP
-				FOR		j IN 0 TO SM_size-1		LOOP
-					tmp				:=	'0';
-					FOR	k IN 0 TO ways-1		LOOP
-						tmp			:=	tmp OR con_MSM(k)(i,j);
-					END LOOP;
-					Master_MSM(i,j)	<=	tmp;
-				END LOOP;
-			END LOOP;
-		--------------------------------------------------------------------------------------
-			FOR			i IN 0 TO SLAVE_CNT-1	LOOP
-				FOR		j IN 0 TO SM_size-1		LOOP
-					tmp				:=	'0';
-					FOR	k IN 0 TO ways-1		LOOP
-						tmp			:=	tmp OR con_SSM(k)(i,j);
-					END LOOP;
-					Slave_SSM(i,j)	<=	tmp;
-				END LOOP;
-			END LOOP;
-		--------------------------------------------------------------------------------------
-			tmp						:=	'0';
-			FOR 		i IN 0 TO ways-1		LOOP
-				tmp					:=	tmp OR L_stop(i);
-			END LOOP;
-			G_stop					<=	tmp;
-		--------------------------------------------------------------------------------------
-		END IF;
+		END LOOP;
+	--------------------------------------------------------------------------------------
+		tmp						:=	'0';
+		FOR 		i IN 0 TO ways-1		LOOP
+			tmp					:=	tmp OR L_stop(i);
+		END LOOP;
+		G_stop					<=	tmp;
+	--------------------------------------------------------------------------------------
+		--WAIT ON	con_grant, con_cs, con_MSM, con_SSM, L_stop;
 	END PROCESS;
 	--------------------------------------------------------------------------------------
 	--------------------------------------------------------------------------------------
 	--------------------------------------------------------------------------------------
-end Pipelined;
+end Behavioral;
+
+

@@ -134,6 +134,13 @@ architecture Behavioral of TRx_Box is
 		empty							:	OUT	std_logic);
 	END	COMPONENT;
 	--------------------------------------------------------------------------
+	COMPONENT							Tx_Tracker
+	PORT(
+		Tx_SW_Data						:	IN	std_logic_vector(7 DOWNTO 0);
+		Tx_SW_Enable					:	IN	std_logic;
+		Tx_SW_send						:	IN	std_logic);
+	END	COMPONENT;
+	--------------------------------------------------------------------------
 	--------------------------------------------------------------------------
 	--		SIGNALs
 	--------------------------------------------------------------------------
@@ -187,220 +194,293 @@ architecture Behavioral of TRx_Box is
 	SIGNAL	RXD_int_rst					:	std_logic;
 	SIGNAL	RXD_int						:	std_logic;
 	--------------------------------------------------------------------------
+	SIGNAL	Tx_SW_Data					:	std_logic_vector(7	DOWNTO 0);
+	SIGNAL	Tx_SW_Enable				:	std_logic;
+	SIGNAL	Tx_SW_send					:	std_logic;
+	--------------------------------------------------------------------------
 	--------------------------------------------------------------------------
 begin
-	--------------------------------------------------------------------------
-	--------------------------------------------------------------------------
-	--		INSTANCEs
-	--------------------------------------------------------------------------
-	Transiver							:	TRx
-	PORT	MAP(
-		clk								=>	clk,
-		rst								=>	rst,
-		-- Tx Buff:
-		------	OUT
-		Rx_Buff_Dout					=>	TRx_Rx_Buff_Din,
-		Rx_Buff_Push					=>	TRx_Rx_Buff_Push,
-		------	IN
-		Tx_Buff_Din						=>	TRx_Tx_Buff_Dout,
-		Tx_Buff_Empty					=>	TRx_Tx_Buff_Empty,
-		Tx_Buff_Pop						=>	TRx_Tx_Buff_Pop,
-		--	Tx Config
-		TR_Conf_Top_max					=>	TRx_Top_Val,
-		TR_Conf_Clk_Div					=>	TRx_Clk_Div,
-		Tx_Conf_Enable					=>	TRx_Enables(5),
-		Rx_Conf_Enable					=>	TRx_Enables(4),
-		--	Tx line
-		Rx_Rx							=>	Rx_Rx,
-		Tx_Tx							=>	Tx_Tx,
-		Tx_Done							=>	TRx_Tx_Done);
-	--------------------------------------------------------------------------
-	TX_Fifo								:	FIFO_v2
-	GENERIC	MAP(
-		depth							=>	P_Transiver_Word_size,
-		word_size						=>	8,
-		reged_output					=>	0)
-	PORT	MAP(
-		clk								=>	clk,
-		rst								=>	rst,
-		-- input
-		push							=>	TRx_Tx_Buff_Push,
-		data_in							=>	TRx_Tx_Buff_Din,
-		full							=>	TRx_Tx_Buff_Full,
-		-- output
-		pop								=>	TRx_Tx_Buff_Pop,
-		data_out						=>	TRx_Tx_Buff_Dout,
-		empty							=>	TRx_Tx_Buff_Empty);
-	--------------------------------------------------------------------------
-	RX_Fifo								:	FIFO_v2
-	GENERIC	MAP(
-		depth							=>	P_Transiver_Word_size,
-		word_size						=>	9,
-		reged_output					=>	0)
-	PORT	MAP(
-		clk								=>	clk,
-		rst								=>	rst,
-		-- input
-		push							=>	TRx_Rx_Buff_Push,
-		data_in							=>	TRx_Rx_Buff_Din,
-		full							=>	TRx_Rx_Buff_Full,
-		-- output
-		pop								=>	TRx_Rx_Buff_Pop,
-		data_out						=>	TRx_Rx_Buff_Dout,
-		empty							=>	TRx_Rx_Buff_Empty);
-	--------------------------------------------------------------------------
-	--------------------------------------------------------------------------
-	--		Connections
-	--------------------------------------------------------------------------
-	TRx_Buf_Flg							<=	TRx_Tx_Buff_Empty	&	TRx_Tx_Buff_Full	&	TRx_Rx_Buff_Empty	&	TRx_Rx_Buff_Full;
-	--------------------------------------------------------------------------
-	TRx_Tx_Buff_Push					<=	TRx_MM_Wen;
-	TRx_Tx_Buff_Din						<=	TRx_MM_Din;
-	--------------------------------------------------------------------------
-	--------------------------------------------------------------------------
-	--		Interrupts
-	--------------------------------------------------------------------------
-	--	BUGFIX: OR in TRx_INT_Clear so a software "clear interrupts" write
-	--	(control-word bit 25) actually resets all four latches. TRx_INT_Clear
-	--	is now a one-cycle self-clearing pulse (see process below), so this
-	--	behaves as an edge-triggered "clear on write", not a permanent block.
-	--------------------------------------------------------------------------
-	TBE_int_rst							<=	(NOT TRx_Enables(3))	OR	ANS_Tx_Buff_Empty	OR	rst	OR	TRx_INT_Clear;
-	RBF_int_rst							<=	(NOT TRx_Enables(2))	OR	ANS_Rx_Buff_Full	OR	rst	OR	TRx_INT_Clear;
-	TXD_int_rst							<=	(NOT TRx_Enables(1))	OR	ANS_Tx_Sent			OR	rst	OR	TRx_INT_Clear;
-	RXD_int_rst							<=	(NOT TRx_Enables(0))	OR	ANS_Rx_Received		OR	rst	OR	TRx_INT_Clear;
-	TBE_int_set							<=	TRx_Enables(3)			AND	TRx_Tx_Buff_Empty;
-	RBF_int_set							<=	TRx_Enables(2)			AND	TRx_Rx_Buff_Full;
-	--	BUGFIX: was TRx_Tx_Buff_Pop (asserted at the *start* of a Tx, when
-	--	TXCU pops the FIFO). Use TRx_Tx_Done, which now reflects the actual
-	--	Tx_Cont_Trn_end pulse from TXDP -- i.e. "Tx Sent" fires when the
-	--	byte has really finished going out on the wire.
-	TXD_int_set							<=	TRx_Enables(1)			AND	TRx_Tx_Done;
-	RXD_int_set							<=	TRx_Enables(0)			AND	TRx_Rx_Buff_Push;
-	--------------------------------------------------------------------------
-	INT_Tx_Buff_Empty					<=	TBE_int;
-	INT_Tx_Sent							<=	TXD_int;
-	INT_Rx_Buff_Full					<=	RBF_int;
-	INT_Rx_Received						<=	RXD_int;
-	--------------------------------------------------------------------------
-	PROCESS	(clk, TBE_int_rst)
-	BEGIN
-		IF	TBE_int_rst	= '1'	THEN
-			TBE_int		<=	'0';
-		ELSIF clk = '1' AND clk'EVENT THEN
-			IF TBE_int_set = '1' THEN
-				TBE_int	<=	'1';
+	HW_TRx_Gen							:	IF P_TRX_in_use	=	P_HW	GENERATE
+		--------------------------------------------------------------------------
+		--------------------------------------------------------------------------
+		--		INSTANCEs
+		--------------------------------------------------------------------------
+		Transiver						:	TRx
+		PORT	MAP(
+			clk							=>	clk,
+			rst							=>	rst,
+			-- Tx Buff:
+			------	OUT
+			Rx_Buff_Dout				=>	TRx_Rx_Buff_Din,
+			Rx_Buff_Push				=>	TRx_Rx_Buff_Push,
+			------	IN
+			Tx_Buff_Din					=>	TRx_Tx_Buff_Dout,
+			Tx_Buff_Empty				=>	TRx_Tx_Buff_Empty,
+			Tx_Buff_Pop					=>	TRx_Tx_Buff_Pop,
+			--	Tx Config
+			TR_Conf_Top_max				=>	TRx_Top_Val,
+			TR_Conf_Clk_Div				=>	TRx_Clk_Div,
+			Tx_Conf_Enable				=>	TRx_Enables(5),
+			Rx_Conf_Enable				=>	TRx_Enables(4),
+			--	Tx line
+			Rx_Rx						=>	Rx_Rx,
+			Tx_Tx						=>	Tx_Tx,
+			Tx_Done						=>	TRx_Tx_Done);
+		--------------------------------------------------------------------------
+		TX_Fifo							:	FIFO_v2
+		GENERIC	MAP(
+			depth						=>	P_Transiver_Word_size,
+			word_size					=>	8,
+			reged_output				=>	0)
+		PORT	MAP(
+			clk							=>	clk,
+			rst							=>	rst,
+			-- input
+			push						=>	TRx_Tx_Buff_Push,
+			data_in						=>	TRx_Tx_Buff_Din,
+			full						=>	TRx_Tx_Buff_Full,
+			-- output
+			pop							=>	TRx_Tx_Buff_Pop,
+			data_out					=>	TRx_Tx_Buff_Dout,
+			empty						=>	TRx_Tx_Buff_Empty);
+		--------------------------------------------------------------------------
+		RX_Fifo							:	FIFO_v2
+		GENERIC	MAP(
+			depth						=>	P_Transiver_Word_size,
+			word_size					=>	9,
+			reged_output				=>	0)
+		PORT	MAP(
+			clk							=>	clk,
+			rst							=>	rst,
+			-- input
+			push						=>	TRx_Rx_Buff_Push,
+			data_in						=>	TRx_Rx_Buff_Din,
+			full						=>	TRx_Rx_Buff_Full,
+			-- output
+			pop							=>	TRx_Rx_Buff_Pop,
+			data_out					=>	TRx_Rx_Buff_Dout,
+			empty						=>	TRx_Rx_Buff_Empty);
+		--------------------------------------------------------------------------
+		--------------------------------------------------------------------------
+		--		Connections
+		--------------------------------------------------------------------------
+		TRx_Buf_Flg						<=	TRx_Tx_Buff_Empty	&	TRx_Tx_Buff_Full	&	TRx_Rx_Buff_Empty	&	TRx_Rx_Buff_Full;
+		--------------------------------------------------------------------------
+		TRx_Tx_Buff_Push				<=	TRx_MM_Wen;
+		TRx_Tx_Buff_Din					<=	TRx_MM_Din;
+		--------------------------------------------------------------------------
+		--------------------------------------------------------------------------
+		--		Interrupts
+		--------------------------------------------------------------------------
+		--	BUGFIX: OR in TRx_INT_Clear so a software "clear interrupts" write
+		--	(control-word bit 25) actually resets all four latches. TRx_INT_Clear
+		--	is now a one-cycle self-clearing pulse (see process below), so this
+		--	behaves as an edge-triggered "clear on write", not a permanent block.
+		--------------------------------------------------------------------------
+		TBE_int_rst						<=	(NOT TRx_Enables(3))	OR	ANS_Tx_Buff_Empty	OR	rst	OR	TRx_INT_Clear;
+		RBF_int_rst						<=	(NOT TRx_Enables(2))	OR	ANS_Rx_Buff_Full	OR	rst	OR	TRx_INT_Clear;
+		TXD_int_rst						<=	(NOT TRx_Enables(1))	OR	ANS_Tx_Sent			OR	rst	OR	TRx_INT_Clear;
+		RXD_int_rst						<=	(NOT TRx_Enables(0))	OR	ANS_Rx_Received		OR	rst	OR	TRx_INT_Clear;
+		TBE_int_set						<=	TRx_Enables(3)			AND	TRx_Tx_Buff_Empty;
+		RBF_int_set						<=	TRx_Enables(2)			AND	TRx_Rx_Buff_Full;
+		--	BUGFIX: was TRx_Tx_Buff_Pop (asserted at the *start* of a Tx, when
+		--	TXCU pops the FIFO). Use TRx_Tx_Done, which now reflects the actual
+		--	Tx_Cont_Trn_end pulse from TXDP -- i.e. "Tx Sent" fires when the
+		--	byte has really finished going out on the wire.
+		TXD_int_set						<=	TRx_Enables(1)			AND	TRx_Tx_Done;
+		RXD_int_set						<=	TRx_Enables(0)			AND	TRx_Rx_Buff_Push;
+		--------------------------------------------------------------------------
+		INT_Tx_Buff_Empty				<=	TBE_int;
+		INT_Tx_Sent						<=	TXD_int;
+		INT_Rx_Buff_Full				<=	RBF_int;
+		INT_Rx_Received					<=	RXD_int;
+		--------------------------------------------------------------------------
+		PROCESS	(clk, TBE_int_rst)
+		BEGIN
+			IF	TBE_int_rst	= '1'	THEN
+				TBE_int		<=	'0';
+			ELSIF clk = '1' AND clk'EVENT THEN
+				IF TBE_int_set = '1' THEN
+					TBE_int	<=	'1';
+				END IF;
 			END IF;
-		END IF;
-	END PROCESS;
-	--------------------------------------------------------------------------
-	PROCESS	(clk, RBF_int_rst)
-	BEGIN
-		IF	RBF_int_rst	= '1'	THEN
-			RBF_int		<=	'0';
-		ELSIF clk = '1' AND clk'EVENT THEN
-			IF RBF_int_set = '1' THEN
-				RBF_int	<=	'1';
+		END PROCESS;
+		--------------------------------------------------------------------------
+		PROCESS	(clk, RBF_int_rst)
+		BEGIN
+			IF	RBF_int_rst	= '1'	THEN
+				RBF_int		<=	'0';
+			ELSIF clk = '1' AND clk'EVENT THEN
+				IF RBF_int_set = '1' THEN
+					RBF_int	<=	'1';
+				END IF;
 			END IF;
-		END IF;
-	END PROCESS;
-	--------------------------------------------------------------------------
-	PROCESS	(clk, TXD_int_rst)
-	BEGIN
-		IF	TXD_int_rst	= '1'	THEN
-			TXD_int		<=	'0';
-		ELSIF clk = '1' AND clk'EVENT THEN
-			IF TXD_int_set = '1' THEN
-				TXD_int	<=	'1';
+		END PROCESS;
+		--------------------------------------------------------------------------
+		PROCESS	(clk, TXD_int_rst)
+		BEGIN
+			IF	TXD_int_rst	= '1'	THEN
+				TXD_int		<=	'0';
+			ELSIF clk = '1' AND clk'EVENT THEN
+				IF TXD_int_set = '1' THEN
+					TXD_int	<=	'1';
+				END IF;
 			END IF;
-		END IF;
-	END PROCESS;
-	--------------------------------------------------------------------------
-	PROCESS	(clk, RXD_int_rst)
-	BEGIN
-		IF	RXD_int_rst	= '1'	THEN
-			RXD_int		<=	'0';
-		ELSIF clk = '1' AND clk'EVENT THEN
-			IF RXD_int_set = '1' THEN
-				RXD_int	<=	'1';
+		END PROCESS;
+		--------------------------------------------------------------------------
+		PROCESS	(clk, RXD_int_rst)
+		BEGIN
+			IF	RXD_int_rst	= '1'	THEN
+				RXD_int		<=	'0';
+			ELSIF clk = '1' AND clk'EVENT THEN
+				IF RXD_int_set = '1' THEN
+					RXD_int	<=	'1';
+				END IF;
 			END IF;
-		END IF;
-	END PROCESS;
-	--------------------------------------------------------------------------
-	PROCESS (clk, rst)
-		VARIABLE	add					:	INTEGER;
-		VARIABLE	Eadd				:	INTEGER;
-	BEGIN
-		IF rst = '1' THEN
-			TRx_MM_Din					<=	(OTHERS	=>	'0');
-			TRx_MM_Wen					<=	'0';
-			TRx_MM_Dout					<=	(OTHERS	=>	'0');
-			TRx_Rx_Buff_Pop				<=	'0';
-			--	BUGFIX: give TRx_INT_Clear a defined reset value.
-			TRx_INT_Clear				<=	'0';
-		ELSIF clk = '1' AND clk'EVENT THEN
-			TRx_MM_Wen					<=	'0';
-			TRx_MM_Dout					<=	TRx_Rx_Buff_Dout;
-			TRx_Rx_Buff_Pop				<=	TRx_MM_Ren;
-			--	BUGFIX: default TRx_INT_Clear low every cycle (same pattern
-			--	as TRx_MM_Wen above) so it becomes a single-cycle pulse
-			--	instead of a level that, once written '1', would latch
-			--	forever and permanently block all four interrupts.
-			TRx_INT_Clear				<=	'0';
-			add							:=	to_integer(SIGNED(X_check(MAIN_PORT_Address)));
-			--	BUGFIX: use the same formula as the read process below so
-			--	write and read decoding can never diverge if BASE_ADDRESS
-			--	is ever changed to a non-multiple-of-4 value.
-			Eadd						:=	(add - BASE_ADDRESS)/4;
-			IF MAIN_PORT_WEN = '1' AND add >= BASE_ADDRESS AND add < ENDx_ADDRESS THEN
-				CASE	Eadd			IS
-					WHEN	0			=>	TRx_MM_Din		<=	MAIN_PORT_Data_in(7		DOWNTO	0);
+		END PROCESS;
+		--------------------------------------------------------------------------
+		PROCESS (clk, rst)
+			VARIABLE	add				:	INTEGER;
+			VARIABLE	Eadd			:	INTEGER;
+		BEGIN
+			IF rst = '1' THEN
+				TRx_MM_Din				<=	(OTHERS	=>	'0');
+				TRx_MM_Wen				<=	'0';
+				TRx_MM_Dout				<=	(OTHERS	=>	'0');
+				TRx_Rx_Buff_Pop			<=	'0';
+				--	BUGFIX: give TRx_INT_Clear a defined reset value.
+				TRx_INT_Clear			<=	'0';
+			ELSIF clk = '1' AND clk'EVENT THEN
+				TRx_MM_Wen				<=	'0';
+				TRx_MM_Dout				<=	TRx_Rx_Buff_Dout;
+				TRx_Rx_Buff_Pop			<=	TRx_MM_Ren;
+				--	BUGFIX: default TRx_INT_Clear low every cycle (same pattern
+				--	as TRx_MM_Wen above) so it becomes a single-cycle pulse
+				--	instead of a level that, once written '1', would latch
+				--	forever and permanently block all four interrupts.
+				TRx_INT_Clear			<=	'0';
+				add						:=	to_integer(SIGNED(X_check(MAIN_PORT_Address)));
+				--	BUGFIX: use the same formula as the read process below so
+				--	write and read decoding can never diverge if BASE_ADDRESS
+				--	is ever changed to a non-multiple-of-4 value.
+				Eadd					:=	(add - BASE_ADDRESS)/4;
+				IF MAIN_PORT_WEN = '1' AND add >= BASE_ADDRESS AND add < ENDx_ADDRESS THEN
+					CASE	Eadd		IS
+						WHEN	0		=>	TRx_MM_Din		<=	MAIN_PORT_Data_in(7		DOWNTO	0);
 											TRx_MM_Wen		<=	'1';
-					WHEN	1			=>	TRx_Enables		<=	MAIN_PORT_Data_in(31	DOWNTO	26);
+						WHEN	1		=>	TRx_Enables		<=	MAIN_PORT_Data_in(31	DOWNTO	26);
 											TRx_INT_Clear	<=	MAIN_PORT_Data_in(25);
 											TRx_Clk_Div		<=	MAIN_PORT_Data_in(23	DOWNTO	20);
 											TRx_Top_Val		<=	MAIN_PORT_Data_in(15	DOWNTO	0);
-					WHEN	OTHERS		=>	NULL;
-				END CASE;
+						WHEN	OTHERS	=>	NULL;
+					END CASE;
+				END IF;
 			END IF;
-		END IF;
-	END PROCESS;
-	--------------------------------------------------------------------------
-	PROCESS(MAIN_PORT_Address, MAIN_PORT_OEN, TRx_MM_Dout, TRx_Enables, TRx_Clk_Div, TRx_Buf_Flg, TRx_Top_Val)
-		VARIABLE	add					:	INTEGER;
-		VARIABLE	Eadd				:	INTEGER;
-	BEGIN
-		TRx_MM_Ren						<=	'0';
-		add								:=	to_integer(SIGNED(X_check(MAIN_PORT_Address)));
-		--	BUGFIX: was (add/4) - (BASE_ADDRESS/4), which only matches the
-		--	write process's (add - BASE_ADDRESS)/4 when BASE_ADDRESS happens
-		--	to be a multiple of 4. Unified to the same formula as the write
-		--	process above.
-		Eadd							:=	(add - BASE_ADDRESS)/4;
-		IF MAIN_PORT_OEN = '1' AND add  >= BASE_ADDRESS AND add < ENDx_ADDRESS THEN
-			CASE	Eadd			IS
-					WHEN	0			=>	MAIN_PORT_Data_out	<=	TRx_MM_Dout(8)	&	"000"	&	X"00000"	&	TRx_MM_Dout(7 DOWNTO 0);
+		END PROCESS;
+		--------------------------------------------------------------------------
+		PROCESS(MAIN_PORT_Address, MAIN_PORT_OEN, TRx_MM_Dout, TRx_Enables, TRx_Clk_Div, TRx_Buf_Flg, TRx_Top_Val)
+			VARIABLE	add				:	INTEGER;
+			VARIABLE	Eadd			:	INTEGER;
+		BEGIN
+			TRx_MM_Ren					<=	'0';
+			add							:=	to_integer(SIGNED(X_check(MAIN_PORT_Address)));
+			--	BUGFIX: was (add/4) - (BASE_ADDRESS/4), which only matches the
+			--	write process's (add - BASE_ADDRESS)/4 when BASE_ADDRESS happens
+			--	to be a multiple of 4. Unified to the same formula as the write
+			--	process above.
+			Eadd						:=	(add - BASE_ADDRESS)/4;
+			IF MAIN_PORT_OEN = '1' AND add  >= BASE_ADDRESS AND add < ENDx_ADDRESS THEN
+				CASE	Eadd			IS
+						WHEN	0		=>	MAIN_PORT_Data_out	<=	TRx_MM_Dout(8)	&	"000"	&	X"00000"	&	TRx_MM_Dout(7 DOWNTO 0);
 											TRx_MM_Ren			<=	'1';
-					WHEN	1			=>	MAIN_PORT_Data_out	<=	TRx_Enables		&	"00"	&	TRx_Clk_Div	&	TRx_Buf_Flg		&	TRx_Top_Val;
-					WHEN	OTHERS		=>	MAIN_PORT_Data_out	<=	(OTHERS	=>	'0');
-				END CASE;
-		ELSE
-			MAIN_PORT_Data_out			<=	(OTHERS	=>	'Z');
-		END IF;
-	END PROCESS;
+						WHEN	1		=>	MAIN_PORT_Data_out	<=	TRx_Enables		&	"00"	&	TRx_Clk_Div	&	TRx_Buf_Flg		&	TRx_Top_Val;
+						WHEN	OTHERS	=>	MAIN_PORT_Data_out	<=	(OTHERS	=>	'0');
+					END CASE; 
+			ELSE 
+				MAIN_PORT_Data_out		<=	(OTHERS	=>	'Z');
+			END IF;
+		END PROCESS;
+		--------------------------------------------------------------------------
+		PROCESS(MAIN_PORT_Address, MAIN_PORT_OEN)
+			VARIABLE	add				:	INTEGER;
+		BEGIN
+			add							:=	to_integer(SIGNED(X_check(MAIN_PORT_Address)));
+			IF add  >= BASE_ADDRESS AND add < ENDx_ADDRESS THEN
+				MAIN_PORT_Dot_Rdy		<=	MAIN_PORT_OEN;
+				MAIN_PORT_SEL_This		<=	'1';
+			ELSE
+				MAIN_PORT_Dot_Rdy		<=	'0';
+				MAIN_PORT_SEL_This		<=	'0';
+			END IF;
+		END PROCESS;
+		--------------------------------------------------------------------------
+		--------------------------------------------------------------------------
+	END GENERATE;
 	--------------------------------------------------------------------------
-	PROCESS(MAIN_PORT_Address, MAIN_PORT_OEN)
-		VARIABLE	add					:	INTEGER;
-	BEGIN
-		add								:=	to_integer(SIGNED(X_check(MAIN_PORT_Address)));
-		IF add  >= BASE_ADDRESS AND add < ENDx_ADDRESS THEN
-			MAIN_PORT_Dot_Rdy			<=	MAIN_PORT_OEN;
-			MAIN_PORT_SEL_This			<=	'1';
-		ELSE
-			MAIN_PORT_Dot_Rdy			<=	'0';
-			MAIN_PORT_SEL_This			<=	'0';
-		END IF;
-	END PROCESS;
+	--------------------------------------------------------------------------
+	SW_TRx_Gen							:	IF P_TRX_in_use	=	P_SW	GENERATE
+		--------------------------------------------------------------------------
+		SW_Tx							:	Tx_Tracker
+		PORT	MAP(
+			Tx_SW_Data					=>	Tx_SW_Data,
+			Tx_SW_Enable				=>	Tx_SW_Enable,
+			Tx_SW_send					=>	Tx_SW_send);
+		--------------------------------------------------------------------------
+		PROCESS (clk, rst)
+			VARIABLE	add				:	INTEGER;
+			VARIABLE	Eadd			:	INTEGER;
+		BEGIN
+			IF rst = '1' THEN
+				Tx_SW_Data				<=	(OTHERS	=>	'0');
+				Tx_SW_Enable			<=	'0';
+				Tx_SW_send				<=	'0';
+			ELSIF clk = '1' AND clk'EVENT THEN
+				add						:=	to_integer(SIGNED(X_check(MAIN_PORT_Address)));
+				Eadd					:=	(add/4) - (BASE_ADDRESS/4);
+				Tx_SW_send				<=	'0';
+				IF MAIN_PORT_WEN = '1' AND add >= BASE_ADDRESS AND add < ENDx_ADDRESS THEN
+					CASE	Eadd		IS
+						WHEN	0		=>	Tx_SW_Data		<=	MAIN_PORT_Data_in(7		DOWNTO	0);
+											Tx_SW_send		<=	'1';
+						WHEN	1		=>	Tx_SW_Enable	<=	MAIN_PORT_Data_in(31);
+						WHEN	OTHERS	=>	NULL;
+					END CASE;
+				END IF;
+			END IF;
+		END PROCESS;
+		--------------------------------------------------------------------------
+		PROCESS(MAIN_PORT_Address, MAIN_PORT_OEN, TRx_MM_Dout, TRx_Enables, TRx_Clk_Div, TRx_Buf_Flg, TRx_Top_Val)
+			VARIABLE	add				:	INTEGER;
+			VARIABLE	Eadd			:	INTEGER;
+		BEGIN
+			TRx_MM_Ren					<=	'0';
+			add							:=	to_integer(SIGNED(X_check(MAIN_PORT_Address)));
+			Eadd						:=	(add/4) - (BASE_ADDRESS/4);
+			IF MAIN_PORT_OEN = '1' AND add  >= BASE_ADDRESS AND add < ENDx_ADDRESS THEN
+				CASE	Eadd			IS
+						WHEN	0		=>	MAIN_PORT_Data_out	<=	(OTHERS	=>	'0');
+						WHEN	1		=>	MAIN_PORT_Data_out	<=	X"80000000";
+						WHEN	OTHERS	=>	MAIN_PORT_Data_out	<=	(OTHERS	=>	'0');
+					END CASE;
+			ELSE
+				MAIN_PORT_Data_out		<=	(OTHERS	=>	'Z');
+			END IF;
+		END PROCESS;
+		--------------------------------------------------------------------------
+		PROCESS(MAIN_PORT_Address, MAIN_PORT_OEN)
+			VARIABLE	add				:	INTEGER;
+		BEGIN
+			add							:=	to_integer(SIGNED(X_check(MAIN_PORT_Address)));
+			IF add  >= BASE_ADDRESS AND add < ENDx_ADDRESS THEN
+				MAIN_PORT_Dot_Rdy		<=	MAIN_PORT_OEN;
+				MAIN_PORT_SEL_This		<=	'1';
+			ELSE
+				MAIN_PORT_Dot_Rdy		<=	'0';
+				MAIN_PORT_SEL_This		<=	'0';
+			END IF;
+		END PROCESS;
+	END GENERATE;
+	--------------------------------------------------------------------------
 	--------------------------------------------------------------------------
 	--------------------------------------------------------------------------
 end Behavioral;

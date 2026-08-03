@@ -4,37 +4,11 @@ USE IEEE.NUMERIC_STD.ALL;
 USE IEEE.math_real.ALL;
 USE work.my_pack_v2.ALL;
 
---------------------------------------------------------------------------------------
---	PIPELINED REDESIGN of GMN
---
---	Same entity, ports and internal arbiter instantiation as the original ->
---	drop-in replacement (works with either the original or the pipelined
---	LMN_Arbiter_Fixed_way_double_address).
---
---	WHAT CHANGED AND WHY
---	--------------------
---	The original Master_Side_Connection / Slave_Side_Connectoion GENERATE
---	blocks are plain concurrent signal assignments that index GMN_S_*/GMN_M_*
---	buses with my_to_uint(Mst_MSM(i)) / my_to_uint(Slv_SSM(i)) - i.e. a 16:1
---	mux (4-bit select) on wide buses (32-bit address, 16-bit data), driven
---	straight out to GMN_M_done/GMN_M_wait/GMN_M_Din/... and GMN_S_read/
---	GMN_S_write/GMN_S_Add/... with no register in between. That mux tree sits
---	directly downstream of the arbiter's own combinational depth, adding to
---	the same critical path.
---
---	Here that routing is done inside a single clocked process instead, so the
---	mux result is registered before it reaches any output port. This adds one
---	cycle of latency to the master<->slave data/control routing, which is
---	safe for the same reason as the arbiter changes: every consumer on both
---	sides (LMN_Master, LMN_Mem_IF, LMN_Gate, etc.) is handshake-driven and
---	already tolerates extra pipeline cycles.
---------------------------------------------------------------------------------------
-
 entity GMN is
 	PORT(
 		clk_w							:	std_logic;
 		rst_w							:	std_logic;
-
+		
 		--	LMN IN Gates' Slave
 		GMN_S_CS						:	OUT	Unc_1D_array			(15 DOWNTO 0);
 		GMN_S_done						:	IN	Unc_1D_array			(15 DOWNTO 0);
@@ -47,7 +21,7 @@ entity GMN is
 		GMN_S_Dout_rdy					:	IN	Unc_1D_array			(15 DOWNTO 0);
 		GMN_S_Din						:	OUT	Unc_1D_P_Data_array		(15 DOWNTO 0);
 		GMN_S_Din_rdy					:	OUT	Unc_1D_array			(15 DOWNTO 0);
-
+		
 		--	LMN	Out Gates' Master
 		GMN_M_req						:	IN	Unc_1D_array			(15 DOWNTO 0);
 		GMN_M_grant						:	OUT	Unc_1D_array			(15 DOWNTO 0);
@@ -63,7 +37,7 @@ entity GMN is
 		GMN_M_Dout_rdy					:	IN	Unc_1D_array			(15 DOWNTO 0));
 end GMN;
 
-architecture Pipelined of GMN is
+architecture Behavioral of GMN is
 	--------------------------------------------------------------------------------------
 	--------------------------------------------------------------------------------------
 	COMPONENT	LMN_Arbiter_Fixed_way_double_address
@@ -75,7 +49,7 @@ architecture Pipelined of GMN is
 		Name							:	STRING	:=	"name");
 	PORT(
 		clk								:	IN	std_logic;
-		rst								:	IN	std_logic;
+		rst								:	IN	std_logic; 
 		--	Master Port
 		Master_Address					:	IN	Unc_1D_P_Addr_array	(MASTER_CNT-1	DOWNTO 0);
 		Master_req						:	IN	Unc_1D_array		(MASTER_CNT-1	DOWNTO 0);
@@ -102,13 +76,13 @@ begin
 	--------------------------------------------------------------------------------------
 	--------------------------------------------------------------------------------------
 	Arbiter								:	LMN_Arbiter_Fixed_way_double_address
-	GENERIC	MAP(
+	GENERIC	MAP(		
 		MASTER_CNT						=>	16,
 		SLAVE_CNT						=>	16,
 		SM_size							=>	4,
 		ways							=>	P_GMN_Number_of_ways,
-		Name							=>	"GMN_Arb")
-	PORT	MAP(
+		Name							=>	"GMN_Arb") 
+	PORT	MAP(		
 		clk								=>	clk_w,
 		rst								=>	rst_w,
 		Master_Address					=>	GMN_M_Add,
@@ -136,46 +110,22 @@ begin
 	END GENERATE;
 	--------------------------------------------------------------------------------------
 	--------------------------------------------------------------------------------------
-	--	STAGE (new): the my_to_uint-indexed master<->slave routing is now
-	--	registered instead of being a set of plain concurrent assignments.
-	--	Behaviour is identical, just delayed by one clk_w cycle.
+	Master_Side_Connection				:	FOR	i	IN	15	DOWNTO	0	GENERATE
+		GMN_M_done		(i)				<=	GMN_S_done		(my_to_uint(Mst_MSM(i)));
+		GMN_M_wait		(i)				<=	GMN_S_wait		(my_to_uint(Mst_MSM(i)));
+		GMN_M_Din		(i)				<=	GMN_S_Dout		(my_to_uint(Mst_MSM(i)));
+		GMN_M_Din_rdy	(i)				<=	GMN_S_Dout_rdy	(my_to_uint(Mst_MSM(i)));
+	END GENERATE;
 	--------------------------------------------------------------------------------------
-	PROCESS(clk_w, rst_w)
-	BEGIN
-		IF rst_w = '1' THEN
-			GMN_M_done					<=	(OTHERS	=>	'0');
-			GMN_M_wait					<=	(OTHERS	=>	'0');
-			GMN_M_Din					<=	(OTHERS	=>	(OTHERS	=>	'0'));
-			GMN_M_Din_rdy				<=	(OTHERS	=>	'0');
-			GMN_S_read					<=	(OTHERS	=>	'0');
-			GMN_S_write					<=	(OTHERS	=>	'0');
-			GMN_S_Add					<=	(OTHERS	=>	(OTHERS	=>	'0'));
-			GMN_S_Cnt					<=	(OTHERS	=>	(OTHERS	=>	'0'));
-			GMN_S_Din					<=	(OTHERS	=>	(OTHERS	=>	'0'));
-			GMN_S_Din_rdy				<=	(OTHERS	=>	'0');
-		ELSIF clk_w = '1' AND clk_w'EVENT THEN
-			--------------------------------------------------------------
-			--	Master_Side_Connection (registered)
-			--------------------------------------------------------------
-			FOR	i	IN	15	DOWNTO	0	LOOP
-				GMN_M_done		(i)		<=	GMN_S_done		(my_to_uint(Mst_MSM(i)));
-				GMN_M_wait		(i)		<=	GMN_S_wait		(my_to_uint(Mst_MSM(i)));
-				GMN_M_Din		(i)		<=	GMN_S_Dout		(my_to_uint(Mst_MSM(i)));
-				GMN_M_Din_rdy	(i)		<=	GMN_S_Dout_rdy	(my_to_uint(Mst_MSM(i)));
-			END LOOP;
-			--------------------------------------------------------------
-			--	Slave_Side_Connection (registered)
-			--------------------------------------------------------------
-			FOR	i	IN	15	DOWNTO	0	LOOP
-				GMN_S_read		(i)		<=	GMN_M_read		(my_to_uint(Slv_SSM(i)));
-				GMN_S_write		(i)		<=	GMN_M_write		(my_to_uint(Slv_SSM(i)));
-				GMN_S_Add		(i)		<=	GMN_M_Add		(my_to_uint(Slv_SSM(i)));
-				GMN_S_Cnt		(i)		<=	GMN_M_Cnt		(my_to_uint(Slv_SSM(i)));
-				GMN_S_Din		(i)		<=	GMN_M_Dout		(my_to_uint(Slv_SSM(i)));
-				GMN_S_Din_rdy	(i)		<=	GMN_M_Dout_rdy	(my_to_uint(Slv_SSM(i)));
-			END LOOP;
-		END IF;
-	END PROCESS;
+	Slave_Side_Connectoion				:	FOR	i	IN	15	DOWNTO	0	GENERATE
+		GMN_S_read		(i)				<=	GMN_M_read		(my_to_uint(Slv_SSM(i)));
+		GMN_S_write		(i)				<=	GMN_M_write		(my_to_uint(Slv_SSM(i)));
+		GMN_S_Add		(i)				<=	GMN_M_Add		(my_to_uint(Slv_SSM(i)));
+		GMN_S_Cnt		(i)				<=	GMN_M_Cnt		(my_to_uint(Slv_SSM(i)));
+		GMN_S_Din		(i)				<=	GMN_M_Dout		(my_to_uint(Slv_SSM(i)));
+		GMN_S_Din_rdy	(i)				<=	GMN_M_Dout_rdy	(my_to_uint(Slv_SSM(i)));
+	END GENERATE;
 	--------------------------------------------------------------------------------------
 	--------------------------------------------------------------------------------------
-end Pipelined;
+end Behavioral;
+
