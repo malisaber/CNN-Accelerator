@@ -82,7 +82,7 @@ begin
 	int_flag_rst						<=	int_flag_clr OR ANSD OR int_flag_rst_delayed;
 	int_flag_set						<=	Enable AND int_flag_enb AND incr_eq;
 	incr_inc							<=	Enable AND occured AND NOT (stuck AND incr_eq);
-	incr_ini							<=	initiate OR (ANSD AND stuck AND incr_eq);
+	incr_ini							<=	initiate OR (ANSD AND (NOT stuck) AND incr_eq);
 	------------------------------------------------------------------------
 	PROCESS(sensitivity, EVENT_HIST,	EVNT)
 	BEGIN
