@@ -136,20 +136,6 @@ public:
         return writeString(s.c_str(), max_spins_per_byte);
     }
 
-    // Minimal, allocation-free analogue of fprintf: formats into a fixed
-    // internal buffer (see kPrintfBufferSize) via MiniString's format(),
-    // then blocking-writes it out. Supports %d/%i, %u, %x/%X, %s, %c, %%
-    // only - see the format() documentation in MiniString.h.
-    static constexpr std::size_t kPrintfBufferSize = 128;
-
-    template <typename... Args>
-    Status printf(const char* fmt, Args... args)
-    {
-        MiniString<kPrintfBufferSize> buf;
-        format(buf, fmt, args...);
-        return writeString(buf);
-    }
-
     // Reads bytes into `out` until the Rx FIFO is empty or `out` is full.
     // Non-blocking: drains whatever is currently available.
     // Returns the number of bytes read.

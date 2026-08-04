@@ -1,5 +1,6 @@
 onerror {resume}
 quietly WaveActivateNextPane {} 0
+add wave -noupdate /sim_system/clk
 add wave -noupdate /sim_system/UUT/clk
 add wave -noupdate /sim_system/UUT/rst
 add wave -noupdate -group DRAM -group Vault_0_0 /sim_system/SEMI_SERIALIZER_GEN_ROW(0)/SEMI_SERIALIZER_GEN_COL(0)/semi_ser/OGM_2VCU_Add
@@ -569,7 +570,7 @@ add wave -noupdate -group Accelerator -group Acc_Plane_0 -group PEG_0_0_0 -group
 add wave -noupdate -group Accelerator -group Acc_Plane_0 -group PEG_0_0_0 -group PE_0_0_0 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/PECU_Array/Banks/DataProvider_ROW_GWN(1)/DataProvider_COL_GWN(1)/Cont_add_gen_rc/Colm_eq
 add wave -noupdate -group Accelerator -group Acc_Plane_0 -group PEG_0_0_0 -group PE_0_0_0 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/PECU_Array/Banks/DataProvider_ROW_GWN(1)/DataProvider_COL_GWN(1)/Cont_add_gen_rc/Colm_inc
 add wave -noupdate -group Accelerator -group Acc_Plane_0 -group PEG_0_0_0 -group PE_0_0_0 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/PECU_Array/Banks/DataProvider_ROW_GWN(1)/DataProvider_COL_GWN(1)/Cont_add_gen_rc/Colm_val
-add wave -noupdate -group Accelerator -group Acc_Plane_0 -group PEG_0_0_0 -group PE_0_0_0 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/PECU_Array/Banks/DataProvider_ROW_GWN(1)/DataProvider_COL_GWN(1)/Cont_add_gen_rc/cont_add
+add wave -noupdate -group Accelerator -group Acc_Plane_0 -group PEG_0_0_0 -group PE_0_0_0 -expand /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/PECU_Array/Banks/DataProvider_ROW_GWN(1)/DataProvider_COL_GWN(1)/Cont_add_gen_rc/cont_add
 add wave -noupdate -group Accelerator -group Acc_Plane_0 -group PEG_0_0_0 -group PE_0_0_0 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/PECU_Array/Banks/DataProvider_ROW_GWN(1)/DataProvider_COL_GWN(1)/Cont_add_gen_rc/Kern_eq
 add wave -noupdate -group Accelerator -group Acc_Plane_0 -group PEG_0_0_0 -group PE_0_0_0 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/PECU_Array/Banks/DataProvider_ROW_GWN(1)/DataProvider_COL_GWN(1)/Cont_add_gen_rc/Kern_inc
 add wave -noupdate -group Accelerator -group Acc_Plane_0 -group PEG_0_0_0 -group PE_0_0_0 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(0)/Processing_Plane/PECU_Array/Banks/DataProvider_ROW_GWN(1)/DataProvider_COL_GWN(1)/Cont_add_gen_rc/Kern_val
@@ -9792,9 +9793,9 @@ add wave -noupdate -group Accelerator -group Acc_Plane_3 -group PEG_3_3_1 -group
 add wave -noupdate -group Accelerator -group Acc_Plane_3 -group PEG_3_3_1 -group UA_3_3_1 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(3)/Processing_Plane/ROW_GEN(4)/COL_GEN(2)/UA_unit/LL_cnt
 add wave -noupdate -group Accelerator -group Acc_Plane_3 -group PEG_3_3_1 -group UA_3_3_1 /sim_system/UUT/Accelerator_Unit/PLANE_GEN(3)/Processing_Plane/ROW_GEN(4)/COL_GEN(2)/UA_unit/LL_add
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {0 ns} 0}
-quietly wave cursor active 0
-configure wave -namecolwidth 150
+WaveRestoreCursors {{Cursor 1} {269464 ns} 0}
+quietly wave cursor active 1
+configure wave -namecolwidth 212
 configure wave -valuecolwidth 100
 configure wave -justifyvalue left
 configure wave -signalnamewidth 1
@@ -9808,4 +9809,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {0 ns} {1 us}
+WaveRestoreZoom {0 ns} {420 us}

@@ -68,6 +68,7 @@ SECTIONS
 		. = ALIGN(4);
 		_stext = .;
 		*(.text)
+		*(.text.*)
 		_etext  =  .;
 		__CTOR_LIST__ = .;
 		LONG((__CTOR_END__ - __CTOR_LIST__) / 4 - 2)

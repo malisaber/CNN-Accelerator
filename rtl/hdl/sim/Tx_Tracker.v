@@ -9,13 +9,17 @@ module	Tx_Tracker(
 	initial 
 	begin
 		track_fid = $fopen("report/Tx_Tracker.log", "w");
-		//$fclose(track_fid);
+		$fclose(track_fid);
 	end
 	
 	always @(Tx_SW_Data, Tx_SW_Enable, Tx_SW_send)
 	begin
 		if ((Tx_SW_Enable == 1'b1) && (Tx_SW_send == 1'b1))
+		begin
+			track_fid = $fopen("report/Tx_Tracker.log", "a");
 			$fwrite	(track_fid, "%c", Tx_SW_Data);
+			$fclose(track_fid);
+		end
 	end 
 	
 endmodule
