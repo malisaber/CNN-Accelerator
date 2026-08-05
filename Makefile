@@ -394,6 +394,7 @@ compile-again:
 			-Wno-unused-parameter \
 			-Wno-unused-variable \
 			-Wno-unused-function \
+			-fno-store-merging \
 			-fdata-sections \
 			-ffunction-sections \
 			-fdiagnostics-color=always \

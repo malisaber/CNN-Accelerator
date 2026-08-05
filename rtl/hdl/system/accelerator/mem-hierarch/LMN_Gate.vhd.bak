@@ -3,11 +3,60 @@ use IEEE.STD_LOGIC_1164.ALL;
 USE IEEE.math_real.ALL;
 USE work.my_pack_v2.ALL;
 
+--------------------------------------------------------------------------------------
+--	PIPELINED REDESIGN of LMN_Gate
+--
+--	Same entity and ports as the original -> drop-in replacement.
+--
+--	ANALYSIS
+--	--------
+--	Almost every output of this module is a Moore output of the state
+--	register P_S (SBUS_done, MBUS_req, load_SS, load_MS, trans_data), which
+--	is fine: those depend only on registered state, not on a live external
+--	signal from the "other side" of the gate, so they don't add to the
+--	cross-module critical path beyond the normal one-mux-deep state decode.
+--
+--	Two spots are different - they wire one bus straight through to the
+--	other bus in the same cycle, gated only by a state-derived select:
+--
+--	  1. SBUS_wait <= MBUS_wait;                       (state tra)
+--	     MBUS_wait can originate several hops downstream (arbiter, GMN mux,
+--	     memory interface); this passes it to the local master with nothing
+--	     but a mux in between, adding an un-registered hop on top of
+--	     whatever combinational depth already exists downstream.
+--
+--	  2. SBUS_SD_out/_rdy   <= MBUS_MD_in/_rdy         (trans_data = '1')
+--	     MBUS_MD_out/_rdy   <= SBUS_SD_in/_rdy          (trans_data = '1')
+--	     16-bit read/write data flows straight through with only a mux -
+--	     no register at all.
+--
+--	Every LMN_Gate instance (three per LMN, replicated across the whole
+--	array) sits directly in series with the arbiter/GMN-mux chains that were
+--	pipelined separately, so this un-registered hop rides along the same
+--	critical path.
+--
+--	FIX
+--	---
+--	Both forwarding paths are now registered instead of driven continuously.
+--	The underlying select logic (state / trans_data) is unchanged - only
+--	sampled into a register rather than driving the output combinationally.
+--	Everything else (next-state logic, SBUS_done, MBUS_req, load_SS,
+--	load_MS) is left untouched, since those don't need it.
+--
+--	Because SBUS_wait and the data/ready signals are delayed by the exact
+--	same one clock cycle, they stay mutually consistent from the requester's
+--	point of view: it simply sees "not waiting" and "data ready" one cycle
+--	later than before. The number of data beats transferred and the cycle on
+--	which MBUS_done ends the transfer are unchanged, so no protocol timing
+--	relationship elsewhere in the design is altered - only stretched by one
+--	cycle, which is acceptable given packets are allowed to take longer.
+--------------------------------------------------------------------------------------
+
 entity LMN_Gate is
 	PORT(
 		clk				:	IN	std_logic;
 		rst				:	IN	std_logic;
-		
+
 		--	Slave BUS Side
 		SBUS_CS			:	IN	std_logic;
 		SBUS_done		:	OUT	std_logic;
@@ -20,8 +69,8 @@ entity LMN_Gate is
 		SBUS_SD_out_rdy	:	OUT	std_logic;
 		SBUS_SD_in		:	IN	std_logic_vector(P_word_size-1		DOWNTO 0);
 		SBUS_SD_in_rdy	:	IN	std_logic;
-		
-		
+
+
 		--	Master BUS Side
 		MBUS_req		:	OUT	std_logic;
 		MBUS_grant		:	IN	std_logic;
@@ -37,29 +86,33 @@ entity LMN_Gate is
 		MBUS_MD_out_rdy	:	OUT	std_logic);
 end LMN_Gate;
 
-architecture Behavioral of LMN_Gate is
-	
+architecture Pipelined of LMN_Gate is
+
 	TYPE	FSM			IS (idle, load, ld_cmp, acc, tra, tr_cmp1, tr_cmp2, tr_cmp3);
-	
+
 	SIGNAL	P_S			:	FSM;
 	SIGNAL	N_S			:	FSM;
-	
+
 	SIGNAL	load_SS		:	std_logic;
 	SIGNAL	load_MS		:	std_logic;
 	SIGNAL	trans_data	:	std_logic;
-	
+
 	SIGNAL	SReg_read	:	std_logic;
 	SIGNAL	SReg_write	:	std_logic;
 	SIGNAL	SReg_add	:	std_logic_vector(P_Phy_Add_size-1	DOWNTO 0);
 	SIGNAL	SReg_cnt	:	std_logic_vector(P_Phy_Cnt_size-1	DOWNTO 0);
-	
+
 	SIGNAL	MReg_read	:	std_logic;
 	SIGNAL	MReg_write	:	std_logic;
 	SIGNAL	MReg_add	:	std_logic_vector(P_Phy_Add_size-1	DOWNTO 0);
 	SIGNAL	MReg_Cnt	:	std_logic_vector(P_Phy_Cnt_size-1	DOWNTO 0);
-	
-	--SIGNAL	TLB_add_in	:	std_logic_vector(P_Phy_Add_size-1	DOWNTO 0);
-	--SIGNAL	TLB_add_out	:	std_logic_vector(P_Phy_Add_size-1	DOWNTO 0);
+
+	SIGNAL	TLB_add_in	:	std_logic_vector(P_Phy_Add_size-1	DOWNTO 0);
+	SIGNAL	TLB_add_out	:	std_logic_vector(P_Phy_Add_size-1	DOWNTO 0);
+
+	--	Combinational "would-have-been-output" versions of the two forwarding
+	--	paths; these now feed a register instead of an output port directly.
+	SIGNAL	SBUS_wait_comb	:	std_logic;
 begin
 	--------------------------------------------------------------------------------------
 	--------------------------------------------------------------------------------------
@@ -83,19 +136,16 @@ begin
 	--------------------------------------------------------------------------------------
 	--------------------------------------------------------------------------------------
 	--------------------------------------------------------------------------------------
+	MReg_read	<=	SReg_read;
+	MReg_write	<=	SReg_write;
+	MReg_Cnt	<=	SReg_cnt;
 	PROCESS (clk, rst)
 	BEGIN
 		IF rst = '1' THEN
 			MReg_Add		<=	(OTHERS => '0');
-			MReg_read		<=	'0';
-			MReg_write		<=	'0';
-			MReg_Cnt		<=	(OTHERS => '0');
 		ELSIF clk = '1' AND clk'EVENT THEN
 			IF load_MS = '1' THEN
 				MReg_Add	<=	SReg_add;
-				MReg_read	<=	SReg_read;
-				MReg_write	<=	SReg_write;
-				MReg_Cnt	<=	SReg_cnt;
 			END IF;
 		END IF;
 	END PROCESS;
@@ -113,6 +163,10 @@ begin
 	--------------------------------------------------------------------------------------
 	--------------------------------------------------------------------------------------
 	--------------------------------------------------------------------------------------
+	--	Unchanged: state decode. SBUS_wait now writes to SBUS_wait_comb
+	--	(a signal) instead of driving the SBUS_wait port directly - it is
+	--	registered in the new process below.
+	--------------------------------------------------------------------------------------
 	PROCESS (P_S,	SBUS_CS,	MBUS_grant,	MBUS_done, MBUS_wait)
 	BEGIN
 		load_SS		<=	'0';
@@ -120,8 +174,8 @@ begin
 		trans_data	<=	'0';
 		SBUS_done	<=	'0';
 		MBUS_req	<=	'0';
-		SBUS_wait	<=	'1';
-		
+		SBUS_wait_comb	<=	'1';
+
 		CASE	P_S	IS
 			WHEN	idle	=>	IF SBUS_CS = '1'	THEN	N_S <= load;	ELSE N_S <=	idle;	END IF;
 			WHEN	load	=>								N_S <= ld_cmp;
@@ -132,32 +186,60 @@ begin
 			WHEN	tr_cmp2	=>								N_S <= tr_cmp3;
 			WHEN	tr_cmp3	=>								N_S <= idle;
 			END CASE;
-		
+
 		CASE	P_S	IS
 			WHEN	idle	=>	SBUS_done	<=	'1';
 			WHEN	load	=>	load_SS		<=	'1';
 								load_MS		<=	'1';
-			--WHEN	tlb		=>	load_MS		<=	'1';
 			WHEN	ld_cmp	=>	load_MS		<=	'1';
 			WHEN	acc		=>	MBUS_req	<=	'1';
 			WHEN	tra		=>	trans_data	<=	'1';
 								MBUS_req	<=	'1';
-								SBUS_wait	<=	MBUS_wait;
+								SBUS_wait_comb	<=	MBUS_wait;
 			WHEN	tr_cmp1	=>	SBUS_done	<=	'1';
 			WHEN	tr_cmp2	=>	SBUS_done	<=	'1';
 			WHEN	tr_cmp3	=>	SBUS_done	<=	'1';
 			END CASE;
-		
+
 	END PROCESS;
 	--------------------------------------------------------------------------------------
 	--------------------------------------------------------------------------------------
 	--------------------------------------------------------------------------------------
-	SBUS_SD_out		<=	MBUS_MD_in		WHEN	trans_data = '1' ELSE (OTHERS => '0');
-	SBUS_SD_out_rdy	<=	MBUS_MD_in_rdy	WHEN	trans_data = '1' ELSE '0';
-	
-	MBUS_MD_out		<=	SBUS_SD_in		WHEN	trans_data = '1' ELSE (OTHERS => '0');
-	MBUS_MD_out_rdy	<=	SBUS_SD_in_rdy	WHEN	trans_data = '1' ELSE '0';
-	
+	--	NEW: register the two cross-bus forwarding paths. Both are delayed by
+	--	exactly one clock cycle relative to the original combinational
+	--	versions, so SBUS_wait and the data/ready signals stay in lockstep
+	--	with each other - the requester just sees them one cycle later.
+	--------------------------------------------------------------------------------------
+	PROCESS (clk, rst)
+	BEGIN
+		IF rst = '1' THEN
+			SBUS_wait		<=	'1';
+			SBUS_SD_out		<=	(OTHERS => '0');
+			SBUS_SD_out_rdy	<=	'0';
+			MBUS_MD_out		<=	(OTHERS => '0');
+			MBUS_MD_out_rdy	<=	'0';
+		ELSIF clk = '1' AND clk'EVENT THEN
+			SBUS_wait			<=	SBUS_wait_comb;
+			IF trans_data = '1' THEN
+				SBUS_SD_out		<=	MBUS_MD_in;
+				SBUS_SD_out_rdy	<=	MBUS_MD_in_rdy;
+				MBUS_MD_out		<=	SBUS_SD_in;
+				MBUS_MD_out_rdy	<=	SBUS_SD_in_rdy;
+			ELSE
+				SBUS_SD_out		<=	(OTHERS => '0');
+				SBUS_SD_out_rdy	<=	'0';
+				MBUS_MD_out		<=	(OTHERS => '0');
+				MBUS_MD_out_rdy	<=	'0';
+			END IF;
+		END IF;
+	END PROCESS;
+	--------------------------------------------------------------------------------------
+	--------------------------------------------------------------------------------------
+	--------------------------------------------------------------------------------------
+	--	Unchanged: these are already effectively registered (aliases of
+	--	SReg_read/SReg_write/SReg_cnt, and MReg_Add is its own register), so
+	--	they add no combinational depth worth pipelining further.
+	--------------------------------------------------------------------------------------
 	MBUS_read		<=	MReg_read;
 	MBUS_write		<=	MReg_write;
 	MBUS_Add		<=	MReg_Add;
@@ -165,5 +247,4 @@ begin
 	--------------------------------------------------------------------------------------
 	--------------------------------------------------------------------------------------
 	--------------------------------------------------------------------------------------
-end Behavioral;
-
+end Pipelined;

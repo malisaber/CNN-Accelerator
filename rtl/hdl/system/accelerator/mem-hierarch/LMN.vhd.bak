@@ -4,6 +4,32 @@ USE IEEE.NUMERIC_STD.ALL;
 USE IEEE.math_real.ALL;
 USE work.my_pack_v2.ALL;
 
+--------------------------------------------------------------------------------------
+--	PIPELINED REDESIGN of LMN
+--
+--	Same entity, generics and ports as the original -> drop-in replacement.
+--	Works with either the original or the pipelined
+--	LMN_Arbiter_Fixed_way_complete as the Arbiter instance.
+--
+--	WHAT CHANGED AND WHY
+--	--------------------
+--	The final PROCESS in the original is purely combinational (sensitivity
+--	list only, no clk in the IF): it indexes MSB_*/SSB_* buses with
+--	my_to_uint(MSB_MSM(i)) / my_to_uint(SSB_SSM(i)) - a mux (width = log2 of
+--	max(NOM,NOS)) on wide buses (32-bit address, 12-bit count, 16-bit data),
+--	driving MSB_done/MSB_wait/MSB_Din/MSB_Din_rdy and SSB_read/SSB_write/
+--	SSB_Add/SSB_Cnt/SSB_Din/SSB_Din_rdy straight out with no register. That
+--	mux sits directly downstream of the Arbiter's own decode/arbitrate logic,
+--	adding to the same critical path.
+--
+--	Here the same routing is done inside a clocked process, so the result is
+--	registered before reaching any of those signals. This adds one clock
+--	cycle of latency to the Master<->Slave data/control routing inside the
+--	LMN, which is safe because every consumer (LMN_Master, LMN_Mem_IF,
+--	LMN_Gate, GMN_pass_DAM) is handshake-driven and already tolerates extra
+--	pipeline cycles rather than assuming fixed timing.
+--------------------------------------------------------------------------------------
+
 entity LMN is
 	GENERIC(
 		LMN_ROW_POS						:	INTEGER		:=	0;
@@ -11,7 +37,7 @@ entity LMN is
 	PORT(
 		clk								:	IN	std_logic;
 		rst								:	IN	std_logic;
-	
+
 		--	PE's	Update	Agent	Native Side
 		NAT_UPA_ready					:	OUT	Plane_std_logic;
 		NAT_UPA_wait					:	OUT	Plane_std_logic;
@@ -51,7 +77,7 @@ entity LMN is
 		NAT_MPEU_data_rdy				:	OUT	std_logic;
 		NAT_MPEU_data_in				:	IN	std_logic_vector(P_word_size-1   DOWNTO 0);
 		NAT_MPEU_data_wen				:	IN	std_logic;
-	
+
 		--	OUT GATE	To	VC	(Master IN top Level)
 		OGM_2VCU_req					:	OUT	std_logic;
 		OGM_2VCU_grant					:	IN	std_logic;
@@ -101,7 +127,7 @@ entity LMN is
 	--------------------------------------------------------------------------------------
 END LMN;
 
-architecture Behavioral of LMN is
+architecture Pipelined of LMN is
 	--------------------------------------------------------------------------------------
 	--------------------------------------------------------------------------------------
 	--------------------------------------------------------------------------------------
@@ -109,7 +135,7 @@ architecture Behavioral of LMN is
 	PORT(
 		clk								:	IN	std_logic;
 		rst								:	IN	std_logic;
-		--	BUS Side		
+		--	BUS Side
 		BUS_req							:	OUT	std_logic;
 		BUS_grant						:	IN	std_logic;
 		BUS_done						:	IN	std_logic;
@@ -122,7 +148,7 @@ architecture Behavioral of LMN is
 		BUS_MD_in_rdy					:	IN	std_logic;
 		BUS_MD_out						:	OUT	std_logic_vector(P_word_size-1		DOWNTO 0);
 		BUS_MD_out_rdy					:	OUT	std_logic;
-		--	Native side		
+		--	Native side
 		NAT_ready						:	OUT	std_logic;
 		NAT_wait						:	OUT	std_logic;
 		NAT_push						:	IN	std_logic;
@@ -140,7 +166,7 @@ architecture Behavioral of LMN is
 	COMPONENT	LMN_Mem_IF
 	GENERIC(
 		mem_depth						:	INTEGER	:=	1024);
-	PORT(		
+	PORT(
 		clk								:	IN	std_logic;
 		rst								:	IN	std_logic;
 		BUS_CS							:	IN	std_logic;
@@ -164,7 +190,7 @@ architecture Behavioral of LMN is
 	GENERIC(
 		depth							:	INTEGER	:=	1024;
 		size							:	INTEGER	:=	P_word_size);
-	PORT(		
+	PORT(
 		clk								:	IN	std_logic;
 		MEM_1_Add						:	IN	std_logic_vector(integer(ceil(log2(real(depth))))-1 DOWNTO 0);
 		MEM_1_wen						:	IN	std_logic;
@@ -214,15 +240,15 @@ architecture Behavioral of LMN is
 		SM_size							:	INTEGER	:=	3;
 		ways							:	INTEGER	:=	7;
 		Name							:	STRING	:=	"name");
-	PORT(	
+	PORT(
 		clk								:	IN	std_logic;
-		rst								:	IN	std_logic; 
-		--	Master Port	
+		rst								:	IN	std_logic;
+		--	Master Port
 		Master_Address					:	IN	Unc_1D_P_Addr_array	(MASTER_CNT-1	DOWNTO 0);
 		Master_req						:	IN	Unc_1D_array		(MASTER_CNT-1	DOWNTO 0);
 		Master_grant					:	OUT	Unc_1D_array		(MASTER_CNT-1	DOWNTO 0);
 		Master_MSM						:	OUT	Unc_2D_array		(MASTER_CNT-1	DOWNTO 0,	SM_size-1	DOWNTO 0);
-		--	Slave Port	
+		--	Slave Port
 		Slave_min_add					:	IN	Unc_1D_P_Addr_array	(SLAVE_CNT-2	DOWNTO 0);
 		Slave_max_add					:	IN	Unc_1D_P_Addr_array	(SLAVE_CNT-2	DOWNTO 0);
 		Slave_CS						:	OUT	Unc_1D_array		(SLAVE_CNT-1	DOWNTO 0);
@@ -299,11 +325,11 @@ architecture Behavioral of LMN is
 	SIGNAL	SSB_Dout_rdy				:	Unc_1D_array		(NOS-1	DOWNTO	0);
 	--------------------------------------------------------------------------------------
 	SIGNAL	MEM_P0_Add					:	std_logic_vector	(P_LMN_Mem_Add_width-1			DOWNTO 0);
-	SIGNAL	MEM_P0_wen					:	std_logic;		
+	SIGNAL	MEM_P0_wen					:	std_logic;
 	SIGNAL	MEM_P0_Din					:	std_logic_vector	(P_word_size-1					DOWNTO 0);
 	SIGNAL	MEM_P0_Dout					:	std_logic_vector	(P_word_size-1					DOWNTO 0);
 	SIGNAL	MEM_P1_Add					:	std_logic_vector	(P_LMN_Mem_Add_width-1			DOWNTO 0);
-	SIGNAL	MEM_P1_wen					:	std_logic;	
+	SIGNAL	MEM_P1_wen					:	std_logic;
 	SIGNAL	MEM_P1_Din					:	std_logic_vector	(P_word_size-1					DOWNTO 0);
 	SIGNAL	MEM_P1_Dout					:	std_logic_vector	(P_word_size-1					DOWNTO 0);
 	--------------------------------------------------------------------------------------
@@ -334,7 +360,7 @@ begin
 			BUS_MD_in_rdy				=>	MSB_Din_rdy				(2*P),
 			BUS_MD_out					=>	MSB_Dout				(2*P),
 			BUS_MD_out_rdy				=>	MSB_Dout_rdy			(2*P),
-			--	Native side		
+			--	Native side
 			NAT_ready					=>	NAT_UPA_ready			(p),
 			NAT_wait					=>	NAT_UPA_wait			(p),
 			NAT_push					=>	NAT_UPA_push			(p),
@@ -365,7 +391,7 @@ begin
 			BUS_MD_in_rdy				=>	MSB_Din_rdy				(2*P+1),
 			BUS_MD_out					=>	MSB_Dout				(2*P+1),
 			BUS_MD_out_rdy				=>	MSB_Dout_rdy			(2*P+1),
-			--	Native side		
+			--	Native side
 			NAT_ready					=>	NAT_STA_ready			(p),
 			NAT_wait					=>	NAT_STA_wait			(p),
 			NAT_push					=>	NAT_STA_push			(p),
@@ -591,7 +617,7 @@ begin
 	GENERIC	MAP(
 		depth							=>	2**P_LMN_Mem_Add_width,
 		size							=>	P_word_size)
-	PORT	MAP(	
+	PORT	MAP(
 		clk								=>	clk,
 		MEM_1_Add						=>	MEM_P0_Add,
 		MEM_1_wen						=>	MEM_P0_wen,
@@ -636,33 +662,43 @@ begin
 		END GENERATE;
 	END GENERATE;
 	--------------------------------------------------------------------------------------
-	PROCESS (	MSB_MSM,	SSB_SSM,	MSB_read,	MSB_write,		MSB_Add,	SSB_Dout,
-				MSB_Cnt,	MSB_Dout,	MSB_Dout_rdy,	SSB_done,	SSB_wait,	SSB_Dout_rdy)
+	--	STAGE (new): the my_to_uint-indexed Master<->Slave routing is now
+	--	registered instead of being a plain combinational process. Behaviour
+	--	is identical, just delayed by one clk cycle.
+	--------------------------------------------------------------------------------------
+	PROCESS(clk, rst)
 	BEGIN
-		----------------------------------------------------------------------------------
-		FOR	i	IN NOM-1	DOWNTO	0	LOOP
-			MSB_done	(i)				<=	SSB_done	(my_to_uint(MSB_MSM(i)));
-			MSB_wait	(i)				<=	SSB_wait	(my_to_uint(MSB_MSM(i)));
-			MSB_Din		(i)				<=	SSB_Dout	(my_to_uint(MSB_MSM(i)));
-			MSB_Din_rdy	(i)				<=	SSB_Dout_rdy(my_to_uint(MSB_MSM(i)));
-		END LOOP;
-		----------------------------------------------------------------------------------
-		FOR	i	IN NOS-1	DOWNTO	0	LOOP
-			SSB_read	(i)				<=	MSB_read	(my_to_uint(SSB_SSM(i)));
-			SSB_write	(i)				<=	MSB_write	(my_to_uint(SSB_SSM(i)));
-			SSB_Add		(i)				<=	MSB_Add		(my_to_uint(SSB_SSM(i)));
-			SSB_Cnt		(i)				<=	MSB_Cnt		(my_to_uint(SSB_SSM(i)));
-			SSB_Din		(i)				<=	MSB_Dout	(my_to_uint(SSB_SSM(i)));
-			SSB_Din_rdy	(i)				<=	MSB_Dout_rdy(my_to_uint(SSB_SSM(i)));
-		END LOOP;
-		----------------------------------------------------------------------------------
+		IF rst = '1' THEN
+			MSB_done		<=	(OTHERS	=>	'0');
+			MSB_wait		<=	(OTHERS	=>	'0');
+			MSB_Din			<=	(OTHERS	=>	(OTHERS	=>	'0'));
+			MSB_Din_rdy		<=	(OTHERS	=>	'0');
+			SSB_read		<=	(OTHERS	=>	'0');
+			SSB_write		<=	(OTHERS	=>	'0');
+			SSB_Add			<=	(OTHERS	=>	(OTHERS	=>	'0'));
+			SSB_Cnt			<=	(OTHERS	=>	(OTHERS	=>	'0'));
+			SSB_Din			<=	(OTHERS	=>	(OTHERS	=>	'0'));
+			SSB_Din_rdy		<=	(OTHERS	=>	'0');
+		ELSIF clk = '1' AND clk'EVENT THEN
+			----------------------------------------------------------------------------------
+			FOR	i	IN NOM-1	DOWNTO	0	LOOP
+				MSB_done	(i)				<=	SSB_done	(my_to_uint(MSB_MSM(i)));
+				MSB_wait	(i)				<=	SSB_wait	(my_to_uint(MSB_MSM(i)));
+				MSB_Din		(i)				<=	SSB_Dout	(my_to_uint(MSB_MSM(i)));
+				MSB_Din_rdy	(i)				<=	SSB_Dout_rdy(my_to_uint(MSB_MSM(i)));
+			END LOOP;
+			----------------------------------------------------------------------------------
+			FOR	i	IN NOS-1	DOWNTO	0	LOOP
+				SSB_read	(i)				<=	MSB_read	(my_to_uint(SSB_SSM(i)));
+				SSB_write	(i)				<=	MSB_write	(my_to_uint(SSB_SSM(i)));
+				SSB_Add		(i)				<=	MSB_Add		(my_to_uint(SSB_SSM(i)));
+				SSB_Cnt		(i)				<=	MSB_Cnt		(my_to_uint(SSB_SSM(i)));
+				SSB_Din		(i)				<=	MSB_Dout	(my_to_uint(SSB_SSM(i)));
+				SSB_Din_rdy	(i)				<=	MSB_Dout_rdy(my_to_uint(SSB_SSM(i)));
+			END LOOP;
+			----------------------------------------------------------------------------------
+		END IF;
 	END PROCESS;
 	--------------------------------------------------------------------------------------
 	--------------------------------------------------------------------------------------
-END Behavioral;
-	
-	
-	
-	
-	
-	
+END Pipelined;

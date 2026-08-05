@@ -176,6 +176,92 @@ Status SerialPort::writeString(const char* s, uint32_t max_spins_per_byte)
     return Status::Ok;
 }
 
+Status SerialPort::writeUInt(uint32_t value, uint32_t max_spins_per_byte)
+{
+    uint32_t divisor = 1;
+
+    while (value / divisor >= 10)
+        divisor *= 10;
+
+    while (divisor > 0)
+    {
+        Status st = writeByteBlocking('0' + ((value / divisor) % 10), max_spins_per_byte);
+        if (st != Status::Ok) return st;
+        divisor /= 10;
+    }
+
+    return Status::Ok;
+}
+
+Status SerialPort::writeInt(int32_t value, uint32_t max_spins_per_byte)
+{
+    if (value < 0)
+    {
+        Status st = writeByteBlocking('-', max_spins_per_byte);
+        if (st != Status::Ok) return st;
+        return writeUInt(static_cast<uint32_t>(-(value + 1)) + 1u, max_spins_per_byte);
+    }
+
+    return writeUInt(static_cast<uint32_t>(value), max_spins_per_byte);
+}
+
+Status SerialPort::vfprint(const char* fmt, va_list args, uint32_t max_spins_per_byte)
+{
+    if (!fmt) return Status::Ok;
+
+    for (std::size_t i = 0; fmt[i] != '\0'; ++i)
+    {
+        Status st = Status::Ok;
+
+        if (fmt[i] != '%')
+        {
+            st = writeByteBlocking(static_cast<uint32_t>(static_cast<unsigned char>(fmt[i])), max_spins_per_byte);
+        }
+        else
+        {
+            ++i;
+            if (fmt[i] == '\0') return Status::Ok;
+
+            switch (fmt[i])
+            {
+                case '%':
+                    st = writeByteBlocking('%', max_spins_per_byte);
+                    break;
+                case 'c':
+                    st = writeByteBlocking(static_cast<uint32_t>(static_cast<unsigned char>(va_arg(args, int))), max_spins_per_byte);
+                    break;
+                case 's':
+                    st = writeString(va_arg(args, const char*), max_spins_per_byte);
+                    break;
+                case 'u':
+                    st = writeUInt(va_arg(args, uint32_t), max_spins_per_byte);
+                    break;
+                case 'd':
+                    st = writeInt(va_arg(args, int32_t), max_spins_per_byte);
+                    break;
+                default:
+                    st = writeByteBlocking('%', max_spins_per_byte);
+                    if (st == Status::Ok)
+                        st = writeByteBlocking(static_cast<uint32_t>(static_cast<unsigned char>(fmt[i])), max_spins_per_byte);
+                    break;
+            }
+        }
+
+        if (st != Status::Ok) return st;
+    }
+
+    return Status::Ok;
+}
+
+Status SerialPort::fprint(const char* fmt, ...)
+{
+    va_list args;
+    va_start(args, fmt);
+    Status st = vfprint(fmt, args);
+    va_end(args);
+    return st;
+}
+
 // ---------------------------------------------------------------------------
 // Internals
 // ---------------------------------------------------------------------------

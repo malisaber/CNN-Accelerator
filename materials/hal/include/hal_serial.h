@@ -3,6 +3,7 @@
 
 #include <cstdint>
 #include <cstddef>
+#include <cstdarg>
 #include "common.h"
 #include "MiniString.h"
 
@@ -129,25 +130,15 @@ public:
     // Blocking write of a whole buffer/C-string. Stops early (returns
     // Status::Timeout) if max_spins_per_byte is exhausted on any byte.
     Status writeString(const char* s, uint32_t max_spins_per_byte = 0);
+    Status writeUInt(uint32_t value, uint32_t max_spins_per_byte = 0);
+    Status writeInt(int32_t value, uint32_t max_spins_per_byte = 0);
+    Status vfprint(const char* fmt, va_list args, uint32_t max_spins_per_byte = 0);
+    Status fprint(const char* fmt, ...);
 
     template <std::size_t N>
     Status writeString(const MiniString<N>& s, uint32_t max_spins_per_byte = 0)
     {
         return writeString(s.c_str(), max_spins_per_byte);
-    }
-
-    // Minimal, allocation-free analogue of fprintf: formats into a fixed
-    // internal buffer (see kPrintfBufferSize) via MiniString's format(),
-    // then blocking-writes it out. Supports %d/%i, %u, %x/%X, %s, %c, %%
-    // only - see the format() documentation in MiniString.h.
-    static constexpr std::size_t kPrintfBufferSize = 128;
-
-    template <typename... Args>
-    Status printf(const char* fmt, Args... args)
-    {
-        MiniString<kPrintfBufferSize> buf;
-        format(buf, fmt, args...);
-        return writeString(buf);
     }
 
     // Reads bytes into `out` until the Rx FIFO is empty or `out` is full.
