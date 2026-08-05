@@ -39,7 +39,7 @@ end LMN_Gate;
 
 architecture Behavioral of LMN_Gate is
 	
-	TYPE	FSM			IS (idle, load, ld_cmp, acc, tra, tr_cmp1, tr_cmp2, tr_cmp3);
+	TYPE	FSM			IS (idle, load, ld_cmp, acc, tra, tr_cmp1); --, tr_cmp2, tr_cmp3);
 	
 	SIGNAL	P_S			:	FSM;
 	SIGNAL	N_S			:	FSM;
@@ -128,9 +128,10 @@ begin
 			WHEN	ld_cmp	=>								N_S <= acc;
 			WHEN	acc		=>	IF MBUS_grant = '1'	THEN	N_S <= tra;		ELSE N_S <=	acc;	END IF;
 			WHEN	tra		=>	IF MBUS_done = '1'	THEN	N_S <= tr_cmp1;	ELSE N_S <=	tra;	END IF;
-			WHEN	tr_cmp1	=>								N_S <= tr_cmp2;
-			WHEN	tr_cmp2	=>								N_S <= tr_cmp3;
-			WHEN	tr_cmp3	=>								N_S <= idle;
+			WHEN	tr_cmp1 =>	IF SBUS_CS = '1'	THEN	N_S <= tr_cmp1;	ELSE N_S <= idle;	END IF;
+			--WHEN	tr_cmp1	=>								N_S <= tr_cmp2;
+			--WHEN	tr_cmp2	=>								N_S <= tr_cmp3;
+			--WHEN	tr_cmp3	=>								N_S <= idle;
 			END CASE;
 		
 		CASE	P_S	IS
@@ -144,8 +145,8 @@ begin
 								MBUS_req	<=	'1';
 								SBUS_wait	<=	MBUS_wait;
 			WHEN	tr_cmp1	=>	SBUS_done	<=	'1';
-			WHEN	tr_cmp2	=>	SBUS_done	<=	'1';
-			WHEN	tr_cmp3	=>	SBUS_done	<=	'1';
+			--WHEN	tr_cmp2	=>	SBUS_done	<=	'1';
+			--WHEN	tr_cmp3	=>	SBUS_done	<=	'1';
 			END CASE;
 		
 	END PROCESS;
