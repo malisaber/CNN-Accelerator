@@ -262,3 +262,5 @@ clean:
 	rm -f $(PROJECT_MPF) modelsim.ini 
 	rm -f rtl_project.cr.mti
 	rm -f rtl_project.mpf
+	rm -f transcript
+	rm -f *.vcd
