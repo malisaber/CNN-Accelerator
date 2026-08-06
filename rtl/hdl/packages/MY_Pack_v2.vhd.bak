@@ -11,6 +11,9 @@ package MY_Pack_v2	IS
 	
 	CONSTANT	P_uProcessor_in_use				:	P_uProcessor_type	:=	P_USE_BIRISC;
 	
+
+	TYPE		P_TRX_type						IS	(P_HW, P_SW, P_BOTH);
+	CONSTANT	P_TRX_in_use					:	P_TRX_type			:=	P_SW;
 	
 	-- Main Memory Size, 
 	CONSTANT	P_Main_MEMx_LINE_COUNT			:	INTEGER	:=	16#10000#; -- 0 to 10000
