@@ -1,6 +1,7 @@
 // OpenRAM SRAM model
 // Words: 16
 // Word size: 8
+`timescale 1ns / 1ns
 
 module sram_16X8_freepdk45_2rw
 	(

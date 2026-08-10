@@ -1,3 +1,4 @@
+`timescale 1ns / 1ns
 module Simple_2P_RegFile	
 	#(
 	parameter	Asize	=	4,

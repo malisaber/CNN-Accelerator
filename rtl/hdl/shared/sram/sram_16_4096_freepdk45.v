@@ -1,6 +1,7 @@
 // OpenRAM SRAM model
 // Words: 4096
 // Word size: 16
+`timescale 1ns / 1ns
 
 module sram_16_4096_freepdk45(
 `ifdef USE_POWER_PINS
