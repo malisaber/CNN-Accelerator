@@ -403,6 +403,11 @@ void CONT_REG_DRAM_disconnect			()
 	*C_PERIPHERAL_REG_CONTROL_REGISTE = *C_PERIPHERAL_REG_CONTROL_REGISTE & (~(1 << C_Accelerator_Connect_pos));
 }
 
+void CONT_REG_Stop_Simulation			()
+{
+	*(C_PERIPHERAL_REG_CONTROL_REGISTE + 1) = -1;
+}
+
 
 
 //***************************************************/

@@ -269,6 +269,8 @@ void CONT_REG_DRAM_connect				();
 
 void CONT_REG_DRAM_disconnect			();
 
+void CONT_REG_Stop_Simulation			();
+
 
 
 //class ACC_USART
