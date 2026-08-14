@@ -395,7 +395,6 @@ firmware: check-run-vars check-run-tools packages
 
 
 compile-again:
-	rm -r -f $(SOFTWARE_DIR)
 	rm -r -f $(BUILD_DIR)
 	rm -r -f $(MEM_INIT_DIR)
 
