@@ -290,6 +290,13 @@ BUILD_DIR     := build
 MEM_INIT_DIR  := scheduler-data
 DUMP_DIR      := packages/CNN-Compiler/dump
 
+#INPUT_FILES   = $(shell printf '%s\n' $(DDG_DIR)/ID/*.bin | sort -V)
+#WEIGHT_FILES  = $(shell printf '%s\n' $(DDG_DIR)/WD/*.bin | sort -V)
+#
+#INPUT_ARGS    = $(foreach f,$(INPUT_FILES), -i $(f))
+#WEIGHT_ARGS   = $(foreach f,$(WEIGHT_FILES),-w $(f))
+
+
 check-run-vars:
 	@test -n "$(NETWORK)"      || { echo "Set NETWORK=<path to network json>" >&2; exit 1; }
 	@test -f "$(NETWORK)"      || { echo "NETWORK '$(NETWORK)' not found" >&2; exit 1; }
@@ -309,6 +316,12 @@ check-run-tools:
 # packages builds packages/CNN-Compiler and packages/Text-Converter
 # (and, as a side effect, the other two tool packages too).
 firmware: check-run-vars check-run-tools packages
+	rm -r -f $(DDG_DIR) 
+	rm -r -f $(DRAM_DIR)
+	rm -r -f $(SOFTWARE_DIR)
+	rm -r -f $(BUILD_DIR)
+	rm -r -f $(MEM_INIT_DIR)
+
 	@mkdir -p $(DDG_DIR)/ID $(DDG_DIR)/WD $(SOFTWARE_DIR) $(DRAM_DIR) $(BUILD_DIR) $(MEM_INIT_DIR) $(DUMP_DIR)
 	
 	@echo ">>> [1/5] DRAM input/weight data generation (IDG/WDG -> $(DDG_DIR)/)"
@@ -333,8 +346,8 @@ firmware: check-run-vars check-run-tools packages
 			-d "$(DUMP_DIR)" \
 			-o "$(SOFTWARE_DIR)" \
 			-r "$(DRAM_DIR)" \
-			-i $(DDG_DIR)/ID/*.bin \
-			-w $(DDG_DIR)/WD/*.bin)
+			$$(find "$(DDG_DIR)/ID" -type f -name '*.bin' | sort -V | sed 's/^/-i /') \
+			$$(find "$(DDG_DIR)/WD" -type f -name '*.bin' | sort -V | sed 's/^/-w /'))
 	
 	@echo ">>> [3/5] Cross-compiling $(SOFTWARE_DIR)/ for CORE=$(CORE) ($(CROSS)-gcc -> $(BUILD_DIR)/)"
 	$(call LOG,03-riscv-compile,\
@@ -382,6 +395,12 @@ firmware: check-run-vars check-run-tools packages
 
 
 compile-again:
+	rm -r -f $(SOFTWARE_DIR)
+	rm -r -f $(BUILD_DIR)
+	rm -r -f $(MEM_INIT_DIR)
+
+	@mkdir -p $(SOFTWARE_DIR) $(BUILD_DIR) $(MEM_INIT_DIR)
+
 	@echo ">>> [3/5] Cross-compiling $(SOFTWARE_DIR)/ for CORE=$(CORE) ($(CROSS)-gcc -> $(BUILD_DIR)/)"
 	$(call LOG,03-riscv-compile,\
 		$(CROSS)-gcc \
