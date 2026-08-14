@@ -13,3 +13,6 @@
 [submodule "packages/CNN-PC-Tracer"]
 	path = packages/CNN-PC-Tracer
 	url = https://github.com/malisaber/CNN-PC-Tracer.git
+[submodule "packages/CasHMC-DLL"]
+	path = packages/CasHMC-DLL
+	url = https://github.com/tinahshmi/CasHMC-DLL-Interface-for-ModelSim-Integration.git
