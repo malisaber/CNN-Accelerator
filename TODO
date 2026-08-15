@@ -2,6 +2,7 @@
 
 ## High Priority
 
+- [ ] Check to see why does the data arrangment engine take so long
 - [ ] Rows overrun in code
 - [ ] maxex in compiler
 - [ ] consistency in number of planes in CNN-Compiler and rtl
@@ -9,7 +10,7 @@
 - [ ] and also consistency in memory mapped
 - [ ] and also consistency in boot assembly code
 - [ ] *control++; warning on line 304
-- [ ] code concerter should takes directory
+- [ ] code converter should takes directory
 - [ ] add dump directory to code_converter
 - [ ] Implement interrupt handling.
 - [ ] Verbose flag for compiler.
