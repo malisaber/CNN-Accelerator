@@ -45,13 +45,12 @@ REPORT_DIR := report
 # drop vsim's -quiet flag.
 VERBOSE ?= 0
 
-# -v is CNN-Compiler's own verbose flag; only pass it when VERBOSE=1.
-CNN_COMPILER_V := $(if $(filter 1,$(VERBOSE)),-v,)
 
 # $(call LOG,<log-name>,<shell command>) runs a command, tees its
 # combined stdout/stderr into report/<log-name>.log, and still fails
 # the build if the command fails (pipefail).
-LOG = @mkdir -p $(REPORT_DIR); echo "+ $(2)"; set -o pipefail; $(if $(filter 1,$(VERBOSE)),set -x;) ( $(2) ) 2>&1 | tee "$(REPORT_DIR)/$(1).log"
+#LOG = @mkdir -p $(REPORT_DIR); echo "+ $(2)"; set -o pipefail; $(if $(filter 1,$(VERBOSE)),set -x;) ( $(2) ) 2>&1 | tee "$(REPORT_DIR)/$(1).log"
+LOG = @mkdir -p $(REPORT_DIR); echo "+ $(2)"; set -o pipefail; $(if $(filter-out 0,$(VERBOSE)),set -x;) ( $(2) ) 2>&1 | tee "$(REPORT_DIR)/$(1).log"
 
 # Tool packages with their own Makefile (2 native + 2 submodules)
 PACKAGE_DIRS := \
@@ -341,7 +340,7 @@ firmware: check-run-vars check-run-tools packages
 	$(call LOG,02-cnn-compiler,\
 		packages/CNN-Compiler/build/CNN-Compiler \
 			-p \
-			$(CNN_COMPILER_V) \
+			-v $(VERBOSE) \
 			-n "$(NETWORK)" \
 			-l "$(HAL_DIR)" \
 			-d "$(DUMP_DIR)" \
