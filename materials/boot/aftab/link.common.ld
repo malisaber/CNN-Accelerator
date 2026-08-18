@@ -41,10 +41,10 @@ __DYNAMIC  =  0;
 MEMORY
 {
 	/*tuned segments dimension to allow simulations, modified Gianluca Roascio 1/07/2021*/
-	instrram	:	ORIGIN	=	0X00000000, LENGTH	=	0x03000	/*	?	K	*/
-	dataram		:	ORIGIN	=	0X00003000, LENGTH	=	0x03000	/*	?	K	*/
-	stack		:	ORIGIN	=	0X00006000, LENGTH	=	0x03000	/*	?	K	*/
-	AppData		:	ORIGIN	=	0X00009000, LENGTH	=	0X03000	/*	?	K	*/	/*	BY ME	*/
+	instrram	:	ORIGIN	=	0X00000000, LENGTH	=	0x04000	/*	?	K	*/
+	stack		:	ORIGIN	=	0X00004000, LENGTH	=	0x04000	/*	?	K	*/
+	AppData		:	ORIGIN	=	0X00008000, LENGTH	=	0X04000	/*	?	K	*/	/*	BY ME	*/
+	dataram		:	ORIGIN	=	0X0000C000, LENGTH	=	0x44000	/*	?	K	*/
 	peripheral	:	ORIGIN	=	0XFFFF0000, LENGTH	=	0X00400	/*	1	K	*/	/*	BY ME	*/
 }
 

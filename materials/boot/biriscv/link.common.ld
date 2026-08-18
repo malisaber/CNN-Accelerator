@@ -42,9 +42,9 @@ MEMORY
 {
 	/*tuned segments dimension to allow simulations, modified Gianluca Roascio 1/07/2021*/
 	instrram	:	ORIGIN	=	0X00000000, LENGTH	=	0x04000	/*	?	K	*/
-	dataram		:	ORIGIN	=	0X00004000, LENGTH	=	0x04000	/*	?	K	*/
-	stack		:	ORIGIN	=	0X00008000, LENGTH	=	0x04000	/*	?	K	*/
-	AppData		:	ORIGIN	=	0X0000C000, LENGTH	=	0X04000	/*	?	K	*/	/*	BY ME	*/
+	stack		:	ORIGIN	=	0X00004000, LENGTH	=	0x04000	/*	?	K	*/
+	AppData		:	ORIGIN	=	0X00008000, LENGTH	=	0X04000	/*	?	K	*/	/*	BY ME	*/
+	dataram		:	ORIGIN	=	0X0000C000, LENGTH	=	0xF4000	/*	?	K	*/
 	peripheral	:	ORIGIN	=	0XFFFF0000, LENGTH	=	0X00400	/*	1	K	*/	/*	BY ME	*/
 }
 
