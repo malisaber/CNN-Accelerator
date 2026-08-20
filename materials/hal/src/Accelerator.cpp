@@ -635,13 +635,13 @@ void INTH_get_intr_address				(unsigned int& this_intr_address, unsigned int& th
 //						CONF_HOLDER					//
 //***************************************************/
 
-void CONFH_reset_all					(unsigned int plane_add)
+void CONF_HOLDER_reset_all				(unsigned int plane_add)
 {
 	for (unsigned int i=0; i<16; i++)
 		*(C_PERIPHERAL_PLANE_0_REG_CONFIG_HOLDER_PE_1_1 + (plane_add * C_PERIPHERAL_PLAN_INTERVAL) + i) = 0;
 }
 
-void CONFH_set_conf						(unsigned int plane_add, unsigned int pe_add, const S_PE_cofig& cnf)
+void CONF_HOLDER_set_conf				(unsigned int plane_add, unsigned int pe_add, const S_PE_cofig& cnf)
 {
 	unsigned int val = 0;
 	val	|=	(cnf.E_Chnl_max		<<	C_Channel_MAX_pos		);
@@ -656,7 +656,12 @@ void CONFH_set_conf						(unsigned int plane_add, unsigned int pe_add, const S_P
 	*(C_PERIPHERAL_PLANE_0_REG_CONFIG_HOLDER_PE_1_1 + (plane_add * C_PERIPHERAL_PLAN_INTERVAL) + pe_add) = val;
 }
 
-void CONFH_refresh						(unsigned int plane_add)
+void CONF_HOLDER_set_conf				(unsigned int plane_add, unsigned int pe_add, unsigned int cnf)
+{
+	*(C_PERIPHERAL_PLANE_0_REG_CONFIG_HOLDER_PE_1_1 + (plane_add * C_PERIPHERAL_PLAN_INTERVAL) + pe_add) = cnf;
+}
+
+void CONF_HOLDER_refresh				(unsigned int plane_add)
 {
 	CONT_REG_ACC_Plane_reset(plane_add);
 	CONT_REG_ACC_Plane_normal(plane_add);
@@ -1125,6 +1130,35 @@ void PE_CONT_Configure_Update_Start		(unsigned int plane_add, unsigned int pe_ad
 				(info.accumulate_with_buffer << C_Buffer_Accumulation_Enable_pos) |
 				(info.load_enable << C_Load_Row_pos) |
 				(info.Automatic << C_AUTOMATIC_STA_pos));
+	*(C_PERIPHERAL_PLANE_0_REG_PEs_CONTROL_PE_1_1 + (plane_add * C_PERIPHERAL_PLAN_INTERVAL) + pe_add) = lod;
+
+	/// Update
+	tmp =	lod	| (1 << C_Update_WFM_pos);
+	*(C_PERIPHERAL_PLANE_0_REG_PEs_CONTROL_PE_1_1 + (plane_add * C_PERIPHERAL_PLAN_INTERVAL) + pe_add) = tmp;
+	*(C_PERIPHERAL_PLANE_0_REG_PEs_CONTROL_PE_1_1 + (plane_add * C_PERIPHERAL_PLAN_INTERVAL) + pe_add) = lod;
+	tmp	= 	lod | (1 << C_Update_IFM_pos);
+	*(C_PERIPHERAL_PLANE_0_REG_PEs_CONTROL_PE_1_1 + (plane_add * C_PERIPHERAL_PLAN_INTERVAL) + pe_add) = tmp;
+
+	// Start
+	tmp	=	tmp	| (1 << C_Start_PE_pos);
+	*(C_PERIPHERAL_PLANE_0_REG_PEs_CONTROL_PE_1_1 + (plane_add * C_PERIPHERAL_PLAN_INTERVAL) + pe_add) = tmp;
+}
+
+void PE_CONT_Configure_Update_Start		(unsigned int plane_add, unsigned int pe_add, unsigned int info)
+{
+	unsigned int lod;
+	unsigned int tmp;
+	// Config
+	lod	=	info & ((1 << C_Update_Store_Base_Address_pos) | 
+					(1 << C_Update_load_Base_Address_pos) |
+					(1 << C_Store_Row_pos) |
+					(1 << C_Enable_Activation_pos) |
+					(1 << C_Save_Row_pos) |
+					(1 << C_Bias_Accumulation_Enable_pos) |
+					(1 << C_PEout_Accumulation_Enable_pos) |
+					(1 << C_Buffer_Accumulation_Enable_pos) |
+					(1 << C_Load_Row_pos) |
+					(1 << C_AUTOMATIC_STA_pos));
 	*(C_PERIPHERAL_PLANE_0_REG_PEs_CONTROL_PE_1_1 + (plane_add * C_PERIPHERAL_PLAN_INTERVAL) + pe_add) = lod;
 
 	/// Update

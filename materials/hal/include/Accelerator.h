@@ -594,11 +594,13 @@ void INTH_get_intr_address				(unsigned int& this_intr_address, unsigned int& th
 //	unsigned int CONFH_set_conf(unsigned int pe_add, S_PE_cofig cnf);
 //};
 
-void CONFH_reset_all					(unsigned int plane_add);
+void CONF_HOLDER_reset_all				(unsigned int plane_add);
 
-void CONFH_set_conf						(unsigned int plane_add, unsigned int pe_add, const S_PE_cofig& cnf);
+void CONF_HOLDER_set_conf				(unsigned int plane_add, unsigned int pe_add, const S_PE_cofig& cnf);
 
-void CONFH_refresh						(unsigned int plane_add);
+void CONF_HOLDER_set_conf				(unsigned int plane_add, unsigned int pe_add, unsigned int cnf);
+
+void CONF_HOLDER_refresh				(unsigned int plane_add);
 
 
 
@@ -825,6 +827,8 @@ void PE_CONT_UPA_stop_updating_WFM		(unsigned int plane_add, unsigned int pe_add
 void PE_CONT_UPA_start_updating			(unsigned int plane_add, unsigned int pe_add);
 
 void PE_CONT_Configure_Update_Start		(unsigned int plane_add, unsigned int pe_add, const S_CONF_STA_info& info);
+
+void PE_CONT_Configure_Update_Start		(unsigned int plane_add, unsigned int pe_add, unsigned int info);
 
 
 

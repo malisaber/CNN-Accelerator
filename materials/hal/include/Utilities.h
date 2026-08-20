@@ -90,7 +90,7 @@ extern volatile unsigned int DMA_ZDBT_info[16];
 
 
 
-void DMA_CallBack	(unsigned int cntrol_word);
+void DMA_CallBack				(	unsigned int cntrol_word);
 
 
 
@@ -99,35 +99,49 @@ void DMA_CallBack	(unsigned int cntrol_word);
 
 
 
-void Bline_Initiate_STA_UPA(	const unsigned int	Capacity,
-								const unsigned int	*Control_word,
-								const unsigned int	*Counts,
-								const unsigned int	*Ivals,
-								const unsigned int	*UPA_Inp_base_addr_ptr,
-								const unsigned int (*UPA_Wgt_base_addr_ptr)[9],
-								const unsigned int	*UPA_Out_base_addr_ptr,
-								const unsigned int	*UPA_Acc_base_addr_ptr);
+//void Bline_Initiate_STA_UPA		(	const unsigned int	Capacity,
+//									const unsigned int	*Control_word,
+//									const unsigned int	*Counts,
+//									const unsigned int	*Ivals,
+//									const unsigned int	*UPA_Inp_base_addr_ptr,
+//									const unsigned int (*UPA_Wgt_base_addr_ptr)[9],
+//									const unsigned int	*UPA_Out_base_addr_ptr,
+//									const unsigned int	*UPA_Acc_base_addr_ptr);
 
 
-void Bline_Initiate_STA_ECs(	const unsigned int	Capacity,					
-								const unsigned int	*Control_word);
+void Bline_Initiate_STA_UPA		(	const unsigned int	Capacity,
+									const unsigned int	*Control_word,
+									const unsigned int	*Ivals,
+									const unsigned int	*UPA_Inp_base_addr_ptr,
+									const unsigned int (*UPA_Wgt_base_addr_ptr)[9],
+									const unsigned int	*UPA_Out_base_addr_ptr,
+									const unsigned int	*UPA_Acc_base_addr_ptr);
 
 
-void Bline_Initiate_PE_Start(	const unsigned int	Capacity,					
-								const unsigned int	*Control_word,
-								const S_CONF_STA_info&	STA_info);
+void Bline_Initiate_STA_ECs		(	const unsigned int	Capacity,					
+									const unsigned int	*Control_word);
 
 
-void Bline_DMA_ZDB_Transfer	(	const unsigned int	(*Control_struct)[2]);
+//void Bline_Initiate_PE_Start	(	const unsigned int	Capacity,					
+//									const unsigned int	*Control_word,
+//									const S_CONF_STA_info&	STA_info);
 
 
-void Bline_Initiate_MPDR	(	const unsigned int	Capacity,
-								const unsigned int	*Control_word_H,
-								const unsigned int	*Control_word_L,
-								const void			*MPDR_base_addr_ptr);
+void Bline_Initiate_PE_Start	(	const unsigned int	Capacity,					
+									const unsigned int	*Control_word);
 
 
+void Bline_DMA_ZDB_Transfer		(	const unsigned int	(*Control_struct)[2]);
 
+
+void Bline_Initiate_MPDR		(	const unsigned int	Capacity,
+									const unsigned int	*Control_word_H,
+									const unsigned int	*Control_word_L,
+									const void			*MPDR_base_addr_ptr);
+
+
+void Bline_CONF_HOLDER_set_conf	(	const unsigned int	Capacity,
+									const unsigned int	*Control_word);
 
 
 

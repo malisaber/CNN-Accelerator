@@ -3,27 +3,57 @@
 
 
 
-void Bline_Initiate_STA_UPA(	const unsigned int	Capacity,
-								const unsigned int	*Control_word,
-								const unsigned int	*Counts,
-								const unsigned int	*Ivals,
-								const unsigned int	*UPA_Inp_base_addr_ptr,
-								const unsigned int (*UPA_Wgt_base_addr_ptr)[9],
-								const unsigned int	*UPA_Out_base_addr_ptr,
-								const unsigned int	*UPA_Acc_base_addr_ptr)
+//void Bline_Initiate_STA_UPA		(	const unsigned int	Capacity,
+//									const unsigned int	*Control_word,
+//									const unsigned int	*Counts,
+//									const unsigned int	*Ivals,
+//									const unsigned int	*UPA_Inp_base_addr_ptr,
+//									const unsigned int (*UPA_Wgt_base_addr_ptr)[9],
+//									const unsigned int	*UPA_Out_base_addr_ptr,
+//									const unsigned int	*UPA_Acc_base_addr_ptr)
+//{
+//	for (unsigned int idx = 0; idx < Capacity; idx++)
+//	{
+//		unsigned int pln = (Control_word[idx] >>	4)	& 0xF;
+//		unsigned int vlt = (Control_word[idx] >>	0)	& 0xF;
+//		unsigned int Inp_count = (Counts[idx] >>	24)	& 0xFF;
+//		unsigned int Wgt_count = (Counts[idx] >>	16)	& 0xFF;
+//		unsigned int Out_count = (Counts[idx] >>	8)	& 0xFF;
+//		unsigned int Acc_count = (Counts[idx] >>	0)	& 0xFF;
+//		unsigned int Inp_Ival  = ((Ivals[idx] >>	24)	& 0xFF) << 8;
+//		unsigned int Wgt_Ival  = ((Ivals[idx] >>	16)	& 0xFF) << 8;
+//		unsigned int Out_Ival  = ((Ivals[idx] >>	8)	& 0xFF) << 8;
+//		unsigned int Acc_Ival  = ((Ivals[idx] >>	0)	& 0xFF) << 8;
+//		PE_INIT_UA_Inp_load_address	(pln,	vlt,	UPA_Inp_base_addr_ptr[idx],	Inp_count,	Inp_Ival);
+//		PE_INIT_UA_Wgt_load_address	(pln,	vlt,	UPA_Wgt_base_addr_ptr[idx],	Wgt_count,	Wgt_Ival);
+//		PE_INIT_SA_Out_load_address (pln,	vlt,	UPA_Out_base_addr_ptr[idx],	Out_count,	Out_Ival);
+//		PE_INIT_SA_Acc_load_address (pln,	vlt,	UPA_Acc_base_addr_ptr[idx],	Acc_count,	Acc_Ival);
+//	}
+//}
+
+
+void Bline_Initiate_STA_UPA		(	const unsigned int	Capacity,
+									const unsigned int	*Control_word,
+									const unsigned int	*Ivals,
+									const unsigned int	*UPA_Inp_base_addr_ptr,
+									const unsigned int (*UPA_Wgt_base_addr_ptr)[9],
+									const unsigned int	*UPA_Out_base_addr_ptr,
+									const unsigned int	*UPA_Acc_base_addr_ptr)
 {
 	for (unsigned int idx = 0; idx < Capacity; idx++)
 	{
-		unsigned int pln = (Control_word[idx] >>	4)	& 0xF;
-		unsigned int vlt = (Control_word[idx] >>	0)	& 0xF;
-		unsigned int Inp_count = (Counts[idx] >>	24)	& 0xFF;
-		unsigned int Wgt_count = (Counts[idx] >>	16)	& 0xFF;
-		unsigned int Out_count = (Counts[idx] >>	8)	& 0xFF;
-		unsigned int Acc_count = (Counts[idx] >>	0)	& 0xFF;
-		unsigned int Inp_Ival  = ((Ivals[idx] >>	24)	& 0xFF) << 8;
-		unsigned int Wgt_Ival  = ((Ivals[idx] >>	16)	& 0xFF) << 8;
-		unsigned int Out_Ival  = ((Ivals[idx] >>	8)	& 0xFF) << 8;
-		unsigned int Acc_Ival  = ((Ivals[idx] >>	0)	& 0xFF) << 8;
+		unsigned int vlt		= (Control_word[idx]	>>	0)	& 0xF;
+		unsigned int pln		= (Control_word[idx]	>>	4)	& 0xF;
+		unsigned int cnt_sel	= (Control_word[idx]	>>	8)	& 0xF;
+		unsigned int Counts		= (All_Net_SUU_cnts[cnt_sel]);
+		unsigned int Inp_count	= (Counts				>>	24)	& 0xFF;
+		unsigned int Wgt_count	= (Counts				>>	16)	& 0xFF;
+		unsigned int Out_count	= (Counts				>>	8)	& 0xFF;
+		unsigned int Acc_count	= (Counts				>>	0)	& 0xFF;
+		unsigned int Inp_Ival	= ((Ivals[idx]			>>	24)	& 0xFF) << 8;
+		unsigned int Wgt_Ival	= ((Ivals[idx]			>>	16)	& 0xFF) << 8;
+		unsigned int Out_Ival	= ((Ivals[idx]			>>	8)	& 0xFF) << 8;
+		unsigned int Acc_Ival	= ((Ivals[idx]			>>	0)	& 0xFF) << 8;
 		PE_INIT_UA_Inp_load_address	(pln,	vlt,	UPA_Inp_base_addr_ptr[idx],	Inp_count,	Inp_Ival);
 		PE_INIT_UA_Wgt_load_address	(pln,	vlt,	UPA_Wgt_base_addr_ptr[idx],	Wgt_count,	Wgt_Ival);
 		PE_INIT_SA_Out_load_address (pln,	vlt,	UPA_Out_base_addr_ptr[idx],	Out_count,	Out_Ival);
@@ -32,33 +62,47 @@ void Bline_Initiate_STA_UPA(	const unsigned int	Capacity,
 }
 
 
-void Bline_Initiate_STA_ECs(	const unsigned int	Capacity,					
-								const unsigned int	*Control_word)
+void Bline_Initiate_STA_ECs		(	const unsigned int	Capacity,					
+									const unsigned int	*Control_word)
 {
 	for (unsigned int idx = 0; idx < Capacity; idx++)
 	{
-		unsigned int cnt = (Control_word[idx] >>	16)	& 0xFFFF;
-		unsigned int pln = (Control_word[idx] >>	4)	& 0xF;
 		unsigned int vlt = (Control_word[idx] >>	0)	& 0xF;
+		unsigned int pln = (Control_word[idx] >>	4)	& 0xF;
+		unsigned int cnt = (Control_word[idx] >>	20)	& 0xFFF;
 		PSU_EC_CNTR_start_with_config(pln, STA, vlt, cnt, 1, 0, 1);
 	}
 }
 
 
-void Bline_Initiate_PE_Start(	const unsigned int	Capacity,					
-								const unsigned int	*Control_word,
-								const S_CONF_STA_info& STA_info)
+//void Bline_Initiate_PE_Start	(	const unsigned int	Capacity,					
+//									const unsigned int	*Control_word,
+//									const S_CONF_STA_info& STA_info)
+//{
+//	for (unsigned int idx = 0; idx < Capacity; idx++)
+//	{
+//		unsigned int vlt = (Control_word[idx] >>	0)	& 0xF;
+//		unsigned int pln = (Control_word[idx] >>	4)	& 0xF;
+//		PE_CONT_Configure_Update_Start(pln, vlt, STA_info);
+//	}
+//}
+
+
+void Bline_Initiate_PE_Start	(	const unsigned int	Capacity,					
+									const unsigned int	*Control_word)
 {
 	for (unsigned int idx = 0; idx < Capacity; idx++)
 	{
-		unsigned int pln = (Control_word[idx] >>	4)	& 0xF;
-		unsigned int vlt = (Control_word[idx] >>	0)	& 0xF;
+		unsigned int vlt		= (Control_word[idx] >>	0)	& 0xF;
+		unsigned int pln		= (Control_word[idx] >>	4)	& 0xF;
+		unsigned int Inf		= (Control_word[idx] >>	16)	& 0xF;
+		unsigned int STA_info	= All_Net_STA_info[Inf];
 		PE_CONT_Configure_Update_Start(pln, vlt, STA_info);
 	}
 }
 
 
-void Bline_DMA_ZDB_Transfer	(	const unsigned int	(*Control_struct)[2])
+void Bline_DMA_ZDB_Transfer		(	const unsigned int	(*Control_struct)[2])
 {
 	DMA_EC_reset_all();
 	//	size_t tmp = (Cnt << 24) + (vlt << 20) + (Max << 10);
@@ -80,10 +124,10 @@ void Bline_DMA_ZDB_Transfer	(	const unsigned int	(*Control_struct)[2])
 	}
 }
 
-void Bline_Initiate_MPDR	(	const unsigned int	Capacity,
-								const unsigned int	*Control_word_H,
-								const unsigned int	*Control_word_L,
-								const void			*MPDR_base_addr_ptr)
+void Bline_Initiate_MPDR		(	const unsigned int	Capacity,
+									const unsigned int	*Control_word_H,
+									const unsigned int	*Control_word_L,
+									const void			*MPDR_base_addr_ptr)
 {
 	// Control word High
 	//			field		:	vlt			Col			chan,		rounds		Out_Ival
@@ -108,6 +152,18 @@ void Bline_Initiate_MPDR	(	const unsigned int	Capacity,
 }
 
 
+void Bline_CONF_HOLDER_set_conf	(	const unsigned int	Capacity,
+									const unsigned int	*Control_word)
+{
+	for (unsigned int idx = 0; idx < Capacity; idx++)
+	{
+		unsigned int vlt		= (Control_word[idx]	>>	0)	& 0xF;
+		unsigned int pln		= (Control_word[idx]	>>	4)	& 0xF;
+		unsigned int cnf_sel	= (Control_word[idx]	>>	12)	& 0xF;
+		unsigned int config		= (All_Net_PEs_Conf[cnt_sel]);
+		CONF_HOLDER_set_conf	  (pln, vlt, config);
+	}
+}
 
 
 
