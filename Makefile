@@ -43,9 +43,9 @@ REPORT_DIR := report
 # every $(MAKE) -C ... sub-invocation below (packages/*, rtl), so
 # VERBOSE=1 reaches them too -- see rtl/Makefile, which uses it to
 # drop vsim's -quiet flag.
-VERBOSE ?= 0
-REPORTS ?= 0
-JOBS    ?= 8
+VERBOSE  ?= 0
+REPORTS  ?= 0
+JOBS     ?= 8
 
 # $(call LOG,<log-name>,<shell command>) runs a command, tees its
 # combined stdout/stderr into report/<log-name>.log, and still fails
@@ -360,6 +360,7 @@ firmware: check-run-vars check-run-tools packages
 	@echo ">>> [2/5] CNN-Compiler ($(NETWORK) -> $(SOFTWARE_DIR)/, dump in $(DUMP_DIR)/)"
 	$(call LOG,02-cnn-compiler,\
 		packages/CNN-Compiler/build/CNN-Compiler \
+			#-a \
 			-p $(REPORTS) \
 			-v $(VERBOSE) \
 			-n "$(NETWORK)" \
