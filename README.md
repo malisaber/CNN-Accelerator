@@ -7,7 +7,7 @@ make
 
 make firmware \
 	VERBOSE=3 \
-	REPORTS=80 \
+	REPORTS=40 \
 	         NETWORK=materials/networks/network_4.json \
 	 DRAM_INPUTS=materials/dataset/inps/network_4_random_inp/  \
 	DRAM_WEIGHTS=materials/dataset/wgts/network_4_random_wgt/ \
