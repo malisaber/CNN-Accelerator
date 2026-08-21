@@ -360,7 +360,6 @@ firmware: check-run-vars check-run-tools packages
 	@echo ">>> [2/5] CNN-Compiler ($(NETWORK) -> $(SOFTWARE_DIR)/, dump in $(DUMP_DIR)/)"
 	$(call LOG,02-cnn-compiler,\
 		packages/CNN-Compiler/build/CNN-Compiler \
-			#-a \
 			-p $(REPORTS) \
 			-v $(VERBOSE) \
 			-n "$(NETWORK)" \
