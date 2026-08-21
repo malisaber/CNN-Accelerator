@@ -115,7 +115,8 @@ void Bline_Initiate_STA_UPA		(	const unsigned int	Capacity,
 									const unsigned int	*UPA_Inp_base_addr_ptr,
 									const unsigned int (*UPA_Wgt_base_addr_ptr)[9],
 									const unsigned int	*UPA_Out_base_addr_ptr,
-									const unsigned int	*UPA_Acc_base_addr_ptr);
+									const unsigned int	*UPA_Acc_base_addr_ptr,
+									const unsigned int	*SUU_cnts);
 
 
 void Bline_Initiate_STA_ECs		(	const unsigned int	Capacity,					
@@ -128,7 +129,8 @@ void Bline_Initiate_STA_ECs		(	const unsigned int	Capacity,
 
 
 void Bline_Initiate_PE_Start	(	const unsigned int	Capacity,					
-									const unsigned int	*Control_word);
+									const unsigned int	*Control_word,
+									const unsigned int	*info_array);
 
 
 void Bline_DMA_ZDB_Transfer		(	const unsigned int	(*Control_struct)[2]);
@@ -141,7 +143,8 @@ void Bline_Initiate_MPDR		(	const unsigned int	Capacity,
 
 
 void Bline_CONF_HOLDER_set_conf	(	const unsigned int	Capacity,
-									const unsigned int	*Control_word);
+									const unsigned int	*Control_word,
+									const unsigned int  *conf_array);
 
 
 

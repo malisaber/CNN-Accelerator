@@ -44,7 +44,8 @@ REPORT_DIR := report
 # VERBOSE=1 reaches them too -- see rtl/Makefile, which uses it to
 # drop vsim's -quiet flag.
 VERBOSE ?= 0
-
+REPORTS ?= 0
+JOBS    ?= 8
 
 # $(call LOG,<log-name>,<shell command>) runs a command, tees its
 # combined stdout/stderr into report/<log-name>.log, and still fails
@@ -314,32 +315,52 @@ check-run-tools:
 
 # packages builds packages/CNN-Compiler and packages/Text-Converter
 # (and, as a side effect, the other two tool packages too).
+#
+#	
+#	@echo ">>> [1/5] DRAM input/weight data generation (IDG/WDG -> $(DDG_DIR)/)"
+#	$(call LOG,01-idg-wdg,\
+#		i=1; for f in $$(find $(DRAM_INPUTS) -type f -name "*.npy" | sort); do \
+#			name=$$(basename "$$f" .npy); \
+#			python3 packages/CNN-DRAM-Data-Gen/IDG.py "$$f" "$(DDG_DIR)/ID/$${name}.bin" || exit 1; \
+#			i=$$((i+1)); \
+#		done; \
+#		i=1; for f in $$(find $(DRAM_WEIGHTS) -type f -name "*.npy" | sort); do \
+#			name=$$(basename "$$f" .npy); \
+#			python3 packages/CNN-DRAM-Data-Gen/WDG.py "$$f" "$(DDG_DIR)/WD/$${name}.bin" || exit 1; \
+#			i=$$((i+1)); \
+#		done)
 firmware: check-run-vars check-run-tools packages
 	rm -r -f $(DDG_DIR) 
 	rm -r -f $(DRAM_DIR)
 	rm -r -f $(SOFTWARE_DIR)
 	rm -r -f $(BUILD_DIR)
 	rm -r -f $(MEM_INIT_DIR)
+	rm -r -f $(DUMP_DIR)
 
 	@mkdir -p $(DDG_DIR)/ID $(DDG_DIR)/WD $(SOFTWARE_DIR) $(DRAM_DIR) $(BUILD_DIR) $(MEM_INIT_DIR) $(DUMP_DIR)
 	
 	@echo ">>> [1/5] DRAM input/weight data generation (IDG/WDG -> $(DDG_DIR)/)"
 	$(call LOG,01-idg-wdg,\
-		i=1; for f in $$(find $(DRAM_INPUTS) -type f -name "*.npy" | sort); do \
+		find $(DRAM_INPUTS) -type f -name "*.npy" -print0 | \
+		xargs -0 -P $(JOBS) -I {} sh -c '\
+			f="$$1"; \
 			name=$$(basename "$$f" .npy); \
-			python3 packages/CNN-DRAM-Data-Gen/IDG.py "$$f" "$(DDG_DIR)/ID/$${name}.bin" || exit 1; \
-			i=$$((i+1)); \
-		done; \
-		i=1; for f in $$(find $(DRAM_WEIGHTS) -type f -name "*.npy" | sort); do \
+			python3 packages/CNN-DRAM-Data-Gen/IDG.py \
+				"$$f" "$(DDG_DIR)/ID/$${name}.bin" \
+		' sh {} && \
+		find $(DRAM_WEIGHTS) -type f -name "*.npy" -print0 | \
+		xargs -0 -P $(JOBS) -I {} sh -c '\
+			f="$$1"; \
 			name=$$(basename "$$f" .npy); \
-			python3 packages/CNN-DRAM-Data-Gen/WDG.py "$$f" "$(DDG_DIR)/WD/$${name}.bin" || exit 1; \
-			i=$$((i+1)); \
-		done)
-	
+			python3 packages/CNN-DRAM-Data-Gen/WDG.py \
+				"$$f" "$(DDG_DIR)/WD/$${name}.bin" \
+		' sh {} \
+	)
+
 	@echo ">>> [2/5] CNN-Compiler ($(NETWORK) -> $(SOFTWARE_DIR)/, dump in $(DUMP_DIR)/)"
 	$(call LOG,02-cnn-compiler,\
 		packages/CNN-Compiler/build/CNN-Compiler \
-			-p \
+			-p $(REPORTS) \
 			-v $(VERBOSE) \
 			-n "$(NETWORK)" \
 			-l "$(HAL_DIR)" \

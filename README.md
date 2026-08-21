@@ -6,10 +6,11 @@
 make 
 
 make firmware \
-	VERBOSE=1 \
-	         NETWORK=materials/networks/network_7.json \
-	 DRAM_INPUTS=materials/dataset/inps/network_7_random_inp/  \
-	DRAM_WEIGHTS=materials/dataset/wgts/network_7_random_wgt/ \
+	VERBOSE=3 \
+	REPORTS=80 \
+	         NETWORK=materials/networks/network_4.json \
+	 DRAM_INPUTS=materials/dataset/inps/network_4_random_inp/  \
+	DRAM_WEIGHTS=materials/dataset/wgts/network_4_random_wgt/ \
 	CORE=biriscv
 
 make rtl-project
